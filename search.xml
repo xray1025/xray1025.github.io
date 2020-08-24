@@ -24,6 +24,8 @@
     <content><![CDATA[<h2 id="0-设计模式"><a href="#0-设计模式" class="headerlink" title="0 设计模式"></a>0 设计模式</h2><pre><code>一套用来提高代码可复用性、可维护性、可读性、稳健性以及安全性的解决方案
 
 本质是面向对象设计原则的实际应用</code></pre>
+<a id="more"></a>
+
 <h3 id="0-1-分类"><a href="#0-1-分类" class="headerlink" title="0.1 分类"></a>0.1 分类</h3><p><strong>创建型模式：</strong></p>
 <ul>
 <li>单例模式<ul>
