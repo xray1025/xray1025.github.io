@@ -1829,4 +1829,1238 @@
         <tag>Java</tag>
       </tags>
   </entry>
+  <entry>
+    <title></title>
+    <url>/2020/09/02/JVM/</url>
+    <content><![CDATA[<h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><ul>
+<li>JVM是可运行Java代码的假想计算机，组成部分包括：堆、方法区、栈、本地方法栈和程序计数器。其中，堆和方法区是共享区，栈、本地方法栈和程序计数器是线程私有的。</li>
+</ul>
+<a id="more"></a>
+
+<ul>
+<li>Java运行过程：<ul>
+<li>源文件通过编译器编译为.class字节码文件，字节码文件通过JVM中的解释器解释成特定机器上的字节码文件</li>
+</ul>
+</li>
+</ul>
+<h2 id="1-线程"><a href="#1-线程" class="headerlink" title="1 线程"></a>1 线程</h2><p><strong>JVM的系统线程主要有：</strong></p>
+<ul>
+<li>虚拟机栈</li>
+<li>周期性任务线程：负责定时器事件（中断），用来调度周期性操作的执行</li>
+<li>GC线程：负责JVM中的垃圾回收</li>
+<li>编译器线程：在运行时将字节码动态的编译成本地平台相关的机器码</li>
+<li>信号分发线程：负责接收发送到JVM的信号并调用适当的JVM方法处理</li>
+</ul>
+<h2 id="2-JVM内存区域"><a href="#2-JVM内存区域" class="headerlink" title="2 JVM内存区域"></a>2 JVM内存区域</h2><h3 id="2-1-程序计数器"><a href="#2-1-程序计数器" class="headerlink" title="2.1 程序计数器"></a>2.1 程序计数器</h3><ul>
+<li>当前线程所执行的字节码的行号指示器，占用内存空间较小，没有规定OutOfMemoryError</li>
+</ul>
+<h3 id="2-2-栈"><a href="#2-2-栈" class="headerlink" title="2.2 栈"></a>2.2 栈</h3><ul>
+<li>描述java方法的内存模型，每个方法在执行的同时都会创建一个栈帧用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每个方法从调用到执行完成的过程，都对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</li>
+<li>栈帧是用来存储数据和部分过程结果的数据结构，同时也被用来处理动态链接、方法返回值和异常分派。</li>
+</ul>
+<h3 id="2-3-本地方法栈"><a href="#2-3-本地方法栈" class="headerlink" title="2.3 本地方法栈"></a>2.3 本地方法栈</h3><p>为Native方法服务</p>
+<h3 id="2-4-堆"><a href="#2-4-堆" class="headerlink" title="2.4 堆"></a>2.4 堆</h3><ul>
+<li>线程共享，</li>
+<li>创建的对象和数组都保存在Java堆内存中，也是垃圾收集器进行垃圾收集的最重要的内存区域</li>
+<li>根据分代收集算法，可以细分为：新生代（Eden、SurvivorFrom、ServivorTo）和老年代</li>
+</ul>
+<h3 id="2-5-方法区"><a href="#2-5-方法区" class="headerlink" title="2.5 方法区"></a>2.5 方法区</h3><p>即永久代（Permanent Generation），用于储存被Java加载的类信息、常量、静态常量、即时编译器编译后的代码等数据。</p>
+<p>运行时常量池（Runtime Constant Pool）是方法区的一部分，负责存放Class文件中的常量池</p>
+<h2 id="3-Java运行时内存"><a href="#3-Java运行时内存" class="headerlink" title="3 Java运行时内存"></a>3 Java运行时内存</h2><h3 id="3-1-新生代"><a href="#3-1-新生代" class="headerlink" title="3.1 新生代"></a>3.1 新生代</h3><ul>
+<li>用来存放新生的对象，占堆1/3的空间</li>
+<li>新生代分为<ul>
+<li>Eden区</li>
+<li>ServivorFrom</li>
+<li>ServivorTo</li>
+</ul>
+</li>
+<li>MinorGC：<ul>
+<li>Eden内存不够时触发</li>
+<li>频繁执行</li>
+<li>采用复制算法</li>
+<li>过程：<ul>
+<li>将Eden、ServivorFrom复制到Servivor，并将年龄+1（如果年龄达到老年区的标准，则赋值到老年区）</li>
+<li>清空Eden、ServivorFrom</li>
+<li>将ServivorTo和ServivorFrom互换</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-老年代"><a href="#3-2-老年代" class="headerlink" title="3.2 老年代"></a>3.2 老年代</h3><ul>
+<li>主要存放应用程序中生命周期长的内存对象</li>
+<li>MajorGC：<ul>
+<li>老年代空间不够时触发</li>
+<li>不会频繁执行</li>
+<li>采用标记清除算法：<ul>
+<li>扫描一次所有老年代，标记出存活的的对象，然后回收没有标记的对象</li>
+<li>耗时比较长</li>
+<li>会产生内存碎片</li>
+<li>老年代满时，跑出OOM（out of memory）异常</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-3-永久代"><a href="#3-3-永久代" class="headerlink" title="3.3 永久代"></a>3.3 永久代</h3><ul>
+<li><p>内存的永久保存区域，主要存放Class和Meta的信息</p>
+</li>
+<li><p>GC不会在主程序运行期对永久代进行清理</p>
+</li>
+<li><p>Java 8 中，永久代已经被移除，被一个元数据区（元空间）取代</p>
+<ul>
+<li>元空间并不在虚拟机中，而是使用本地内存</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-垃圾回收算法"><a href="#4-垃圾回收算法" class="headerlink" title="4 垃圾回收算法"></a>4 垃圾回收算法</h2><h3 id="4-1-如何确定垃圾"><a href="#4-1-如何确定垃圾" class="headerlink" title="4.1 如何确定垃圾"></a>4.1 如何确定垃圾</h3><h4 id="4-1-1-引用计数法"><a href="#4-1-1-引用计数法" class="headerlink" title="4.1.1 引用计数法"></a>4.1.1 引用计数法</h4><ul>
+<li>一个对象如果没有任何与之关联的引用，即它们的引用计数都不为0，则说明对象不太可能再被用到，那么这个对象就是可回收对象</li>
+</ul>
+<h4 id="4-1-2-可达性分析"><a href="#4-1-2-可达性分析" class="headerlink" title="4.1.2 可达性分析"></a>4.1.2 可达性分析</h4><ul>
+<li>为了解决引用计数法的循环引用问题，通过一系列的GC root作为搜索起点，如果在GC root和一个对象之间没有可达路径，则称该对象是不可达的</li>
+<li>不可达对象经过两次标记后仍不可达，则为可回收对象</li>
+</ul>
+<h3 id="4-2-标记清除算法（Mark-Sweep）"><a href="#4-2-标记清除算法（Mark-Sweep）" class="headerlink" title="4.2 标记清除算法（Mark-Sweep）"></a>4.2 标记清除算法（Mark-Sweep）</h3><ul>
+<li><strong>标记：</strong>标记处所有需要回收的对象</li>
+<li><strong>清除：</strong>回收所有被标记的对象所占用的空间</li>
+<li>弊端：内存碎片化严重</li>
+</ul>
+<h3 id="4-3-复制算法（copying）"><a href="#4-3-复制算法（copying）" class="headerlink" title="4.3 复制算法（copying）"></a>4.3 复制算法（copying）</h3><ul>
+<li>按内存容量将内存划分为等大小的两块，每次只使用其中一块，当前内存满后将其尚存活的对象复制到另一块上，把已使用的内存回收</li>
+<li>实现简单，内存效率高</li>
+<li>可用内存被压缩到一半</li>
+<li>存活对象增多时，算法效率大大降低</li>
+</ul>
+<h3 id="4-4-标记整理算法（Mark-Compact）"><a href="#4-4-标记整理算法（Mark-Compact）" class="headerlink" title="4.4 标记整理算法（Mark-Compact）"></a>4.4 标记整理算法（Mark-Compact）</h3><ul>
+<li>标记</li>
+<li>将存活对象移向内存的一端，然后清除边界外的对象</li>
+</ul>
+<h3 id="4-5-分代收集算法"><a href="#4-5-分代收集算法" class="headerlink" title="4.5 分代收集算法"></a>4.5 分代收集算法</h3><ul>
+<li>主流收集算法</li>
+<li>新生代：每次垃圾回收时都有大量垃圾需要被回收<ul>
+<li>复制算法</li>
+</ul>
+</li>
+<li>老年代：每次垃圾回收时只有少量对象需要被回收<ul>
+<li>标记整理算法</li>
+</ul>
+</li>
+</ul>
+<h2 id="5-Java四种引用类型"><a href="#5-Java四种引用类型" class="headerlink" title="5 Java四种引用类型"></a>5 Java四种引用类型</h2><ul>
+<li>强引用<ul>
+<li>把一个对象赋值给一个引用变量即是强引用</li>
+<li>处于可达状态，不可被回收</li>
+<li>容易造成内存泄漏</li>
+</ul>
+</li>
+<li>软引用<ul>
+<li>SoftReference类</li>
+<li>系统内存不足时即被回收</li>
+</ul>
+</li>
+<li>弱引用<ul>
+<li>WeakReference类</li>
+<li>只要垃圾回收机制一运行即被回收</li>
+</ul>
+</li>
+<li>虚引用<ul>
+<li>PhantomReference类</li>
+<li>必须和引用队列联合使用</li>
+<li>主要用来跟踪对象呗垃圾回收的状态</li>
+</ul>
+</li>
+</ul>
+<h2 id="6-分区收集算法"><a href="#6-分区收集算法" class="headerlink" title="6 分区收集算法"></a>6 分区收集算法</h2><ul>
+<li>将整个堆空间划分为连续的不同小区间，每个小区间独立使用，独立回收。</li>
+<li>可以控制一次回收多少个小区间，减少一次GC所产生的停顿</li>
+</ul>
+<h2 id="7-垃圾收集器"><a href="#7-垃圾收集器" class="headerlink" title="7 垃圾收集器"></a>7 垃圾收集器</h2><p>分类：</p>
+<ul>
+<li><p>新生代：</p>
+<ul>
+<li>Serial</li>
+<li>ParNew</li>
+<li>Parallel Scavenge</li>
+<li>G1</li>
+</ul>
+</li>
+<li><p>老年代：</p>
+<ul>
+<li><p>CMS</p>
+</li>
+<li><p>Serial Old（MSC）</p>
+</li>
+<li><p>Parallel Old</p>
+</li>
+<li><p>G1</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="7-1-Serial"><a href="#7-1-Serial" class="headerlink" title="7.1 Serial"></a>7.1 Serial</h3><ul>
+<li>最基本的垃圾收集器</li>
+<li>单线程</li>
+<li>使用复制算法</li>
+<li>收集垃圾过程中需要暂停所有其他的工作线程</li>
+<li>简单高效</li>
+<li>是java 虚拟机运行在Client 模式下默认的新生代垃圾收集器</li>
+</ul>
+<h3 id="7-2-ParNew"><a href="#7-2-ParNew" class="headerlink" title="7.2 ParNew"></a>7.2 ParNew</h3><ul>
+<li>Serial收集器的多线程版本</li>
+<li>使用复制算法</li>
+<li>收集垃圾过程中需要暂停所有其他的工作线程</li>
+<li>默认开启和CPU 数目相同的线程数</li>
+<li>是很多java虚拟机运行在Server 模式下新生代的默认垃圾收集器。</li>
+</ul>
+<h3 id="7-3-Parallel-Scavenge"><a href="#7-3-Parallel-Scavenge" class="headerlink" title="7.3 Parallel Scavenge"></a>7.3 Parallel Scavenge</h3><ul>
+<li>多线程</li>
+<li>使用复制算法</li>
+<li>重点关注程序到达一个可控制的吞吐量（运行用户代码时间/(运行用户代码时间+垃圾收集时间）</li>
+<li>自适应调节策略</li>
+</ul>
+<h3 id="7-4-Serial-Old"><a href="#7-4-Serial-Old" class="headerlink" title="7.4 Serial Old"></a>7.4 Serial Old</h3><ul>
+<li>单线程</li>
+<li>标记整理算法</li>
+<li>是运行在Client 默认的java 虚拟机默认的年老代垃圾收集器</li>
+</ul>
+<h3 id="7-5-Parallel-Old"><a href="#7-5-Parallel-Old" class="headerlink" title="7.5 Parallel Old"></a>7.5 Parallel Old</h3><ul>
+<li>多线程</li>
+<li>标记整理算法</li>
+</ul>
+<h3 id="7-6-CMS"><a href="#7-6-CMS" class="headerlink" title="7.6 CMS"></a>7.6 CMS</h3><ul>
+<li><p>多线程标记清除算法：Concurrent Mark Sweep</p>
+</li>
+<li><p>主要目标：获取最短垃圾回收停顿时间</p>
+</li>
+<li><p>多线程</p>
+</li>
+<li><p>标记清除算法</p>
+</li>
+</ul>
+<h4 id="7-6-1-初始标记"><a href="#7-6-1-初始标记" class="headerlink" title="7.6.1 初始标记"></a>7.6.1 初始标记</h4><ul>
+<li>标记GC roots能直接关联的对象</li>
+<li>速度快</li>
+<li>需要暂停所有的工作进程</li>
+</ul>
+<h4 id="7-6-2-并发标记"><a href="#7-6-2-并发标记" class="headerlink" title="7.6.2 并发标记"></a>7.6.2 并发标记</h4><ul>
+<li>和用户线程一起工作，进行GC roots跟踪</li>
+</ul>
+<h4 id="7-6-3-重新标记"><a href="#7-6-3-重新标记" class="headerlink" title="7.6.3 重新标记"></a>7.6.3 重新标记</h4><ul>
+<li>修正在并发标记期间，因用户程序继续运行而导致标记产生的那一部分对象的标记记录</li>
+<li>需要暂停所有的工作线程</li>
+</ul>
+<h4 id="7-6-4-并发清除"><a href="#7-6-4-并发清除" class="headerlink" title="7.6.4 并发清除"></a>7.6.4 并发清除</h4><ul>
+<li>和用户线程一起工作，清除回收对象</li>
+<li>不需要暂停工作进程</li>
+</ul>
+<h3 id="7-7-G1"><a href="#7-7-G1" class="headerlink" title="7.7 G1"></a>7.7 G1</h3><ul>
+<li>最先进</li>
+<li>Garbage First</li>
+<li>标记整理算法，不产生内存碎片</li>
+<li>可以非常精确控制停顿时间，在不牺牲吞吐量的前提下，实现低停顿垃圾回收</li>
+<li>把堆内存划分为大小固定的几个独立区域，优先回收垃圾最多的区域</li>
+<li>回收效率高</li>
+</ul>
+<h2 id="8-IO-NIO"><a href="#8-IO-NIO" class="headerlink" title="8 IO/NIO"></a>8 IO/NIO</h2><h3 id="8-1-IO分类"><a href="#8-1-IO分类" class="headerlink" title="8.1 IO分类"></a>8.1 IO分类</h3><h4 id="8-1-1-IO"><a href="#8-1-1-IO" class="headerlink" title="8.1.1 IO"></a>8.1.1 IO</h4><ul>
+<li>当用户线程发出IO请求之后，内核会去查看数据是否就绪，如果没有就绪就会等待数据就绪，而用户线程就会交出CPU处于阻塞状态。当数据就绪之后，内核就会将数据拷贝到用户线程，并返回结果给用户线程，用户线程才解除block状态。</li>
+</ul>
+<h4 id="8-1-2-NIO"><a href="#8-1-2-NIO" class="headerlink" title="8.1.2 NIO"></a>8.1.2 NIO</h4><ul>
+<li>当用户线程发起一个请求后，并不需要等待，而是马上就得到一个结果。如果结果是error时，它就知道数据还没有准备好，于是它可以再次发送请求。一旦内核中的数据准备就绪，并且又再次收到用户线程的请求，那么它马上就将结果返回给用户线程，然后返回。</li>
+<li>在非阻塞IO 模型中，用户线程需要不断地询问内核数据是否就绪，也就说非阻塞IO不会交出CPU，而会一直占用CPU。</li>
+</ul>
+<h4 id="8-1-3-多路复用IO"><a href="#8-1-3-多路复用IO" class="headerlink" title="8.1.3 多路复用IO"></a>8.1.3 多路复用IO</h4><ul>
+<li><p>在多路复用IO模型中，会有一个线程不断去轮询多个socket 的状态，只有当socket 真正有读写事件时，才真正调用实际的IO 读写操作。</p>
+</li>
+<li><p>因为在多路复用IO 模型中，只需要使用一个线程就可以管理多个socket，系统不需要建立新的进程或者线程，也不必维护这些线程和进程，并且只有在真正有socket 读写事件进行时，才会使用IO资源，所以它大大减少了资源占用。</p>
+</li>
+<li><p>多路复用IO 为何比非阻塞IO 模型的效率高是因为在非阻塞IO中，不断地询socket 状态时通过用户线程去进行的，而在多路复用IO中，轮询每个socket 状态是内核在进行的，这个效率要比用户线程要高的多。</p>
+</li>
+<li><p>多路复用IO 模型是通过轮询的方式来检测是否有事件到达，并且对到达的事件逐一进行响应。因此对于多路复用IO 模型来说，一旦事件响应体很大，那么就会导致后续的事件迟迟得不到处理，并且会影响新的事件轮询。</p>
+</li>
+</ul>
+<h4 id="8-1-4-信号驱动IO"><a href="#8-1-4-信号驱动IO" class="headerlink" title="8.1.4 信号驱动IO"></a>8.1.4 信号驱动IO</h4><ul>
+<li>在信号驱动IO 模型中，当用户线程发起一个IO 请求操作，会给对应的socket 注一个信号函数，然后用户线程会继续执行，当内核数据就绪时会发送一个信号给用户线程，用户线程接收到信号之后，便在信号函数中调用IO读写操作来进行实际的IO 请求操作。</li>
+</ul>
+<h4 id="8-1-5-异步IO"><a href="#8-1-5-异步IO" class="headerlink" title="8.1.5 异步IO"></a>8.1.5 异步IO</h4><ul>
+<li>当用户线程发起操作请求后，立刻就可以开始去做其它的事。而另一方面，从内核的角度，当它受到一个请求后，它会立刻返回，说明请求已经成功发起，因此不会对用户线程产生任何block。然后，内核会等待数据准备完成，然后将数据拷贝到用户线程，当这一切都完成后，内核会给用户线程发送一个信号，告诉它操作完成了。</li>
+</ul>
+<h3 id="8-2-NIO"><a href="#8-2-NIO" class="headerlink" title="8.2 NIO"></a>8.2 NIO</h3><h4 id="8-2-1-IO包"><a href="#8-2-1-IO包" class="headerlink" title="8.2.1 IO包"></a>8.2.1 IO包</h4><p>分类：</p>
+<ul>
+<li>字节流：<ul>
+<li>InputStream</li>
+<li>OutputStream</li>
+</ul>
+</li>
+<li>字符流：<ul>
+<li>Reader</li>
+<li>Writer</li>
+</ul>
+</li>
+</ul>
+<h4 id="8-2-2-NIO"><a href="#8-2-2-NIO" class="headerlink" title="8.2.2 NIO"></a>8.2.2 NIO</h4><p>核心部分：</p>
+<ul>
+<li>通道（Channel）：<ul>
+<li>提供从文件、网络读取数据的渠道</li>
+<li>Channel 是双向的，既可以用来进行读操作，又可以用来进行写操作</li>
+<li>Stream 是单向的</li>
+<li>分类：<ul>
+<li>IO：FileChannel</li>
+<li>UDP：DatagramChannel</li>
+<li>TCP：SocketChannel（client）/ ServerSocketChannel(server)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>缓冲区（Buffer）:<ul>
+<li>读取或写入的数据都必须经由Buffer</li>
+<li>常用子类：ByteBuffer、IntBuffer、 CharBuffer、 LongBuffer、DoubleBuffer、FloatBuffer、ShortBuffer</li>
+</ul>
+</li>
+<li>选择区（Selector）：<ul>
+<li>检测多个注册的通道上是否有事件发生，如果有事件发生，便获取事件然后针对每个事件进行相应的响应处理</li>
+<li>用一个单线程就可以管理多个通道</li>
+<li>使得只有在连接真正有读写事件发生时，才会调用函数来进行读写，就大大地减少了系统开销</li>
+<li>不必为每个连接都创建一个线程，不用去维护多个线程，并且避免了多线程之间的上下文切换导致的开销</li>
+</ul>
+</li>
+</ul>
+<p>对比：</p>
+<ul>
+<li>传统IO基于字节流和字符流进行操作</li>
+<li>NIO 基于Channel 和Buffer(缓冲区)进行操作，数据总是从通道读取到缓冲区中，或者从缓冲区写入到通道中</li>
+</ul>
+<h4 id="8-2-3-缓冲区"><a href="#8-2-3-缓冲区" class="headerlink" title="8.2.3 缓冲区"></a>8.2.3 缓冲区</h4><ul>
+<li>Java IO面向流意味着每次从流中读一个或多个字节，直至读取所有字节，它们没被缓存在任何地方。此外，它不能前后移动流中的数据。如果需要前后移动从流中读取的数据，需要先将它缓存到一个缓冲区。</li>
+<li>NIO 的缓冲导向方法不同。数据读取到一个它稍后处理的缓冲区，需要时可在缓冲区中前后移动。这就增加了处理过程中的灵活性。</li>
+<li>NIO需要检查是否该缓冲区中包含所有您需要处理的数据。而且，需确保当更多的数据读入缓冲区时，不要覆盖缓冲区里尚未处理的数据。</li>
+</ul>
+<h4 id="8-2-4-非阻塞"><a href="#8-2-4-非阻塞" class="headerlink" title="8.2.4 非阻塞"></a>8.2.4 非阻塞</h4><ul>
+<li>IO 的各种流是阻塞的。这意味着，当一个线程调用read() 或 write()时，该线程阻塞，直到有一些数据被读取，或数据完全写入。该线程在此期间不能再干任何事情。</li>
+<li>NIO 的非阻塞模式，使一个线程从某通道发送请求读取数据，但是它仅能得到目前可用的数据，如果目前没有数据可用时，就什么都不会获取，而不是保持线程阻塞，所以直至数据变的可以读取之前，该线程可以继续做其他的事情。 </li>
+<li>非阻塞写也是如此。一个线程请求写入一些数据到某通道，但不需要等待它完全写入，这个线程同时可以去做别的事情。</li>
+<li>线程通常将非阻塞IO的空闲时间用于在其它通道上执行IO操作，所以一个单独的线程现在可以管理多个输入和输出通道（channel）。</li>
+</ul>
+<h2 id="9-类加载"><a href="#9-类加载" class="headerlink" title="9 类加载"></a>9 类加载</h2><h3 id="9-1-步骤"><a href="#9-1-步骤" class="headerlink" title="9.1 步骤"></a>9.1 步骤</h3><h4 id="9-1-1-加载"><a href="#9-1-1-加载" class="headerlink" title="9.1.1 加载"></a>9.1.1 加载</h4><ul>
+<li>会在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的入口。</li>
+</ul>
+<h4 id="9-1-2-验证"><a href="#9-1-2-验证" class="headerlink" title="9.1.2 验证"></a>9.1.2 验证</h4><ul>
+<li>为了确保Class 文件的字节流中包含的信息是否符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。</li>
+</ul>
+<h4 id="9-1-3-准备"><a href="#9-1-3-准备" class="headerlink" title="9.1.3 准备"></a>9.1.3 准备</h4><ul>
+<li>正式为类变量分配内存并设置类变量的初始值阶段，即在方法区中分配这些变量所使用的内存空间。</li>
+</ul>
+<h4 id="9-1-4-解析"><a href="#9-1-4-解析" class="headerlink" title="9.1.4 解析"></a>9.1.4 解析</h4><ul>
+<li><p>虚拟机将常量池中的符号引用替换为直接引用的过程。</p>
+</li>
+<li><p>符号引用：引用的目标并不一定要已经加载到内存中。各种虚拟机实现的内存布局可以各不相同</p>
+</li>
+<li><p>直接引用：直接引用可以是指向目标的指针，相对偏移量或是一个能间接定位到目标的句柄。如果有了直接引用，那引用的目标必定已经在内存中存在。</p>
+</li>
+</ul>
+<h4 id="9-1-5-初始化"><a href="#9-1-5-初始化" class="headerlink" title="9.1.5 初始化"></a>9.1.5 初始化</h4><ul>
+<li>执行类中定义的Java 程序代码。</li>
+</ul>
+<h3 id="9-2-双亲委派模型"><a href="#9-2-双亲委派模型" class="headerlink" title="9.2 双亲委派模型"></a>9.2 双亲委派模型</h3><ul>
+<li><p>当一个类收到了类加载请求，他首先不会尝试自己去加载这个类，而是把这个请求委派给父类去完成，每一个层次类加载器都是如此，因此所有的加载请求都应该传送到启动类加载其中，只有当父类加载器反馈自己无法完成这个请求的时候（在它的加载路径下没有找到所需加载的Class），子类加载器才会尝试自己去加载。</p>
+</li>
+<li><p>使用不同的类加载器最终得到的都是同样一个Object 对象</p>
+</li>
+</ul>
+<p><img src="C:\Users\x\AppData\Roaming\Typora\typora-user-images\image-20200825114823414.png" alt="image-20200825114823414"></p>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2020/09/02/redis/</url>
+    <content><![CDATA[<h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><blockquote>
+<p>NoSQL = Not Only SQL</p>
+</blockquote>
+<p>关系型数据库：表格</p>
+<p>非关系型数据库：格式不固定，易于横向扩展</p>
+<a id="more"></a>
+
+<blockquote>
+<p>传统数据库</p>
+<ul>
+<li>结构化组织</li>
+<li>SQL</li>
+<li>数据和关系存在单独的表中</li>
+<li>数据定义语言</li>
+<li>严格的一致性</li>
+<li>基础的事务</li>
+<li>。。。</li>
+</ul>
+</blockquote>
+<blockquote>
+<p>NoSQL</p>
+<ul>
+<li>不仅仅是数据</li>
+<li>没有固定的查询语言</li>
+<li>键值对存储、列存储、文档存储、图形数据库</li>
+<li>最终一致性</li>
+<li>CAP/BASE</li>
+<li>高性能、高可用、高拓展</li>
+<li>。。。</li>
+</ul>
+</blockquote>
+<h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><blockquote>
+<p>Redis（remote dictionary server）远程字典服务</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>C</li>
+<li>支持网络</li>
+<li>内存持久化</li>
+<li>kv键值对</li>
+<li>主从同步</li>
+</ul>
+</blockquote>
+<ul>
+<li>数据库</li>
+<li>缓存</li>
+<li>中间件</li>
+</ul>
+<h1 id="测试工具"><a href="#测试工具" class="headerlink" title="测试工具"></a>测试工具</h1><p>redis-benchmark</p>
+<ul>
+<li>-c指定并发连接数</li>
+<li>-n指定请求数</li>
+</ul>
+<h1 id="基础知识"><a href="#基础知识" class="headerlink" title="基础知识"></a>基础知识</h1><ul>
+<li><p>默认16个数据库</p>
+</li>
+<li><p>默认使用第0个 </p>
+<ul>
+<li><p>select 0</p>
+</li>
+<li><p>dbsize</p>
+</li>
+<li><p>keys *</p>
+</li>
+<li><p>清空当前数据库：flushdb</p>
+</li>
+<li><p>清空所有：flushall</p>
+</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>redis是单线程的</p>
+<ul>
+<li>redis是基于内存操作的</li>
+<li>对内存来说，没有多线程的上下文切换效率更高</li>
+<li>redis的性能瓶颈不是cpu，而是机器内存和网络宽带</li>
+<li>6.0 后是多线程的</li>
+</ul>
+</blockquote>
+<h1 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h1><h2 id="String（字符串）"><a href="#String（字符串）" class="headerlink" title="String（字符串）"></a>String（字符串）</h2><ul>
+<li><p>setex()：设置过期时间（set with exprie）</p>
+</li>
+<li><p>setnx()：不存在则设置（set if not exist）</p>
+</li>
+<li><p>set user{name:alice, age:11}</p>
+</li>
+<li><p>mget/mset</p>
+</li>
+<li><p>getset</p>
+</li>
+</ul>
+<h2 id="List（列表）"><a href="#List（列表）" class="headerlink" title="List（列表）"></a>List（列表）</h2><ul>
+<li>所有命令L开头：LPUSH/LRANGE</li>
+<li>RPUSH/RPOP</li>
+</ul>
+<h2 id="Set（集合）"><a href="#Set（集合）" class="headerlink" title="Set（集合）"></a>Set（集合）</h2><ul>
+<li>不能重复</li>
+<li>所有命令S开头</li>
+</ul>
+<h2 id="Hash"><a href="#Hash" class="headerlink" title="Hash"></a>Hash</h2><ul>
+<li>h开头</li>
+</ul>
+<h2 id="Zset"><a href="#Zset" class="headerlink" title="Zset"></a>Zset</h2><ul>
+<li>在set的基础上增加了一个值</li>
+<li>zset k1 score1 v1</li>
+<li>以score排序</li>
+</ul>
+<h2 id="geospatial"><a href="#geospatial" class="headerlink" title="geospatial"></a>geospatial</h2><ul>
+<li>geoadd/geodist/geohash/geopos/georadious/georadiousbymember</li>
+</ul>
+<h2 id="hyperloglog"><a href="#hyperloglog" class="headerlink" title="hyperloglog"></a>hyperloglog</h2><ul>
+<li><p>基数：不重复的元素，可以接受误差</p>
+</li>
+<li><p>网页UV：一个人访问网页多次仍算一次访问</p>
+</li>
+</ul>
+<h2 id="bitmap"><a href="#bitmap" class="headerlink" title="bitmap"></a>bitmap</h2><ul>
+<li>位运算</li>
+<li>统计用户信息 0、1</li>
+</ul>
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><ul>
+<li><p>一组命令的集合</p>
+</li>
+<li><p>单条命令保证原子性</p>
+</li>
+<li><p>事务不保证原子性</p>
+</li>
+<li><p>没有隔离级别的概念</p>
+</li>
+<li><p>步骤：</p>
+<ul>
+<li>开启事务（）：multi</li>
+<li>命令入队（）：</li>
+<li>执行事务（）：exec</li>
+</ul>
+</li>
+<li><p>编译时异常，所有命令都不执行</p>
+</li>
+<li><p>运行时异常，其他命令继续执行</p>
+</li>
+</ul>
+<h1 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h1><ul>
+<li><p>悲观锁：所有行为都加锁</p>
+</li>
+<li><p>乐观锁：所有行为都不加锁，更新数据的时候获取版本判断数据是否被tar修改</p>
+</li>
+<li><p>redis实现：</p>
+<ul>
+<li>使用watch监视</li>
+<li>如果执行失败，unwatch解锁</li>
+<li>重新监视</li>
+</ul>
+</li>
+</ul>
+<h1 id="Jedis"><a href="#Jedis" class="headerlink" title="Jedis"></a>Jedis</h1><ul>
+<li>redis官方推荐的java连接工具</li>
+</ul>
+<h1 id="SpringBoot整合"><a href="#SpringBoot整合" class="headerlink" title="SpringBoot整合"></a>SpringBoot整合</h1><ul>
+<li><p>在springboot2.x之后，jedis被替换为了lettuce</p>
+</li>
+<li><p>jedis：直连，多线程不安全，需要使用jedis pool连接池 BIO</p>
+</li>
+<li><p>lettuce：netty，多线程共享，可以减少线程数量 NIO</p>
+</li>
+<li><p>自定义redisTemplate</p>
+</li>
+</ul>
+<h1 id="conf详解"><a href="#conf详解" class="headerlink" title="conf详解"></a>conf详解</h1><ul>
+<li><p>unit单位大小写不敏感</p>
+</li>
+<li><p>包含其他配置文件</p>
+</li>
+<li><p>网络：</p>
+<ul>
+<li>bind 127.0.0.1</li>
+<li>protected-mode yes</li>
+<li>port 6379</li>
+</ul>
+</li>
+<li><p>daemoize yes # 以守护进程的方式运行，默认为no</p>
+</li>
+<li><p>pidfile /var/run/redis_6379.pid # 制定一个pid文件后台运行</p>
+</li>
+<li><p>loglevel notice # 日志</p>
+</li>
+<li><p>datebase 16</p>
+</li>
+<li><p>snapshot</p>
+<ul>
+<li>执行多少次操作则持久化到文件.rdb.aof</li>
+<li>save 900 1 900s内，至少1个key修改则持久化</li>
+<li>save 300 10 300s内，至少10个key修改则持久化</li>
+<li>save 60 100 60s内，至少100个key修改则持久化</li>
+</ul>
+</li>
+<li><p>stop-writes-on-bgsave-error 持久化出错是否继续工作</p>
+</li>
+<li><p>rdbcompression 是否压缩rdb文件</p>
+</li>
+<li><p>rdbchecksum 保存rdb文件是否进行校验</p>
+</li>
+<li><p>dir./ rdb文件保存目录</p>
+</li>
+<li><p>REPLICATION 复制</p>
+</li>
+<li><p>SECURITY 安全 密码默认为空</p>
+</li>
+<li><p>maxclients</p>
+</li>
+<li><p>maxmemory</p>
+</li>
+<li><p>maxmemory-policy noeviction内存满时的处理策略</p>
+</li>
+<li><p>append only # aof配置</p>
+<ul>
+<li>appendonly no 默认关闭，使用rdb持久化</li>
+<li>appendfilename</li>
+<li>appendfsync always/everysec/no</li>
+</ul>
+</li>
+</ul>
+<h1 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h1><ul>
+<li>内存型数据库</li>
+</ul>
+<h2 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h2><p>redis database</p>
+<ul>
+<li>在指定的时间间隔内将内存中的数据集快照写入硬盘</li>
+<li>单独创建一个子进程，先将数据写入临时文件，等待持久化过程结束，再用这个临时文件替换上次持久化好的文件</li>
+<li>主进程不进行任何IO操作</li>
+<li>适合大规模的数据恢复</li>
+<li>最后一次持久化的数据肯丢失</li>
+<li>默认RDB</li>
+<li>dump.rdb</li>
+</ul>
+<h2 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h2><p>append only file</p>
+<ul>
+<li><p>将所有命令都记录下来（读操作不记录）</p>
+</li>
+<li><p>恢复时把文件重新构建</p>
+</li>
+<li><p>不适合大规模数据恢复</p>
+</li>
+<li><p>redis-check-aof –fix 修复AOF</p>
+</li>
+<li><p>aof文件大于64M则新建AOF</p>
+</li>
+</ul>
+<h1 id="订阅"><a href="#订阅" class="headerlink" title="订阅"></a>订阅</h1><ul>
+<li>发送消息：PUBLISH XXX</li>
+<li>接收信息：SUBSCRIBE XXX</li>
+</ul>
+<h1 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h1><ul>
+<li>数据的复制是单向的</li>
+<li>读写分离</li>
+<li>作用<ul>
+<li>数据冗余</li>
+<li>故障恢复</li>
+<li>负载均衡</li>
+<li>高可用</li>
+</ul>
+</li>
+<li>info replication：查看复制信息</li>
+<li>修改port、pid、log、dump.rdb</li>
+</ul>
+<h1 id="哨兵（sentinel）"><a href="#哨兵（sentinel）" class="headerlink" title="哨兵（sentinel）"></a>哨兵（sentinel）</h1><ul>
+<li><p>主机故障时，从机根据投票自动变为主机</p>
+</li>
+<li><p>主观下线：一个哨兵发现主机不可用</p>
+</li>
+<li><p>客观下线：多个哨兵发现主机不可用，哨兵对从机进行投票切换主机</p>
+</li>
+<li><p>步骤：</p>
+<ul>
+<li>配置哨兵：sentinel monitor myredis 127.0.0.1 6379 1</li>
+<li>启动哨兵：redis-sentinel </li>
+</ul>
+</li>
+<li><p>主机重新上线后变为从机</p>
+</li>
+<li><p>优点</p>
+<ul>
+<li>基于主从复制</li>
+<li>主从可以切换，可用性高</li>
+<li>手动到自动，健壮性好</li>
+</ul>
+</li>
+<li><p>缺点</p>
+<ul>
+<li>难以在线扩容</li>
+<li>实现哨兵的配置麻烦</li>
+</ul>
+</li>
+</ul>
+<h1 id="缓存穿透和雪崩、击穿"><a href="#缓存穿透和雪崩、击穿" class="headerlink" title="缓存穿透和雪崩、击穿"></a>缓存穿透和雪崩、击穿</h1><h2 id="缓存穿透"><a href="#缓存穿透" class="headerlink" title="缓存穿透"></a>缓存穿透</h2><ul>
+<li>大量用户查询的数据在redis内存数据库中没有，继而大量访问持久层数据库<ul>
+<li>布隆过滤器：对多有可能查询的参数以hash形式存储，在控制层进行校验，不符合则丢弃，从而减小了对底层存储系统的压力</li>
+<li>缓存空对象：</li>
+</ul>
+</li>
+</ul>
+<h2 id="缓存击穿"><a href="#缓存击穿" class="headerlink" title="缓存击穿"></a>缓存击穿</h2><ul>
+<li>大量请求并发地对一个热点数据进行访问，当这个数据失效的书剑，持续的大并发就穿透缓存，直接访问数据库<ul>
+<li>设置热点永不过期</li>
+<li>加互斥锁</li>
+</ul>
+</li>
+</ul>
+<h2 id="缓存雪崩"><a href="#缓存雪崩" class="headerlink" title="缓存雪崩"></a>缓存雪崩</h2><ul>
+<li>在一个时间段，缓存集中过期失效，redis宕机<ul>
+<li>redis高可用</li>
+<li>限量降级</li>
+<li>数据预热</li>
+</ul>
+</li>
+</ul>
+]]></content>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2020/09/02/MySQL/</url>
+    <content><![CDATA[<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><pre><code>1.持久化数据到本地
+2.可以实现结构化查询，方便管理</code></pre>
+<a id="more"></a>
+
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><pre><code>1、DB：数据库，保存一组有组织的数据的容器
+2、DBMS：数据库管理系统，又称为数据库软件（产品），用于管理DB中的数据
+3、SQL:结构化查询语言，用于和DBMS通信的语言</code></pre>
+<h2 id="存储数据的特点"><a href="#存储数据的特点" class="headerlink" title="存储数据的特点"></a>存储数据的特点</h2><pre><code>1、将数据放到表中，表再放到库中
+2、一个数据库中可以有多个表，每个表都有一个的名字，用来标识自己。表名具有唯一性。
+3、表具有一些特性，这些特性定义了数据在表中如何存储，类似java中 “类”的设计。
+4、表由列组成，我们也称为字段。所有表都是由一个或多个列组成的，每一列类似java 中的”属性”
+5、表中的数据是按行存储的，每一行类似于java中的“对象”。</code></pre>
+<h2 id="MySQL产品的介绍和安装"><a href="#MySQL产品的介绍和安装" class="headerlink" title="MySQL产品的介绍和安装"></a>MySQL产品的介绍和安装</h2><h3 id="MySQL服务的启动和停止"><a href="#MySQL服务的启动和停止" class="headerlink" title="MySQL服务的启动和停止"></a>MySQL服务的启动和停止</h3><pre><code>方式一：计算机——右击管理——服务
+方式二：通过管理员身份运行
+net start 服务名（启动服务）
+net stop 服务名（停止服务）</code></pre>
+<h3 id="MySQL服务的登录和退出"><a href="#MySQL服务的登录和退出" class="headerlink" title="MySQL服务的登录和退出"></a>MySQL服务的登录和退出</h3><pre><code>方式一：通过mysql自带的客户端
+只限于root用户
+
+方式二：通过windows自带的客户端
+登录：
+mysql 【-h主机名 -P端口号 】-u用户名 -p密码
+
+退出：
+exit或ctrl+C    </code></pre>
+<h2 id="MySQL的常见命令"><a href="#MySQL的常见命令" class="headerlink" title="MySQL的常见命令"></a>MySQL的常见命令</h2><pre><code>1.查看当前所有的数据库
+show databases;
+2.打开指定的库
+use 库名
+3.查看当前库的所有表
+show tables;
+4.查看其它库的所有表
+show tables from 库名;
+5.创建表
+create table 表名(
+
+    列名 列类型,
+    列名 列类型，
+    。。。
+);
+6.查看表结构
+desc 表名;
+
+
+7.查看服务器的版本
+方式一：登录到mysql服务端
+select version();
+方式二：没有登录到mysql服务端
+mysql --version
+或
+mysql --V</code></pre>
+<h3 id="MySQL的语法规范"><a href="#MySQL的语法规范" class="headerlink" title="MySQL的语法规范"></a>MySQL的语法规范</h3><pre><code>1.不区分大小写,但建议关键字大写，表名、列名小写
+2.每条命令最好用分号结尾
+3.每条命令根据需要，可以进行缩进 或换行
+4.注释
+    单行注释：#注释文字
+    单行注释：-- 注释文字
+    多行注释：/* 注释文字  */</code></pre>
+<p>​<br>​    </p>
+<h3 id="SQL的语言分类"><a href="#SQL的语言分类" class="headerlink" title="SQL的语言分类"></a>SQL的语言分类</h3><pre><code>DQL（Data Query Language）：数据查询语言
+    select 
+DML(Data Manipulate Language):数据操作语言
+    insert 、update、delete
+DDL（Data Define Languge）：数据定义语言
+    create、drop、alter
+TCL（Transaction Control Language）：事务控制语言
+    commit、rollback</code></pre>
+<h3 id="SQL的常见命令"><a href="#SQL的常见命令" class="headerlink" title="SQL的常见命令"></a>SQL的常见命令</h3><pre><code>show databases； 查看所有的数据库
+use 库名； 打开指定 的库
+show tables ; 显示库中的所有表
+show tables from 库名;显示指定库中的所有表
+create table 表名(
+    字段名 字段类型,    
+    字段名 字段类型
+); 创建表
+
+desc 表名; 查看指定表的结构
+select * from 表名;显示表中的所有数据</code></pre>
+<h2 id="DQL语言的学习"><a href="#DQL语言的学习" class="headerlink" title="DQL语言的学习"></a>DQL语言的学习</h2><h3 id="进阶1：基础查询"><a href="#进阶1：基础查询" class="headerlink" title="进阶1：基础查询"></a>进阶1：基础查询</h3><pre><code>语法：
+SELECT 要查询的东西
+【FROM 表名】;
+
+类似于Java中 :System.out.println(要打印的东西);
+特点：
+①通过select查询完的结果 ，是一个虚拟的表格，不是真实存在
+② 要查询的东西 可以是常量值、可以是表达式、可以是字段、可以是函数</code></pre>
+<h3 id="进阶2：条件查询"><a href="#进阶2：条件查询" class="headerlink" title="进阶2：条件查询"></a>进阶2：条件查询</h3><pre><code>条件查询：根据条件过滤原始表的数据，查询到想要的数据
+语法：
+select 
+    要查询的字段|表达式|常量值|函数
+from 
+    表
+where 
+    条件 ;
+
+分类：
+一、条件表达式
+    示例：salary&gt;10000
+    条件运算符：
+    &gt; &lt; &gt;= &lt;= = != &lt;&gt;
+
+二、逻辑表达式
+示例：salary&gt;10000 &amp;&amp; salary&lt;20000
+
+逻辑运算符：
+
+    and（&amp;&amp;）:两个条件如果同时成立，结果为true，否则为false
+    or(||)：两个条件只要有一个成立，结果为true，否则为false
+    not(!)：如果条件成立，则not后为false，否则为true
+
+三、模糊查询
+示例：last_name like &#39;a%&#39;</code></pre>
+<h3 id="进阶3：排序查询"><a href="#进阶3：排序查询" class="headerlink" title="进阶3：排序查询"></a>进阶3：排序查询</h3><pre><code>语法：
+select
+    要查询的东西
+from
+    表
+where 
+    条件
+
+order by 排序的字段|表达式|函数|别名 【asc|desc】</code></pre>
+<p>​    </p>
+<h3 id="进阶4：常见函数"><a href="#进阶4：常见函数" class="headerlink" title="进阶4：常见函数"></a>进阶4：常见函数</h3><pre><code>一、单行函数
+1、字符函数
+    concat拼接
+    substr截取子串
+    upper转换成大写
+    lower转换成小写
+    trim去前后指定的空格和字符
+    ltrim去左边空格
+    rtrim去右边空格
+    replace替换
+    lpad左填充
+    rpad右填充
+    instr返回子串第一次出现的索引
+    length 获取字节个数
+
+2、数学函数
+    round 四舍五入
+    rand 随机数
+    floor向下取整
+    ceil向上取整
+    mod取余
+    truncate截断
+3、日期函数
+    now当前系统日期+时间
+    curdate当前系统日期
+    curtime当前系统时间
+    str_to_date 将字符转换成日期
+    date_format将日期转换成字符
+4、流程控制函数
+    if 处理双分支
+    case语句 处理多分支
+        情况1：处理等值判断
+        情况2：处理条件判断
+
+5、其他函数
+    version版本
+    database当前库
+    user当前连接用户</code></pre>
+<p>​    </p>
+<p>二、分组函数</p>
+<pre><code>    sum 求和
+    max 最大值
+    min 最小值
+    avg 平均值
+    count 计数
+
+    特点：
+    1、以上五个分组函数都忽略null值，除了count(*)
+    2、sum和avg一般用于处理数值型
+        max、min、count可以处理任何数据类型
+    3、都可以搭配distinct使用，用于统计去重后的结果
+    4、count的参数可以支持：
+        字段、*、常量值，一般放1
+
+       建议使用 count(*)</code></pre>
+<h3 id="进阶5：分组查询"><a href="#进阶5：分组查询" class="headerlink" title="进阶5：分组查询"></a>进阶5：分组查询</h3><pre><code>语法：
+select 查询的字段，分组函数
+from 表
+group by 分组的字段</code></pre>
+<p>​<br>​    特点：<br>​    1、可以按单个字段分组<br>​    2、和分组函数一同查询的字段最好是分组后的字段<br>​    3、分组筛选<br>​            针对的表    位置            关键字<br>​    分组前筛选：    原始表        group by的前面        where<br>​    分组后筛选：    分组后的结果集    group by的后面        having<br>​<br>    4、可以按多个字段分组，字段之间用逗号隔开<br>    5、可以支持排序<br>    6、having后可以支持别名</p>
+<h3 id="进阶6：多表连接查询"><a href="#进阶6：多表连接查询" class="headerlink" title="进阶6：多表连接查询"></a>进阶6：多表连接查询</h3><pre><code>笛卡尔乘积：如果连接条件省略或无效则会出现
+解决办法：添加上连接条件</code></pre>
+<h4 id="一、传统模式下的连接-：等值连接——非等值连接"><a href="#一、传统模式下的连接-：等值连接——非等值连接" class="headerlink" title="一、传统模式下的连接 ：等值连接——非等值连接"></a>一、传统模式下的连接 ：等值连接——非等值连接</h4><pre><code>1.等值连接的结果 = 多个表的交集
+2.n表连接，至少需要n-1个连接条件
+3.多个表不分主次，没有顺序要求
+4.一般为表起别名，提高阅读性和性能</code></pre>
+<h4 id="二、sql99语法：通过join关键字实现连接"><a href="#二、sql99语法：通过join关键字实现连接" class="headerlink" title="二、sql99语法：通过join关键字实现连接"></a>二、sql99语法：通过join关键字实现连接</h4><pre><code>含义：1999年推出的sql语法
+支持：
+等值连接、非等值连接 （内连接）
+外连接
+交叉连接
+
+语法：
+
+select 字段，...
+from 表1
+【inner|left outer|right outer|cross】join 表2 on  连接条件
+【inner|left outer|right outer|cross】join 表3 on  连接条件
+【where 筛选条件】
+【group by 分组字段】
+【having 分组后的筛选条件】
+【order by 排序的字段或表达式】
+
+好处：语句上，连接条件和筛选条件实现了分离，简洁明了！</code></pre>
+<h4 id="三、自连接"><a href="#三、自连接" class="headerlink" title="三、自连接"></a>三、自连接</h4><p>案例：查询员工名和直接上级的名称</p>
+<p>sql99</p>
+<pre><code>SELECT e.last_name,m.last_name
+FROM employees e
+JOIN employees m ON e.`manager_id`=m.`employee_id`;</code></pre>
+<p>sql92</p>
+<pre><code>SELECT e.last_name,m.last_name
+FROM employees e,employees m 
+WHERE e.`manager_id`=m.`employee_id`;</code></pre>
+<h3 id="进阶7：子查询"><a href="#进阶7：子查询" class="headerlink" title="进阶7：子查询"></a>进阶7：子查询</h3><p>含义：</p>
+<pre><code>一条查询语句中又嵌套了另一条完整的select语句，其中被嵌套的select语句，称为子查询或内查询
+在外面的查询语句，称为主查询或外查询</code></pre>
+<p>特点：</p>
+<pre><code>1、子查询都放在小括号内
+2、子查询可以放在from后面、select后面、where后面、having后面，但一般放在条件的右侧
+3、子查询优先于主查询执行，主查询使用了子查询的执行结果
+4、子查询根据查询结果的行数不同分为以下两类：
+① 单行子查询
+    结果集只有一行
+    一般搭配单行操作符使用：&gt; &lt; = &lt;&gt; &gt;= &lt;= 
+    非法使用子查询的情况：
+    a、子查询的结果为一组值
+    b、子查询的结果为空
+
+② 多行子查询
+    结果集有多行
+    一般搭配多行操作符使用：any、all、in、not in
+    in： 属于子查询结果中的任意一个就行
+    any和all往往可以用其他查询代替</code></pre>
+<h3 id="进阶8：分页查询"><a href="#进阶8：分页查询" class="headerlink" title="进阶8：分页查询"></a>进阶8：分页查询</h3><p>应用场景：</p>
+<pre><code>实际的web项目中需要根据用户的需求提交对应的分页查询的sql语句</code></pre>
+<p>语法：</p>
+<pre><code>select 字段|表达式,...
+from 表
+【where 条件】
+【group by 分组字段】
+【having 条件】
+【order by 排序的字段】
+limit 【起始的条目索引，】条目数;</code></pre>
+<p>特点：</p>
+<pre><code>1.起始条目索引从0开始
+
+2.limit子句放在查询语句的最后
+
+3.公式：select * from  表 limit （page-1）*sizePerPage,sizePerPage
+假如:
+每页显示条目数sizePerPage
+要显示的页数 page</code></pre>
+<h3 id="进阶9：联合查询"><a href="#进阶9：联合查询" class="headerlink" title="进阶9：联合查询"></a>进阶9：联合查询</h3><p>引入：<br>    union 联合、合并</p>
+<p>语法：</p>
+<pre><code>select 字段|常量|表达式|函数 【from 表】 【where 条件】 union 【all】
+select 字段|常量|表达式|函数 【from 表】 【where 条件】 union 【all】
+select 字段|常量|表达式|函数 【from 表】 【where 条件】 union  【all】
+.....
+select 字段|常量|表达式|函数 【from 表】 【where 条件】</code></pre>
+<p>特点：</p>
+<pre><code>1、多条查询语句的查询的列数必须是一致的
+2、多条查询语句的查询的列的类型几乎相同
+3、union代表去重，union all代表不去重</code></pre>
+<h2 id="DML语言"><a href="#DML语言" class="headerlink" title="DML语言"></a>DML语言</h2><h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>语法：<br>    insert into 表名(字段名，…)<br>    values(值1，…);</p>
+<p>特点：</p>
+<pre><code>1、字段类型和值类型一致或兼容，而且一一对应
+2、可以为空的字段，可以不用插入值，或用null填充
+3、不可以为空的字段，必须插入值
+4、字段个数和值的个数必须一致
+5、字段可以省略，但默认所有字段，并且顺序和表中的存储顺序一致</code></pre>
+<h3 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h3><p>修改单表语法：</p>
+<pre><code>update 表名 set 字段=新值,字段=新值
+【where 条件】</code></pre>
+<p>修改多表语法：</p>
+<pre><code>update 表1 别名1,表2 别名2
+set 字段=新值，字段=新值
+where 连接条件
+and 筛选条件</code></pre>
+<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>方式1：delete语句 </p>
+<p>单表的删除： ★<br>    delete from 表名 【where 筛选条件】</p>
+<p>多表的删除：<br>    delete 别名1，别名2<br>    from 表1 别名1，表2 别名2<br>    where 连接条件<br>    and 筛选条件;</p>
+<p>方式2：truncate语句</p>
+<pre><code>truncate table 表名</code></pre>
+<p>两种方式的区别【面试题】</p>
+<pre><code>#1.truncate不能加where条件，而delete可以加where条件
+
+#2.truncate的效率高一丢丢
+
+#3.truncate 删除带自增长的列的表后，如果再插入数据，数据从1开始
+#delete 删除带自增长列的表后，如果再插入数据，数据从上一次的断点处开始
+
+#4.truncate删除不能回滚，delete删除可以回滚</code></pre>
+<h2 id="DDL语句"><a href="#DDL语句" class="headerlink" title="DDL语句"></a>DDL语句</h2><h3 id="库和表的管理"><a href="#库和表的管理" class="headerlink" title="库和表的管理"></a>库和表的管理</h3><p>库的管理：</p>
+<pre><code>一、创建库
+create database 库名
+二、删除库
+drop database 库名</code></pre>
+<p>表的管理：</p>
+<h4 id="1-创建表"><a href="#1-创建表" class="headerlink" title="1.创建表"></a>1.创建表</h4><pre><code>CREATE TABLE IF NOT EXISTS stuinfo(
+    stuId INT,
+    stuName VARCHAR(20),
+    gender CHAR,
+    bornDate DATETIME
+    );
+
+DESC studentinfo;</code></pre>
+<h4 id="2-修改表-alter"><a href="#2-修改表-alter" class="headerlink" title="2.修改表 alter"></a>2.修改表 alter</h4><pre><code>语法：ALTER TABLE 表名 ADD|MODIFY|DROP|CHANGE COLUMN 字段名 【字段类型】;
+
+#①修改字段名
+ALTER TABLE studentinfo CHANGE  COLUMN sex gender CHAR;
+
+#②修改表名
+ALTER TABLE stuinfo RENAME [TO]  studentinfo;
+#③修改字段类型和列级约束
+ALTER TABLE studentinfo MODIFY COLUMN borndate DATE ;
+
+#④添加字段
+
+ALTER TABLE studentinfo ADD COLUMN email VARCHAR(20) first;
+#⑤删除字段
+ALTER TABLE studentinfo DROP COLUMN email;</code></pre>
+<h4 id="3-删除表"><a href="#3-删除表" class="headerlink" title="3.删除表"></a>3.删除表</h4><pre><code>DROP TABLE [IF EXISTS] studentinfo;</code></pre>
+<p>​    </p>
+<h3 id="常见类型"><a href="#常见类型" class="headerlink" title="常见类型"></a>常见类型</h3><pre><code>整型：
+
+小数：
+    浮点型
+    定点型
+字符型：
+日期型：
+Blob类型：</code></pre>
+<h3 id="常见约束"><a href="#常见约束" class="headerlink" title="常见约束"></a>常见约束</h3><pre><code>NOT NULL
+DEFAULT
+UNIQUE
+CHECK
+PRIMARY KEY
+FOREIGN KEY</code></pre>
+<h2 id="数据库事务"><a href="#数据库事务" class="headerlink" title="数据库事务"></a>数据库事务</h2><h3 id="含义"><a href="#含义" class="headerlink" title="含义"></a>含义</h3><pre><code>通过一组逻辑操作单元（一组DML——sql语句），将数据从一种状态切换到另外一种状态</code></pre>
+<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><pre><code>（ACID）
+原子性：要么都执行，要么都回滚
+一致性：保证数据的状态操作前和操作后保持一致
+隔离性：多个事务同时操作相同数据库的同一个数据时，一个事务的执行不受另外一个事务的干扰
+持久性：一个事务一旦提交，则数据将持久化到本地，除非其他事务对其进行修改</code></pre>
+<p>相关步骤：</p>
+<pre><code>1、开启事务
+2、编写事务的一组逻辑操作单元（多条sql语句）
+3、提交事务或回滚事务</code></pre>
+<h3 id="事务的分类："><a href="#事务的分类：" class="headerlink" title="事务的分类："></a>事务的分类：</h3><p>隐式事务，没有明显的开启和结束事务的标志</p>
+<pre><code>比如
+insert、update、delete语句本身就是一个事务</code></pre>
+<p>显式事务，具有明显的开启和结束事务的标志</p>
+<pre><code>    1、开启事务
+    取消自动提交事务的功能
+
+    2、编写事务的一组逻辑操作单元（多条sql语句）
+    insert
+    update
+    delete
+
+    3、提交事务或回滚事务</code></pre>
+<h3 id="使用到的关键字"><a href="#使用到的关键字" class="headerlink" title="使用到的关键字"></a>使用到的关键字</h3><pre><code>set autocommit=0;
+start transaction;
+commit;
+rollback;
+
+savepoint  断点
+commit to 断点
+rollback to 断点</code></pre>
+<h3 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h3><p>事务并发问题如何发生？</p>
+<pre><code>当多个事务同时操作同一个数据库的相同数据时</code></pre>
+<p>事务的并发问题有哪些？</p>
+<pre><code>脏读：一个事务读取到了另外一个事务未提交的数据
+不可重复读：同一个事务中，多次读取到的数据不一致
+幻读：一个事务读取数据时，另外一个事务进行更新，导致第一个事务读取到了没有更新的数据</code></pre>
+<p>如何避免事务的并发问题？</p>
+<pre><code>通过设置事务的隔离级别
+1、READ UNCOMMITTED
+2、READ COMMITTED 可以避免脏读
+3、REPEATABLE READ 可以避免脏读、不可重复读和一部分幻读
+4、SERIALIZABLE可以避免脏读、不可重复读和幻读</code></pre>
+<p>设置隔离级别：</p>
+<pre><code>set session|global  transaction isolation level 隔离级别名;</code></pre>
+<p>查看隔离级别：</p>
+<pre><code>select @@tx_isolation;</code></pre>
+<h2 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h2><p>含义：理解成一张虚拟的表</p>
+<p>视图和表的区别：</p>
+<pre><code>    使用方式    占用物理空间
+
+视图    完全相同    不占用，仅仅保存的是sql逻辑
+
+表    完全相同    占用</code></pre>
+<p>视图的好处：</p>
+<pre><code>1、sql语句提高重用性，效率高
+2、和表实现了分离，提高了安全性</code></pre>
+<h3 id="视图的创建"><a href="#视图的创建" class="headerlink" title="视图的创建"></a>视图的创建</h3><p>​    语法：<br>​    CREATE VIEW  视图名<br>​    AS<br>​    查询语句;</p>
+<h3 id="视图的增删改查"><a href="#视图的增删改查" class="headerlink" title="视图的增删改查"></a>视图的增删改查</h3><p>1、查看视图的数据 ★</p>
+<pre><code>SELECT * FROM my_v4;
+SELECT * FROM my_v1 WHERE last_name=&#39;Partners&#39;;
+
+2、插入视图的数据
+INSERT INTO my_v4(last_name,department_id) VALUES(&#39;虚竹&#39;,90);
+
+3、修改视图的数据
+
+UPDATE my_v4 SET last_name =&#39;梦姑&#39; WHERE last_name=&#39;虚竹&#39;;</code></pre>
+<p>​<br>​    4、删除视图的数据<br>​    DELETE FROM my_v4;</p>
+<h3 id="某些视图不能更新"><a href="#某些视图不能更新" class="headerlink" title="某些视图不能更新"></a>某些视图不能更新</h3><p>​    包含以下关键字的sql语句：分组函数、distinct、group  by、having、union或者union all<br>​    常量视图<br>​    Select中包含子查询<br>​    join<br>​    from一个不能更新的视图<br>​    where子句的子查询引用了from子句中的表</p>
+<h3 id="视图逻辑的更新"><a href="#视图逻辑的更新" class="headerlink" title="视图逻辑的更新"></a>视图逻辑的更新</h3><figure class="highlight n1ql"><table><tr><td class="code"><pre><span class="line">方式一：</span><br><span class="line">	<span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="built_in">REPLACE</span> <span class="keyword">VIEW</span> test_v7</span><br><span class="line">	<span class="keyword">AS</span></span><br><span class="line">	<span class="keyword">SELECT</span> last_name <span class="keyword">FROM</span> employees</span><br><span class="line">	<span class="keyword">WHERE</span> employee_id&gt;<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
+
+<p>​    </p>
+<pre><code>#方式二:
+ALTER VIEW test_v7
+AS
+SELECT employee_id FROM employees;
+
+SELECT * FROM test_v7;</code></pre>
+<h3 id="视图的删除"><a href="#视图的删除" class="headerlink" title="视图的删除"></a>视图的删除</h3><p>​    DROP VIEW test_v1,test_v2,test_v3;</p>
+<h3 id="视图结构的查看"><a href="#视图结构的查看" class="headerlink" title="视图结构的查看"></a>视图结构的查看</h3><p>​    DESC test_v7;<br>​    SHOW CREATE VIEW test_v7;</p>
+<h2 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h2><p>含义：一组经过预先编译的sql语句的集合<br>好处：</p>
+<pre><code>1、提高了sql语句的重用性，减少了开发程序员的压力
+2、提高了效率
+3、减少了传输次数</code></pre>
+<p>分类：</p>
+<pre><code>1、无返回无参
+2、仅仅带in类型，无返回有参
+3、仅仅带out类型，有返回无参
+4、既带in又带out，有返回有参
+5、带inout，有返回有参
+注意：in、out、inout都可以在一个存储过程中带多个</code></pre>
+<h3 id="创建存储过程"><a href="#创建存储过程" class="headerlink" title="创建存储过程"></a>创建存储过程</h3><p>语法：</p>
+<pre><code>create procedure 存储过程名(in|out|inout 参数名  参数类型,...)
+begin
+    存储过程体
+
+end</code></pre>
+<p>类似于方法：</p>
+<pre><code>修饰符 返回类型 方法名(参数类型 参数名,...)&#123;
+
+    方法体;
+&#125;</code></pre>
+<p>注意</p>
+<pre><code>1、需要设置新的结束标记
+delimiter 新的结束标记
+示例：
+delimiter $
+
+CREATE PROCEDURE 存储过程名(IN|OUT|INOUT 参数名  参数类型,...)
+BEGIN
+    sql语句1;
+    sql语句2;
+
+END $
+
+2、存储过程体中可以有多条sql语句，如果仅仅一条sql语句，则可以省略begin end
+
+3、参数前面的符号的意思
+in:该参数只能作为输入 （该参数不能做返回值）
+out：该参数只能作为输出（该参数只能做返回值）
+inout：既能做输入又能做输出</code></pre>
+<h3 id="调用存储过程"><a href="#调用存储过程" class="headerlink" title="调用存储过程"></a>调用存储过程</h3><p>​    call 存储过程名(实参列表)</p>
+<h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><h5 id="创建函数"><a href="#创建函数" class="headerlink" title="创建函数"></a>创建函数</h5><p>学过的函数：LENGTH、SUBSTR、CONCAT等<br>语法：</p>
+<pre><code>CREATE FUNCTION 函数名(参数名 参数类型,...) RETURNS 返回类型
+BEGIN
+    函数体
+
+END</code></pre>
+<h5 id="调用函数"><a href="#调用函数" class="headerlink" title="调用函数"></a>调用函数</h5><p>​    SELECT 函数名（实参列表）</p>
+<h5 id="函数和存储过程的区别"><a href="#函数和存储过程的区别" class="headerlink" title="函数和存储过程的区别"></a>函数和存储过程的区别</h5><pre><code>        关键字        调用语法    返回值            应用场景
+函数        FUNCTION    SELECT 函数()    只能是一个        一般用于查询结果为一个值并返回时，当有返回值而且仅仅一个
+存储过程    PROCEDURE    CALL 存储过程()    可以有0个或多个        一般用于更新</code></pre>
+<h2 id="流程控制结构"><a href="#流程控制结构" class="headerlink" title="流程控制结构"></a>流程控制结构</h2><h3 id="系统变量"><a href="#系统变量" class="headerlink" title="系统变量"></a>系统变量</h3><p>一、全局变量</p>
+<p>作用域：针对于所有会话（连接）有效，但不能跨重启</p>
+<pre><code>查看所有全局变量
+SHOW GLOBAL VARIABLES;
+查看满足条件的部分系统变量
+SHOW GLOBAL VARIABLES LIKE &#39;%char%&#39;;
+查看指定的系统变量的值
+SELECT @@global.autocommit;
+为某个系统变量赋值
+SET @@global.autocommit=0;
+SET GLOBAL autocommit=0;</code></pre>
+<p>二、会话变量</p>
+<p>作用域：针对于当前会话（连接）有效</p>
+<pre><code>查看所有会话变量
+SHOW SESSION VARIABLES;
+查看满足条件的部分会话变量
+SHOW SESSION VARIABLES LIKE &#39;%char%&#39;;
+查看指定的会话变量的值
+SELECT @@autocommit;
+SELECT @@session.tx_isolation;
+为某个会话变量赋值
+SET @@session.tx_isolation=&#39;read-uncommitted&#39;;
+SET SESSION tx_isolation=&#39;read-committed&#39;;</code></pre>
+<h3 id="自定义变量"><a href="#自定义变量" class="headerlink" title="自定义变量"></a>自定义变量</h3><p>一、用户变量</p>
+<p>声明并初始化：</p>
+<pre><code>SET @变量名=值;
+SET @变量名:=值;
+SELECT @变量名:=值;</code></pre>
+<p>赋值：</p>
+<pre><code>方式一：一般用于赋简单的值
+SET 变量名=值;
+SET 变量名:=值;
+SELECT 变量名:=值;
+
+
+方式二：一般用于赋表 中的字段值
+SELECT 字段名或表达式 INTO 变量
+FROM 表;</code></pre>
+<p>使用：</p>
+<pre><code>select @变量名;</code></pre>
+<p>二、局部变量</p>
+<p>声明：</p>
+<pre><code>declare 变量名 类型 【default 值】;</code></pre>
+<p>赋值：</p>
+<pre><code>方式一：一般用于赋简单的值
+SET 变量名=值;
+SET 变量名:=值;
+SELECT 变量名:=值;
+
+
+方式二：一般用于赋表 中的字段值
+SELECT 字段名或表达式 INTO 变量
+FROM 表;</code></pre>
+<p>使用：</p>
+<pre><code>select 变量名</code></pre>
+<p>二者的区别：</p>
+<pre><code>        作用域            定义位置        语法</code></pre>
+<p>用户变量    当前会话        会话的任何地方        加@符号，不用指定类型<br>局部变量    定义它的BEGIN END中     BEGIN END的第一句话    一般不用加@,需要指定类型</p>
+<h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><p>一、if函数<br>    语法：if(条件，值1，值2)<br>    特点：可以用在任何位置</p>
+<p>二、case语句</p>
+<p>语法：</p>
+<pre><code>情况一：类似于switch
+case 表达式
+when 值1 then 结果1或语句1(如果是语句，需要加分号) 
+when 值2 then 结果2或语句2(如果是语句，需要加分号)
+...
+else 结果n或语句n(如果是语句，需要加分号)
+end 【case】（如果是放在begin end中需要加上case，如果放在select后面不需要）
+
+情况二：类似于多重if
+case 
+when 条件1 then 结果1或语句1(如果是语句，需要加分号) 
+when 条件2 then 结果2或语句2(如果是语句，需要加分号)
+...
+else 结果n或语句n(如果是语句，需要加分号)
+end 【case】（如果是放在begin end中需要加上case，如果放在select后面不需要）</code></pre>
+<p>特点：<br>    可以用在任何位置</p>
+<p>三、if elseif语句</p>
+<p>语法：</p>
+<pre><code>if 情况1 then 语句1;
+elseif 情况2 then 语句2;
+...
+else 语句n;
+end if;</code></pre>
+<p>特点：<br>    只能用在begin end中！！！！！！！！！！！！！！！</p>
+<p>三者比较：<br>            应用场合<br>    if函数        简单双分支<br>    case结构    等值判断 的多分支<br>    if结构        区间判断 的多分支</p>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><p>语法：</p>
+<pre><code>【标签：】WHILE 循环条件  DO
+    循环体
+END WHILE 【标签】;</code></pre>
+<p>特点：</p>
+<pre><code>只能放在BEGIN END里面
+
+如果要搭配leave跳转语句，需要使用标签，否则可以不用标签
+
+leave类似于java中的break语句，跳出所在循环！！！</code></pre>
+]]></content>
+  </entry>
 </search>
