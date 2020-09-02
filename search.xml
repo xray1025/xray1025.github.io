@@ -2174,13 +2174,9 @@
 ]]></content>
   </entry>
   <entry>
-    <title></title>
+    <title>Redis</title>
     <url>/2020/09/02/redis/</url>
-    <content><![CDATA[<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">title: Redis</span><br><span class="line">categories: Java</span><br><span class="line"><span class="keyword">tags:</span> Redis</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><blockquote>
+    <content><![CDATA[<h1 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h1><blockquote>
 <p>NoSQL = Not Only SQL</p>
 </blockquote>
 <p>关系型数据库：表格</p>
@@ -2497,15 +2493,17 @@
 </li>
 </ul>
 ]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Redis</tag>
+      </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>MySQL</title>
     <url>/2020/09/02/MySQL/</url>
-    <content><![CDATA[<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">title: MySQL</span><br><span class="line">categories: Java</span><br><span class="line"><span class="keyword">tags:</span> MySQL</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><pre><code>1.持久化数据到本地
+    <content><![CDATA[<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><pre><code>1.持久化数据到本地
 2.可以实现结构化查询，方便管理</code></pre>
 <a id="more"></a>
 
@@ -3074,5 +3072,11 @@ END WHILE 【标签】;</code></pre>
 
 leave类似于java中的break语句，跳出所在循环！！！</code></pre>
 ]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>MySQL</tag>
+      </tags>
   </entry>
 </search>
