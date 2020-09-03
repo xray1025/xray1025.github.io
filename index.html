@@ -201,7 +201,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -214,7 +214,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -257,6 +257,86 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://xray1025.github.io/2020/09/03/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpeg">
+      <meta itemprop="name" content="X_ray">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="X_ray's blog">
+    </span>
+
+    
+    
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/09/03/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/" class="post-title-link" itemprop="url">反转链表</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-09-03 13:38:26 / 修改时间：13:40:59" itemprop="dateCreated datePublished" datetime="2020-09-03T13:38:26+08:00">2020-09-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>输入一个链表，反转链表后，输出新链表的表头。</p>
+<p>/*<br>public class ListNode {<br>    int val;<br>    ListNode next = null;</p>
+<pre><code>ListNode(int val) &#123;
+    this.val = val;
+&#125;</code></pre>
+<p>}*/<br>public class Solution {<br>    public ListNode ReverseList(ListNode head) {<br>        ListNode p = null;<br>        ListNode q = head;<br>        ListNode temp = null;<br>        while(q!=null){<br>            temp = q.next;<br>            q.next = p;<br>            p = q;<br>            q = temp;</p>
+<pre><code>    &#125;
+    return p;
+&#125;</code></pre>
+<p>}</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://xray1025.github.io/2020/09/02/JVM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -274,7 +354,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2020/09/02/JVM/" class="post-title-link" itemprop="url">未命名</a>
+            <a href="/2020/09/02/JVM/" class="post-title-link" itemprop="url">JVM</a>
         </h2>
 
         <div class="post-meta">
@@ -283,9 +363,24 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-09-02 16:33:01 / 修改时间：16:36:40" itemprop="dateCreated datePublished" datetime="2020-09-02T16:33:01+08:00">2020-09-02</time>
+              <time title="创建时间：2020-09-02 16:33:01" itemprop="dateCreated datePublished" datetime="2020-09-02T16:33:01+08:00">2020-09-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-03 13:38:17" itemprop="dateModified" datetime="2020-09-03T13:38:17+08:00">2020-09-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a>
+                </span>
             </span>
 
           
@@ -297,11 +392,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">title: JVM</span><br><span class="line">categories: Java</span><br><span class="line"><span class="keyword">tags:</span> - Java</span><br><span class="line">	- JVM</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><ul>
+          <h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><ul>
 <li>JVM是可运行Java代码的假想计算机，组成部分包括：堆、方法区、栈、本地方法栈和程序计数器。其中，堆和方法区是共享区，栈、本地方法栈和程序计数器是线程私有的。</li>
 </ul>
           <!--noindex-->

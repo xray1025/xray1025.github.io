@@ -1830,13 +1830,9 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
+    <title>JVM</title>
     <url>/2020/09/02/JVM/</url>
-    <content><![CDATA[<figure class="highlight subunit"><table><tr><td class="code"><pre><span class="line">title: JVM</span><br><span class="line">categories: Java</span><br><span class="line"><span class="keyword">tags:</span> - Java</span><br><span class="line">	- JVM</span><br></pre></td></tr></table></figure>
-
-
-
-<h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><ul>
+    <content><![CDATA[<h1 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h1><ul>
 <li>JVM是可运行Java代码的假想计算机，组成部分包括：堆、方法区、栈、本地方法栈和程序计数器。其中，堆和方法区是共享区，栈、本地方法栈和程序计数器是线程私有的。</li>
 </ul>
 <a id="more"></a>
@@ -2172,6 +2168,12 @@
 </ul>
 <p><img src="C:\Users\x\AppData\Roaming\Typora\typora-user-images\image-20200825114823414.png" alt="image-20200825114823414"></p>
 ]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
   </entry>
   <entry>
     <title>Redis</title>
@@ -3077,6 +3079,27 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
       </categories>
       <tags>
         <tag>MySQL</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>反转链表</title>
+    <url>/2020/09/03/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>输入一个链表，反转链表后，输出新链表的表头。</p>
+<p>/*<br>public class ListNode {<br>    int val;<br>    ListNode next = null;</p>
+<pre><code>ListNode(int val) &#123;
+    this.val = val;
+&#125;</code></pre>
+<p>}*/<br>public class Solution {<br>    public ListNode ReverseList(ListNode head) {<br>        ListNode p = null;<br>        ListNode q = head;<br>        ListNode temp = null;<br>        while(q!=null){<br>            temp = q.next;<br>            q.next = p;<br>            p = q;<br>            q = temp;</p>
+<pre><code>    &#125;
+    return p;
+&#125;</code></pre>
+<p>}</p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>链表</tag>
       </tags>
   </entry>
 </search>
