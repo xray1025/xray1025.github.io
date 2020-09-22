@@ -3761,13 +3761,100 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
   <entry>
     <title>面试题 08.11. 硬币</title>
     <url>/2020/09/21/%E9%9D%A2%E8%AF%95%E9%A2%98%2008.11.%20%E7%A1%AC%E5%B8%81/</url>
-    <content><![CDATA[<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">waysToChange</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span>[] coins = &#123;<span class="number">1</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">25</span>&#125;;</span><br><span class="line"></span><br><span class="line">        dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> coin : coins)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = coin; i &lt;= n; i++)&#123;</span><br><span class="line">                dp[i] = (dp[i] + dp[i - coin]) % <span class="number">1000000007</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">return</span> dp[n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<p><strong>动态规划：无限背包</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">waysToChange</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span>[] coins = &#123;<span class="number">1</span>, <span class="number">5</span>, <span class="number">10</span>, <span class="number">25</span>&#125;;</span><br><span class="line"></span><br><span class="line">        dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> coin : coins)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = coin; i &lt;= n; i++)&#123;</span><br><span class="line">                dp[i] = (dp[i] + dp[i - coin]) % <span class="number">1000000007</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; </span><br><span class="line">        <span class="keyword">return</span> dp[n];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
         <category>leetcode</category>
       </categories>
       <tags>
         <tag>leetcode</tag>
+        <tag>dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0198.打家劫舍</title>
+    <url>/2020/09/22/0198.%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D/</url>
+    <content><![CDATA[<p><strong>动态规划 + 滚动数组：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = nums.length;</span><br><span class="line">        <span class="keyword">if</span>(nums == <span class="keyword">null</span> || len == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(len == <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> nums[<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> first = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> second = Math.max(nums[<span class="number">0</span>], nums[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; len; i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = second;</span><br><span class="line">            second = Math.max(first + nums[i], tmp);</span><br><span class="line">            first = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> second;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(n)，其中 n 是数组长度。只需要对数组遍历一次。</li>
+<li>空间复杂度：O(1)。使用滚动数组，可以只存储前两间房屋的最高总金额，而不需要存储整个数组的结果，因此空间复杂度是 O(1)。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0213.打家劫舍2</title>
+    <url>/2020/09/22/0213.%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D2/</url>
+    <content><![CDATA[<p><strong>动态规划 + 滚动数组：</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> len = nums.length;</span><br><span class="line">        <span class="keyword">if</span>(len == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(len == <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> nums[<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> Math.max(myRob(nums, <span class="number">0</span>, len - <span class="number">2</span>), myRob(nums, <span class="number">1</span>, len - <span class="number">1</span>)); </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">myRob</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> first = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> second = nums[start];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = start + <span class="number">1</span>; i &lt;= end; i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = second;</span><br><span class="line">            second = Math.max(first + nums[i], tmp);</span><br><span class="line">            first = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> second;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(n)，其中 n 是数组长度。只需要对数组遍历一次。</li>
+<li>空间复杂度：O(1)。使用滚动数组，可以只存储前两间房屋的最高总金额，而不需要存储整个数组的结果，因此空间复杂度是 O(1)。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0337.打家劫舍3</title>
+    <url>/2020/09/22/0337.%E6%89%93%E5%AE%B6%E5%8A%AB%E8%88%8D3/</url>
+    <content><![CDATA[<p><strong>动态规划</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">rob</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] res = dfs(root);</span><br><span class="line">        <span class="keyword">return</span> Math.max(res[<span class="number">0</span>], res[<span class="number">1</span>]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span>[] dfs(TreeNode node)&#123;</span><br><span class="line">        <span class="keyword">if</span>(node == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">0</span>, <span class="number">0</span>&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] l = dfs(node.left);</span><br><span class="line">        <span class="keyword">int</span>[] r = dfs(node.right);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> selected = node.val + l[<span class="number">1</span>] + r[<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> notSelected = Math.max(l[<span class="number">0</span>], l[<span class="number">1</span>]) + Math.max(r[<span class="number">0</span>], r[<span class="number">1</span>]);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;selected, notSelected&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(n)。</li>
+<li>空间复杂度：O(n)。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>Tree</tag>
+        <tag>dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0068.监控二叉树</title>
+    <url>/2020/09/22/0968.%E7%9B%91%E6%8E%A7%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
+    <content><![CDATA[<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;  </span><br><span class="line">    <span class="keyword">int</span> sum = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minCameraCover</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(lrd(root) == <span class="number">0</span>)&#123;</span><br><span class="line">            sum++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> sum;    </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* 0代表结点待覆盖</span></span><br><span class="line"><span class="comment">    	1代表结点已覆盖</span></span><br><span class="line"><span class="comment">    	2代表结点已安装监控</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lrd</span><span class="params">(TreeNode node)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(node == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> l = lrd(node.left);</span><br><span class="line">        <span class="keyword">int</span> r = lrd(node.right);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(l == <span class="number">0</span> || r == <span class="number">0</span>)&#123;</span><br><span class="line">            sum++;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(l == <span class="number">1</span> &amp;&amp; r == <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(l + r &gt;= <span class="number">3</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>Tree</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>小红书笔试题3.笔记精选</title>
+    <url>/2020/09/22/%E5%B0%8F%E7%BA%A2%E4%B9%A6%E7%AC%94%E8%AF%95%E9%A2%983.%E7%AC%94%E8%AE%B0%E7%B2%BE%E9%80%89/</url>
+    <content><![CDATA[<p>1.不能出现连续编号的笔记。 </p>
+<p>2.总点赞总数最多 </p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">xiaohongshuCode3</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        Scanner sc = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        <span class="keyword">int</span> n = sc.nextInt();</span><br><span class="line">        <span class="keyword">int</span>[] nums = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++)&#123;</span><br><span class="line">            nums[i] = sc.nextInt();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">0</span>)&#123;</span><br><span class="line">            System.out.println(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">1</span>)&#123;</span><br><span class="line">            System.out.println(nums[<span class="number">0</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> pre = nums[<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">int</span> cur = nums[<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">2</span>; i &lt; n; i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> tmp = cur;</span><br><span class="line">            <span class="keyword">if</span> (pre + nums[i] &gt; tmp)&#123;</span><br><span class="line">                cur = pre + nums[i];</span><br><span class="line">                count++;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                cur = tmp;</span><br><span class="line">            &#125;</span><br><span class="line">            pre = tmp;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(cur + <span class="string">&quot; &quot;</span> + count);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>笔试</category>
+      </categories>
+      <tags>
+        <tag>笔试</tag>
         <tag>dp</tag>
       </tags>
   </entry>
