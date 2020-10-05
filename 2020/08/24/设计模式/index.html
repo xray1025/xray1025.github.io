@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="X_ray">
+
+
+    <meta name="subtitle" content="yesterday you said tomorrow">
+
+
+
+
+<title>设计模式 | X_ray&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Bentham&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Bentham&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">设计模式</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">X_ray</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">八月 24, 2020&nbsp;&nbsp;15:38:58</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="0-设计模式"><a href="#0-设计模式" class="headerlink" title="0 设计模式"></a>0 设计模式</h2><pre><code>一套用来提高代码可复用性、可维护性、可读性、稳健性以及安全性的解决方案
+
+本质是面向对象设计原则的实际应用</code></pre>
+<a id="more"></a>
+
+<h3 id="0-1-分类"><a href="#0-1-分类" class="headerlink" title="0.1 分类"></a>0.1 分类</h3><p><strong>创建型模式：</strong></p>
+<ul>
+<li>单例模式<ul>
+<li>工厂模式</li>
+<li>抽象工厂模式 </li>
+<li>建造者模式 </li>
+<li>原型模式</li>
+</ul>
+</li>
+</ul>
+<p><strong>结构型模式：</strong></p>
+<ul>
+<li>适配器模式</li>
+<li>桥接模式</li>
+<li>装饰模式</li>
+<li>组合模式</li>
+<li>外观模式</li>
+<li>享元模式</li>
+<li>代理模式</li>
+</ul>
+<p><strong>行为型模式：</strong></p>
+<ul>
+<li>模板方法模式</li>
+<li>命令模式</li>
+<li>迭代器模式</li>
+<li>观察者模式</li>
+<li>中介者模式</li>
+<li>备忘录模式</li>
+<li>解释器模式</li>
+<li>状态模式</li>
+<li>策略模式</li>
+<li>职责链模式</li>
+<li>访问者模式</li>
+</ul>
+<h3 id="0-2-OOP七大原则"><a href="#0-2-OOP七大原则" class="headerlink" title="0.2 OOP七大原则"></a>0.2 OOP七大原则</h3><p><strong>开闭原则：</strong> 对扩展开放，对修改关闭；<br><strong>里氏替换原则：</strong> 继承必须确保超类拥有的性质在子类中仍然成立；<br><strong>依赖倒置原则：</strong> 面向接口编程，而不是面向实现编程；<br><strong>单一职责原则：</strong> 控制类的粒度大小，将对象解耦，提高内聚性；<br><strong>接口隔离原则：</strong> 为类建立需要的专用接口；<br><strong>迪米特法则：</strong> 只与直接朋友交谈；<br><strong>合成复用原则：</strong> 优先使用组合、聚合等关联关系，其次才考虑使用继承实现。</p>
+<h3 id="0-3-UML类图"><a href="#0-3-UML类图" class="headerlink" title="0.3 UML类图"></a>0.3 UML类图</h3><pre><code>UML（unified modeling language） 统一建模语言</code></pre>
+<ul>
+<li>note 注释</li>
+<li>class 类</li>
+<li>interface 接口</li>
+<li>dependency 依赖：一种使用的关系，即一个类的实现需要另一个类的协助</li>
+<li>association 关联：一个类知道另一个类的属性和方法</li>
+<li>generalization 泛化（继承）：指定子类如何特化父类所以的特征和行为</li>
+<li>realization 实现：表示类是接口所有特征和行为的表现</li>
+<li>aggregation 聚合：整体与部分的关系，并且部分可以离开整体而单独存在</li>
+<li>composite 组合：整体与部分的关系，并且部分不可以离开整体而单独存在</li>
+</ul>
+<figure class="highlight fix"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">泛化 </span>=<span class="string"> 实现 &gt; 组合 &gt; 聚合 &gt; 关联 &gt; 依赖</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="1-单例模式"><a href="#1-单例模式" class="headerlink" title="1 单例模式"></a>1 单例模式</h2><pre><code>某个类只能存在一个对象实例，并且该类只提供一个区的其对象实例的静态方法</code></pre>
+<h3 id="1-1-饿汉式（静态常量）"><a href="#1-1-饿汉式（静态常量）" class="headerlink" title="1.1 饿汉式（静态常量）"></a>1.1 饿汉式（静态常量）</h3><ul>
+<li>写法简单，在类装载的时候就完成了实例化，避免了线程同步问题；</li>
+<li>没有达到lazy loading的效果，如果实例未使用，就会造成内存浪费；</li>
+</ul>
+<h3 id="1-2-饿汉式（静态代码块）"><a href="#1-2-饿汉式（静态代码块）" class="headerlink" title="1.2 饿汉式（静态代码块）"></a>1.2 饿汉式（静态代码块）</h3><h3 id="1-3-懒汉式（线程不安全）"><a href="#1-3-懒汉式（线程不安全）" class="headerlink" title="1.3 懒汉式（线程不安全）"></a>1.3 懒汉式（线程不安全）</h3><pre><code>提供一个静态的共有方法，当使用到该方法时，才去创建单例对象</code></pre>
+<ul>
+<li>起到lazy loading的效果；</li>
+<li>只能在单线程下使用；</li>
+<li>实际开发不可用。</li>
+</ul>
+<h3 id="1-4-懒汉式（线程安全）"><a href="#1-4-懒汉式（线程安全）" class="headerlink" title="1.4 懒汉式（线程安全）"></a>1.4 懒汉式（线程安全）</h3><pre><code>提供一个静态的共有方法，加入synchronized 同步代码</code></pre>
+<ul>
+<li>解决了线程不安全问题；</li>
+<li>效率低；</li>
+<li>实际开发不推荐使用。</li>
+</ul>
+<h3 id="1-5-懒汉式（同步代码块）"><a href="#1-5-懒汉式（同步代码块）" class="headerlink" title="1.5 懒汉式（同步代码块）"></a>1.5 懒汉式（同步代码块）</h3><ul>
+<li>不能线程同步；</li>
+<li>实际开发不可用。</li>
+</ul>
+<h3 id="1-6-懒汉式（双重检查）"><a href="#1-6-懒汉式（双重检查）" class="headerlink" title="1.6 懒汉式（双重检查）"></a>1.6 懒汉式（双重检查）</h3><pre><code>先使用volatile保证修改对所有线程可见，再加入synchronized同步代码块</code></pre>
+<ul>
+<li>保证线程安全；</li>
+<li>延迟加载；</li>
+<li>效率高</li>
+<li>实际开发推荐使用。</li>
+</ul>
+<h3 id="1-7-单例（静态内部类）"><a href="#1-7-单例（静态内部类）" class="headerlink" title="1.7 单例（静态内部类）"></a>1.7 单例（静态内部类）</h3><ul>
+<li>保证初始化实例只有一个线程；</li>
+<li>静态内部类在装载时并不会立即实例化，而是在需要时完成实例化；</li>
+<li>类的静态属性只在第一次加载类的时候初始化；</li>
+<li>线程安全；</li>
+<li>实现了懒加载；</li>
+<li>效率高；</li>
+<li>推荐使用。</li>
+</ul>
+<h3 id="1-8-单例（枚举）"><a href="#1-8-单例（枚举）" class="headerlink" title="1.8 单例（枚举）"></a>1.8 单例（枚举）</h3><ul>
+<li>避免多线程同步问题，防止反序列化重新创建新的对象</li>
+<li>推荐使用</li>
+</ul>
+<h2 id="2-工厂模式"><a href="#2-工厂模式" class="headerlink" title="2 工厂模式"></a>2 工厂模式</h2><h3 id="2-1-传统模式"><a href="#2-1-传统模式" class="headerlink" title="2.1 传统模式"></a>2.1 传统模式</h3><ul>
+<li>易于理解和操作；</li>
+<li>违反了oop原则：对扩展开放，对修改关闭；</li>
+</ul>
+<h3 id="2-2-简单工厂模式"><a href="#2-2-简单工厂模式" class="headerlink" title="2.2 简单工厂模式"></a>2.2 简单工厂模式</h3><p>由一个工厂对象决定创建出哪一个实例</p>
+<h3 id="2-3-工厂方法模式"><a href="#2-3-工厂方法模式" class="headerlink" title="2.3 工厂方法模式"></a>2.3 工厂方法模式</h3><p>将实例化功能抽象成抽象方法</p>
+<h3 id="2-4-抽象工厂模式"><a href="#2-4-抽象工厂模式" class="headerlink" title="2.4 抽象工厂模式"></a>2.4 抽象工厂模式</h3><pre><code>定义一个借口用于创建相关或有依赖关系的对象簇，而无需指明具体的类；将工厂抽象成两层：抽象工厂和具体实现的工厂子类。</code></pre>
+<h2 id="3-原型模式"><a href="#3-原型模式" class="headerlink" title="3 原型模式"></a>3 原型模式</h2><pre><code>重复创建对象</code></pre>
+<h3 id="3-1-传统模式"><a href="#3-1-传统模式" class="headerlink" title="3.1 传统模式"></a>3.1 传统模式</h3><ul>
+<li>易于理解和操作</li>
+<li>效率低</li>
+<li>总是需要重新初始化</li>
+</ul>
+<h3 id="3-2-原型模式"><a href="#3-2-原型模式" class="headerlink" title="3.2 原型模式"></a>3.2 原型模式</h3><pre><code>用原型实例指定创建对象的种类，通过拷贝原型创建新的对象</code></pre>
+<p><strong>浅拷贝：</strong></p>
+<ul>
+<li>对于数据类型是基本数据类型的成员变量，浅拷贝直接进行值传递；</li>
+<li>对于数据类型是引用数据类型的成员变量，浅拷贝进行引用传递；</li>
+<li>浅拷贝默认使用clone()方法。</li>
+</ul>
+<p><strong>深拷贝：</strong></p>
+<ul>
+<li>复制对象的所有基本数据类型的成员变量值；</li>
+<li>为所有引用数据类型的成员变量申请存储空间，并复制其引用的对象，直到该对象可达的所有对象；</li>
+<li>重写clone()实现深拷贝；</li>
+<li>通过对象序列化实现深拷贝（推荐）：以对象流的方式输出再输入即完成拷贝。</li>
+</ul>
+<p><strong>原型模式：</strong></p>
+<ul>
+<li>简化对象的创建过程，提高效率；</li>
+<li>不用重新初始化对象，而是动态的获得对象运行是的状态；</li>
+<li>克隆对象随原始对象发生变化；</li>
+<li>深克隆代码比较复杂；</li>
+<li>对已有的类配备克隆方法时，需要修改源代码，违背了开闭原则OCP。</li>
+</ul>
+<h2 id="4-建造者模式"><a href="#4-建造者模式" class="headerlink" title="4 建造者模式"></a>4 建造者模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">建造者模式&#x2F;生成器模式：允许用户只通过指定复杂对象的类型和内容就可以构建他们，用户不需要知道具体的内部构造细节。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">- </span>Product（产品角色）</span><br><span class="line"><span class="bullet">- </span>Builder（抽象建造者）</span><br><span class="line"><span class="bullet">- </span>ConcreteBuilder（具体建造者）</span><br><span class="line"><span class="bullet">- </span>Director（指挥者）</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>客户端不必指定产品内部的细节。将产品本身与创建过程解耦，使得相同的创建过程可以创建不同的产品对象；</li>
+<li>每一个具体建造者都相对独立，方便替换和添加；</li>
+<li>可以精细地控制产品的创建过程；</li>
+<li>增加新的具体建造者无需修改原有类库的代码，符合开闭原则；</li>
+<li>产品应该具有较多的共同点；</li>
+<li>如果产品的呢诶不复杂，肯导致系统变得复杂。</li>
+</ul>
+<p><strong>抽象工程模式vs建造者模式</strong></p>
+<ul>
+<li>抽象工厂模式实现对产品家族（具有不同分类维度的产品组合）的创建，不需要关心构建过程，只关心什么产品由什么工厂生产。</li>
+<li>建造者模式则是要求按照指定的蓝图构建产品，主要目的是通过组装零配件而产生一个新产品。</li>
+</ul>
+<h2 id="5-适配器模式"><a href="#5-适配器模式" class="headerlink" title="5 适配器模式"></a>5 适配器模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将某个类的接口转换成客户端期望的另一个接口来表示，以提高兼容性。</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-1-类适配器模式"><a href="#5-1-类适配器模式" class="headerlink" title="5.1 类适配器模式"></a>5.1 类适配器模式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Adapter类，通过继承src类，实现dst类接口，完成从src到dst的适配</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">adapter</span> <span class="keyword">extends</span> <span class="title">src</span> <span class="keyword">implements</span> <span class="title">dst</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-2-对象适配器模式"><a href="#5-2-对象适配器模式" class="headerlink" title="5.2 对象适配器模式"></a>5.2 对象适配器模式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Adapter类，通过持有src类，实现dst类接口，完成从src到dst的适配，尽量使用关联关系替代继承关系。</span><br><span class="line"></span><br><span class="line">最常用</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">adapter</span> <span class="keyword">implements</span> <span class="title">dst</span></span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">private</span> Src src; </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-3-接口适配器模式"><a href="#5-3-接口适配器模式" class="headerlink" title="5.3 接口适配器模式"></a>5.3 接口适配器模式</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Adapter类，把<span class="attribute">src</span>作为一个接口，实现dst类接口，完成从<span class="attribute">src</span>到dst的适配。</span><br><span class="line"></span><br><span class="line">也称缺省适配器模式，当不需要全部实现接提供的方法时，可先设计一个抽象类实现接口，并为接口中每个方法提供一个默认实现（空方法），那么该抽象类的子类可以有选择地覆盖父类的某些方法。</span><br></pre></td></tr></table></figure>
+
+<p>在springMVC中的handlerDispatcher有应用</p>
+<h2 id="6-桥接模式"><a href="#6-桥接模式" class="headerlink" title="6 桥接模式"></a>6 桥接模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">将实现类与抽象类放在两个不同的类层次中，使两个层次可以独立改变</span><br><span class="line"></span><br><span class="line">基于类的最小设计原则</span><br></pre></td></tr></table></figure>
+
+<p>在Jdbc的Driver接口有应用</p>
+<h2 id="7-装饰者模式"><a href="#7-装饰者模式" class="headerlink" title="7 装饰者模式"></a>7 装饰者模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">动态地将新功能附加到对象上，比继承更有弹性</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Component 被装饰者</li>
+<li>Decorator 装饰者</li>
+<li>ConcretComponent 具体的主体</li>
+<li>ConcreteDecorator 具体的装饰者</li>
+</ul>
+<h2 id="8-组合模式"><a href="#8-组合模式" class="headerlink" title="8 组合模式"></a>8 组合模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">又称部分整体模式，创建了对象组的树形结构，将对象组合成树状结构以表示整体-部分的关系，组合能让客户以一致的方式处理个别对象以及组合对象。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Component 组合中对象声明接口，用于访问Component子部件</li>
+<li>Leaf 叶子节点</li>
+<li>Composite 非叶子节点，用于存储子部件</li>
+</ul>
+<p>在HashMap中有应用</p>
+<ul>
+<li>简化客户端的操作；</li>
+<li>具有较强的扩展性；</li>
+<li>方便创建复杂的层次结构；</li>
+<li>要求较高的抽象性</li>
+</ul>
+<h2 id="9-外观模式"><a href="#9-外观模式" class="headerlink" title="9 外观模式"></a>9 外观模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">又称过程模式，为子系统中的一组接口提供一个一致的界面，用以屏蔽内部子系统的细节。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Facade：外观类</li>
+<li>Client：调用者</li>
+<li>子系统</li>
+</ul>
+<p>在MyBatis有应用</p>
+<ul>
+<li>降低了客户端对子系统使用的复杂性；</li>
+<li>使子系统内部更易维护和扩展；</li>
+</ul>
+<h2 id="10-享元模式"><a href="#10-享元模式" class="headerlink" title="10 享元模式"></a>10 享元模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">又称蝇量模式，参考常量池、数据库连接池。缓冲池</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>FlyWeight：享元角色，是产品的抽象类，定义对象的外部状态和内部状态的接口或实现<ul>
+<li>内部状态：对象共享出的信息，存储中享元对象内部并且不随环境改变</li>
+<li>外部状态：对象得以依赖的一个标记，随环境改变，不可共享</li>
+</ul>
+</li>
+<li>ConcreteFlyWeight：具体的享元角色</li>
+<li>UnShareConcreteFlyWeight：不可共享的角色</li>
+<li>FlyWeightFactory：享元工厂</li>
+</ul>
+<h2 id="11-代理模式"><a href="#11-代理模式" class="headerlink" title="11 代理模式"></a>11 代理模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">为一个对象提供一个替身，以控制对这个对象的访问</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-1-静态代理"><a href="#11-1-静态代理" class="headerlink" title="11.1 静态代理"></a>11.1 静态代理</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在使用时，需要定义接口或者父类，被代理对象和代理对象一起实现相同的接口或者继承相同父类</span><br></pre></td></tr></table></figure>
+
+<p>Spring AOP</p>
+<h3 id="11-2-动态代理"><a href="#11-2-动态代理" class="headerlink" title="11.2 动态代理"></a>11.2 动态代理</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">也称JDK代理、接口代理；</span><br><span class="line"></span><br><span class="line">代理对象不需要实现接口，被代理对象需要实现接口；</span><br><span class="line"></span><br><span class="line">利用JDK中的API动态地在内存中构建代理对象。（java.lang.reflect.Proxy()）</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-3-Cglib代理"><a href="#11-3-Cglib代理" class="headerlink" title="11.3 Cglib代理"></a>11.3 Cglib代理</h3><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">也称子类代理；</span></span><br><span class="line"></span><br><span class="line"><span class="attr">使用目标对象子类实现代理；</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Spring</span> <span class="string">AOP ，实现方法拦截。</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="12-模板模式"><a href="#12-模板模式" class="headerlink" title="12 模板模式"></a>12 模板模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在一个抽象类中公开定义了执行它的方法的模板，它的子类可以按需要重写方法实现，但调用讲义抽象类中定义的方式进行。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>AbstractClass：抽象类，类中定义了模板方法；</p>
+</li>
+<li><p>ConcreteClass：实现类</p>
+</li>
+</ul>
+<p>Spring IOC</p>
+<h2 id="13-命令模式"><a href="#13-命令模式" class="headerlink" title="13 命令模式"></a>13 命令模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">向某些对象发送请求，但是并不知道请求的接收者是谁，也不知道被请求的操作是哪个</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Invoker：调用者</li>
+<li>Receiver：被调用者</li>
+<li>Command：命令，接口或虚拟类</li>
+<li>ConcreteCommand：将一个接收者与一个动作绑定</li>
+</ul>
+<p>JDBC Tml</p>
+<h2 id="14-访问者模式"><a href="#14-访问者模式" class="headerlink" title="14 访问者模式"></a>14 访问者模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">封装一些作用于某种数据结构的各元素的操作，可以在不改变数据结构的前提下定义作用于这些元素的新操作。</span><br><span class="line"></span><br><span class="line">将数据结果和数据操作解耦</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Visitor：抽象访问者，为该对象结果中的ConcreteElement的每一个类声明一个visit操作</li>
+<li>ConcreteVisitor：具体的访问者</li>
+<li>ObjectStructure：枚举它的元素，提供一个高层的接口，以允许访问者访问元素</li>
+<li>ConcreteElement：具体的元素</li>
+</ul>
+<h2 id="15-迭代器模式"><a href="#15-迭代器模式" class="headerlink" title="15 迭代器模式"></a>15 迭代器模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">提供一种遍历集合元素的统一接口，用一致的方法遍历集合元素，不需要知道集合对象的底层表示。</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Iterator：迭代器，系统提供，包含：hasNext、next、remove</li>
+<li>ConcreteIterator：具体的迭代器</li>
+<li>Aggregate：一个统一的聚合集合接口，将客户端和具体聚合解耦</li>
+<li>ConcreteAggregate：具体的聚合集合</li>
+</ul>
+<h2 id="16-观察者模式"><a href="#16-观察者模式" class="headerlink" title="16 观察者模式"></a>16 观察者模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">对象之间多对一依赖的一种设计方案，被依赖对象为Subject，依赖对象为Observer，Subject通知Observer变化。</span><br></pre></td></tr></table></figure>
+
+<h2 id="17-中介者模式"><a href="#17-中介者模式" class="headerlink" title="17 中介者模式"></a>17 中介者模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">用一个中介对象来封装一系列的对象交互，是各个对象不需要显式地相互引用，从而使其耦合松散，可以登录的改变它们之间的交互。</span><br></pre></td></tr></table></figure>
+
+<p>MVC中，C就是M和V的中介者</p>
+<ul>
+<li>Mediator：抽象中介者</li>
+<li>Colleague：抽象同事类</li>
+<li>ConcreteMediator：具体中介者</li>
+<li>ConcreteColleague：具体同事类</li>
+</ul>
+<h2 id="18-备忘录模式"><a href="#18-备忘录模式" class="headerlink" title="18  备忘录模式"></a>18  备忘录模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在不破坏封装性的前提下，捕获一个对象的内部状态，在该对象之外保存这个状态，这样以后可以将该对象恢复到原先保存的状态</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Memento</li>
+<li>Originator</li>
+<li>Caretaker</li>
+</ul>
+<h2 id="19-解释器模式"><a href="#19-解释器模式" class="headerlink" title="19 解释器模式"></a>19 解释器模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">给定一个语言（表达式），定义它的文法的一种表示，并定义一个解释器，使用该解释器解释语言中的句子</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Context：环境角色，含有解释器之外的全局信息</li>
+<li>AbstractExpression：抽象表达式</li>
+<li>TerminalExpression：终结符表达式</li>
+<li>NonTerminalExpression：非终结符表达式</li>
+</ul>
+<h2 id="20-状态模式"><a href="#20-状态模式" class="headerlink" title="20 状态模式"></a>20 状态模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">用来解决对象在多种状态转换时，需要对外输出不同的行为的问题</span><br><span class="line"></span><br><span class="line">状态发生变化时，行为也发生变化，对象看起来像是变成了其他类</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Context：环境角色</li>
+<li>State：抽象状态角色</li>
+<li>Concrete：具体的状态角色</li>
+</ul>
+<h2 id="21-策略模式"><a href="#21-策略模式" class="headerlink" title="21 策略模式"></a>21 策略模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">定义算法的族，分别封装，让他们之间可以互相替换。</span><br></pre></td></tr></table></figure>
+
+<h2 id="22-职责链模式"><a href="#22-职责链模式" class="headerlink" title="22 职责链模式"></a>22 职责链模式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">又称责任链模式，为请求创建一个接收者对象的链。</span><br><span class="line"></span><br><span class="line">对请求的发送者和接收者进行解耦</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Handler：抽象的处理者</li>
+<li>ConcreteHandler：具体的处理者，若可以处理，则处理，否则交给下个处理者</li>
+<li>Request：请求</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>X_ray</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="https://xray1025.github.io/2020/08/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">https://xray1025.github.io/2020/08/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"># 设计模式</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/09/02/MySQL/">MySQL</a>
+            
+            
+            <a class="next" rel="next" href="/2020/08/24/JavaSE/">JavaSE</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© X_ray | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
