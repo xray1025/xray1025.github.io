@@ -4325,4 +4325,41 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
         <tag>leetcode</tag>
       </tags>
   </entry>
+  <entry>
+    <title>剑指 Offer 47. 礼物的最大价值</title>
+    <url>/2020/10/07/%E5%89%91%E6%8C%87Offer47.%E7%A4%BC%E7%89%A9%E7%9A%84%E6%9C%80%E5%A4%A7%E4%BB%B7%E5%80%BC/</url>
+    <content><![CDATA[<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxValue</span><span class="params">(<span class="keyword">int</span>[][] grid)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> r = grid.length;</span><br><span class="line">        <span class="keyword">int</span> c = grid[<span class="number">0</span>].length;</span><br><span class="line">        <span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[r + <span class="number">1</span>][c + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= r; i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= c; j++)&#123;</span><br><span class="line">                dp[i][j] = grid[i - <span class="number">1</span>][j - <span class="number">1</span>] + Math.max(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[r][c];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(mn)。</li>
+<li>空间复杂度：O(1)。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指Offer48.最长不含重复字符的子字符串</title>
+    <url>/2020/10/07/%E5%89%91%E6%8C%87Offer48.%E6%9C%80%E9%95%BF%E4%B8%8D%E5%90%AB%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
+    <content><![CDATA[<p><strong>滑动窗口</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">lengthOfLongestSubstring</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        Set&lt;Character&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = <span class="number">0</span>, res = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(r &lt; s.length())&#123;</span><br><span class="line">            <span class="keyword">char</span> c = s.charAt(r++);</span><br><span class="line">            <span class="keyword">while</span>(set.contains(c))&#123;</span><br><span class="line">                set.remove(s.charAt(l++));</span><br><span class="line">            &#125;</span><br><span class="line">            set.add(c);</span><br><span class="line">            res = Math.max(res, r - l);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(n)。</li>
+<li>空间复杂度：O(<em>n</em>)。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>HashSet</tag>
+      </tags>
+  </entry>
 </search>
