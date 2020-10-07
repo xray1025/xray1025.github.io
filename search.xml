@@ -4305,4 +4305,24 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
         <tag>String</tag>
       </tags>
   </entry>
+  <entry>
+    <title>01431.拥有最多糖果的孩子</title>
+    <url>/2020/10/07/1431.%E6%8B%A5%E6%9C%89%E6%9C%80%E5%A4%9A%E7%B3%96%E6%9E%9C%E7%9A%84%E5%AD%A9%E5%AD%90/</url>
+    <content><![CDATA[<p><strong>一遍哈希表</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Boolean&gt; <span class="title">kidsWithCandies</span><span class="params">(<span class="keyword">int</span>[] candies, <span class="keyword">int</span> extraCandies)</span> </span>&#123;</span><br><span class="line">        List&lt;Boolean&gt; res = <span class="keyword">new</span> ArrayList&lt;Boolean&gt;();</span><br><span class="line">        <span class="keyword">int</span> maxCandy = -<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> candy : candies)&#123;</span><br><span class="line">            maxCandy = Math.max(maxCandy, candy);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; candies.length; i++)&#123;</span><br><span class="line">            res.add(candies[i] + extraCandies &gt;= maxCandy);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>时间复杂度：O(n)。</p>
+</li>
+<li><p>空间复杂度：O(1)。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
 </search>
