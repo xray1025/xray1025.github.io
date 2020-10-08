@@ -4590,4 +4590,24 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
         <tag>dfs</tag>
       </tags>
   </entry>
+  <entry>
+    <title>0872.叶子相似的树</title>
+    <url>/2020/10/08/0872.%E5%8F%B6%E5%AD%90%E7%9B%B8%E4%BC%BC%E7%9A%84%E6%A0%91/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/leaf-similar-trees/">https://leetcode-cn.com/problems/leaf-similar-trees/</a></p>
+<p><strong>dfs</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">leafSimilar</span><span class="params">(TreeNode root1, TreeNode root2)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; leaves1 = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        List&lt;Integer&gt; leaves2 = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        dfs(root1, leaves1);</span><br><span class="line">        dfs(root2, leaves2);</span><br><span class="line">        <span class="keyword">return</span> leaves1.equals(leaves2);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(TreeNode node, List&lt;Integer&gt; list)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(node != <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span>(node.left == <span class="keyword">null</span> &amp;&amp; node.right == <span class="keyword">null</span>)&#123;</span><br><span class="line">                list.add(node.val);</span><br><span class="line">            &#125;</span><br><span class="line">            dfs(node.left, list);</span><br><span class="line">            dfs(node.right, list);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(T1 + T2)，其中 T1, T2 是给定的树的长度。</li>
+<li>空间复杂度：O(T1 + T2)，存储叶值所使用的空间。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>dfs</tag>
+      </tags>
+  </entry>
 </search>
