@@ -14,7 +14,7 @@
 
 
 
-<title>0001.两数之和 | X_ray&#39;s blog</title>
+<title>0283.移动零 | X_ray&#39;s blog</title>
 
 
 
@@ -113,7 +113,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">0001.两数之和</h1>
+            <h1 class="post-title">0283.移动零</h1>
             
                 <div class="post-meta">
                     
@@ -122,7 +122,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">九月 11, 2020&nbsp;&nbsp;21:09:12</a>
+                        Date: <a href="#">十月 8, 2020&nbsp;&nbsp;13:59:27</a>
                         </span>
                     
                     
@@ -138,14 +138,12 @@
         </header>
 
         <div class="post-content">
-            <p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/two-sum/">https://leetcode-cn.com/problems/two-sum/</a></p>
-<p><strong>一遍哈希表</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">int</span>[] twoSum(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target) &#123;</span><br><span class="line">      Map&lt;Integer,Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">      <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">          <span class="keyword">int</span> temp = target - nums[i];</span><br><span class="line">          <span class="keyword">if</span>(map.containsKey(temp))&#123;</span><br><span class="line">              <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[] &#123;map.get(temp), i&#125;; </span><br><span class="line">          &#125;</span><br><span class="line">          map.put(nums[i], i);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">moveZeroes</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;= n; i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(nums[i] != <span class="number">0</span>)&#123;</span><br><span class="line">                nums[count++] = nums[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = count; i &lt;= n; i++)&#123;</span><br><span class="line">            nums[i] = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li><p>时间复杂度：O(n)，<br>只遍历了包含有 n 个元素的列表一次。在表中进行的每次查找只花费 O(1) 的时间。</p>
+<li><p>时间复杂度：O(n)。</p>
 </li>
-<li><p>空间复杂度：O(n)，<br>所需的额外空间取决于哈希表中存储的元素数量，该表最多需要存储 n 个元素。</p>
+<li><p>空间复杂度：O(1)。</p>
 </li>
 </ul>
 
@@ -168,7 +166,7 @@
                     
                         <a href="/tags/leetcode/"># leetcode</a>
                     
-                        <a href="/tags/HashMap/"># HashMap</a>
+                        <a href="/tags/ArrayList/"># ArrayList</a>
                     
                         
                 </span>
@@ -181,10 +179,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/09/11/0002.%E4%B8%A4%E6%95%B0%E7%9B%B8%E5%8A%A0/">0002.两数相加</a>
+                <a class="prev" rel="prev" href="/2020/10/08/0529.%E6%89%AB%E9%9B%B7%E6%B8%B8%E6%88%8F/">0529.扫雷游戏</a>
             
             
-            <a class="next" rel="next" href="/2020/09/03/%E5%8F%8D%E8%BD%AC%E9%93%BE%E8%A1%A8/">反转链表</a>
+            <a class="next" rel="next" href="/2020/10/08/0048.%E6%97%8B%E8%BD%AC%E5%9B%BE%E5%83%8F/">0048.旋转图像</a>
             
         </section>
 
