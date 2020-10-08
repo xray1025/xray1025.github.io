@@ -4362,4 +4362,81 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
         <tag>HashSet</tag>
       </tags>
   </entry>
+  <entry>
+    <title>0344.反转字符串</title>
+    <url>/2020/10/08/0344.%E5%8F%8D%E8%BD%AC%E5%AD%97%E7%AC%A6%E4%B8%B2/</url>
+    <content><![CDATA[<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reverseString</span><span class="params">(<span class="keyword">char</span>[] s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = s.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(l &lt; r)&#123;</span><br><span class="line">            <span class="keyword">char</span> tmp = s[l];</span><br><span class="line">            s[l] = s[r];</span><br><span class="line">            s[r] = tmp;</span><br><span class="line">            l++;</span><br><span class="line">            r--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>时间复杂度：O(n)。</p>
+</li>
+<li><p>空间复杂度：O(1)。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指Offer40.最小的k个数</title>
+    <url>/2020/10/07/%E5%89%91%E6%8C%87Offer40.%E6%9C%80%E5%B0%8F%E7%9A%84k%E4%B8%AA%E6%95%B0/</url>
+    <content><![CDATA[<p><strong>暴力法</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] getLeastNumbers(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k) &#123;</span><br><span class="line">        Arrays.sort(arr);</span><br><span class="line">        <span class="keyword">return</span> Arrays.copyOfRange(arr, <span class="number">0</span>, k);   </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(nlogn)，其中 n 是数组 arr 的长度。算法的时间复杂度即排序的时间复杂度。</li>
+<li>空间复杂度：O(logn)，排序所需额外的空间复杂度为 O(logn)。</li>
+</ul>
+<p><strong>小顶堆</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] getLeastNumbers(<span class="keyword">int</span>[] arr, <span class="keyword">int</span> k) &#123;</span><br><span class="line">        <span class="keyword">if</span>(k == <span class="number">0</span> || arr.length == <span class="number">0</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">0</span>];</span><br><span class="line">        &#125; </span><br><span class="line">        Queue&lt;Integer&gt; pq = <span class="keyword">new</span> PriorityQueue&lt;Integer&gt;((v1, v2) -&gt; v2 - v1);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> a : arr)&#123;</span><br><span class="line">            <span class="keyword">if</span>(pq.size() &lt; k)&#123;</span><br><span class="line">                pq.offer(a);</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span>(a &lt; pq.peek())&#123;</span><br><span class="line">                pq.poll();</span><br><span class="line">                pq.offer(a);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[k];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> p : pq)&#123;</span><br><span class="line">            res[idx++] = p;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>时间复杂度：O(nlogk)，其中 n 是数组 arr 的长度。由于大根堆实时维护前 k 小值，所以插入删除都是 O(logk) 的时间复杂度，最坏情况下数组里 n 个数都会插入，所以一共需要 O(nlogk) 的时间复杂度。</p>
+</li>
+<li><p>空间复杂度：O(k)，因为大根堆里最多 k 个数。</p>
+</li>
+</ul>
+<p><strong>快速排序</strong></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<ul>
+<li><p>时间复杂度 </p>
+</li>
+<li><p>空间复杂度</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>堆</tag>
+        <tag>快速排序</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指 Offer 45. 把数组排成最小的数</title>
+    <url>/2020/10/08/%E5%89%91%E6%8C%87Offer45.%E6%8A%8A%E6%95%B0%E7%BB%84%E7%BB%84%E6%88%90%E6%9C%80%E5%B0%8F%E7%9A%84%E6%95%B0/</url>
+    <content><![CDATA[<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">minNumber</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        String[] str = <span class="keyword">new</span> String[nums.length];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">            str[i] = String.valueOf(nums[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        Arrays.sort(str, (x, y) -&gt; (x + y).compareTo(y + x));</span><br><span class="line">        StringBuilder res = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span>(String s : str)&#123;</span><br><span class="line">            res.append(s);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度 O(NlogN) ： N 为最终返回值的字符数量（strs 列表的长度≤N）；使用快排或内置函数的平均时间复杂度为 O(NlogN) ，最差为 O(N^2) 。</li>
+<li>空间复杂度 O(N) ： 字符串列表 strs 占用线性大小的额外空间。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>String</tag>
+      </tags>
+  </entry>
 </search>

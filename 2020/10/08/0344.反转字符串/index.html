@@ -14,7 +14,7 @@
 
 
 
-<title>剑指 Offer 47. 礼物的最大价值 | X_ray&#39;s blog</title>
+<title>0344.反转字符串 | X_ray&#39;s blog</title>
 
 
 
@@ -113,7 +113,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">剑指 Offer 47. 礼物的最大价值</h1>
+            <h1 class="post-title">0344.反转字符串</h1>
             
                 <div class="post-meta">
                     
@@ -122,7 +122,7 @@
 
                     
                         <span class="post-time">
-                        Date: <a href="#">十月 7, 2020&nbsp;&nbsp;15:26:43</a>
+                        Date: <a href="#">十月 8, 2020&nbsp;&nbsp;10:30:02</a>
                         </span>
                     
                     
@@ -138,11 +138,13 @@
         </header>
 
         <div class="post-content">
-            <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">maxValue</span><span class="params">(<span class="keyword">int</span>[][] grid)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> r = grid.length;</span><br><span class="line">        <span class="keyword">int</span> c = grid[<span class="number">0</span>].length;</span><br><span class="line">        <span class="keyword">int</span>[][] dp = <span class="keyword">new</span> <span class="keyword">int</span>[r + <span class="number">1</span>][c + <span class="number">1</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= r; i++)&#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt;= c; j++)&#123;</span><br><span class="line">                dp[i][j] = grid[i - <span class="number">1</span>][j - <span class="number">1</span>] + Math.max(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[r][c];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+            <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">reverseString</span><span class="params">(<span class="keyword">char</span>[] s)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>, r = s.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(l &lt; r)&#123;</span><br><span class="line">            <span class="keyword">char</span> tmp = s[l];</span><br><span class="line">            s[l] = s[r];</span><br><span class="line">            s[r] = tmp;</span><br><span class="line">            l++;</span><br><span class="line">            r--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
-<li>时间复杂度：O(mn)。</li>
-<li>空间复杂度：O(1)。</li>
+<li><p>时间复杂度：O(n)。</p>
+</li>
+<li><p>空间复杂度：O(1)。</p>
+</li>
 </ul>
 
         </div>
@@ -169,8 +171,6 @@
                     
                         <a href="/tags/leetcode/"># leetcode</a>
                     
-                        <a href="/tags/dp/"># dp</a>
-                    
                         
                 </span>
             </div>
@@ -182,10 +182,8 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/10/07/%E5%89%91%E6%8C%87Offer40.%E6%9C%80%E5%B0%8F%E7%9A%84k%E4%B8%AA%E6%95%B0/">剑指Offer40.最小的k个数</a>
             
-            
-            <a class="next" rel="next" href="/2020/10/07/%E5%89%91%E6%8C%87Offer48.%E6%9C%80%E9%95%BF%E4%B8%8D%E5%90%AB%E9%87%8D%E5%A4%8D%E5%AD%97%E7%AC%A6%E7%9A%84%E5%AD%90%E5%AD%97%E7%AC%A6%E4%B8%B2/">剑指Offer48.最长不含重复字符的子字符串</a>
+            <a class="next" rel="next" href="/2020/10/08/%E5%89%91%E6%8C%87Offer45.%E6%8A%8A%E6%95%B0%E7%BB%84%E7%BB%84%E6%88%90%E6%9C%80%E5%B0%8F%E7%9A%84%E6%95%B0/">剑指 Offer 45. 把数组排成最小的数</a>
             
         </section>
 
