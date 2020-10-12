@@ -4687,14 +4687,14 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
       </tags>
   </entry>
   <entry>
-    <title>0220.存在重复元素3</title>
+    <title>0219.存在重复元素2</title>
     <url>/2020/10/12/0219.%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A02/</url>
-    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/contains-duplicate-iii/">https://leetcode-cn.com/problems/contains-duplicate-iii/</a></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsNearbyAlmostDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">        TreeSet&lt;Long&gt; treeSet = <span class="keyword">new</span> TreeSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">            Long c = treeSet.ceiling((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(c != <span class="keyword">null</span> &amp;&amp; c &lt;= nums[i] + t)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            Long f = treeSet.floor((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(f != <span class="keyword">null</span> &amp;&amp; nums[i] &lt;= f + t)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            treeSet.add((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(treeSet.size() &gt; k)&#123;</span><br><span class="line">                treeSet.remove((<span class="keyword">long</span>)nums[i - k]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/contains-duplicate-ii/">https://leetcode-cn.com/problems/contains-duplicate-ii/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsNearbyDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">            <span class="keyword">if</span>(map.containsKey(nums[i]))&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            map.put(nums[i], i);</span><br><span class="line">            <span class="keyword">if</span>(map.size() &gt; k)&#123;</span><br><span class="line">                map.remove(nums[i - k]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>时间复杂度：O(nlog(min(n,k)))，我们需要遍历这个 n 长度的数组。对于每次遍历，在 BST 中 搜索，插入 或者 删除 都需要花费 O(logmin(k,n)) 的时间。</li>
-<li>空间复杂度：O(min(n,k))，空间复杂度由 BST 的大小决定，其大小的上限由 kk 和 nn 共同决定。</li>
+<li>空间复杂度：O(min(n,k))，空间复杂度由 BST 的大小决定，其大小的上限由 k 和 n 共同决定。</li>
 </ul>
 ]]></content>
       <categories>
@@ -4702,8 +4702,8 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
       </categories>
       <tags>
         <tag>leetcode</tag>
+        <tag>HashMap</tag>
         <tag>ArrayList</tag>
-        <tag>TreeSet</tag>
       </tags>
   </entry>
   <entry>
