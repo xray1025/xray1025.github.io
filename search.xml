@@ -204,7 +204,7 @@
       </tags>
   </entry>
   <entry>
-    <title>剑指Offer27.二叉树的镜像</title>
+    <title>0104.二叉树的最大深度</title>
     <url>/2020/09/18/0104.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E6%B7%B1%E5%BA%A6/</url>
     <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/maximum-depth-of-binary-tree">https://leetcode-cn.com/problems/maximum-depth-of-binary-tree</a></p>
 <p><strong>递归</strong></p>
@@ -4662,6 +4662,87 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
       <tags>
         <tag>leetcode</tag>
         <tag>LinkedList</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0217.存在重复元素</title>
+    <url>/2020/10/12/0217.%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A0/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/contains-duplicate/">https://leetcode-cn.com/problems/contains-duplicate/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        HashSet&lt;Integer&gt; set = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> num : nums)&#123;</span><br><span class="line">            <span class="keyword">if</span>(set.contains(num))&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            set.add(num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>时间复杂度：O(n)。</p>
+</li>
+<li><p>空间复杂度：O(n)。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>ArrayList</tag>
+        <tag>HashSet</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0220.存在重复元素3</title>
+    <url>/2020/10/12/0219.%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A02/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/contains-duplicate-iii/">https://leetcode-cn.com/problems/contains-duplicate-iii/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsNearbyAlmostDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">        TreeSet&lt;Long&gt; treeSet = <span class="keyword">new</span> TreeSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">            Long c = treeSet.ceiling((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(c != <span class="keyword">null</span> &amp;&amp; c &lt;= nums[i] + t)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            Long f = treeSet.floor((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(f != <span class="keyword">null</span> &amp;&amp; nums[i] &lt;= f + t)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            treeSet.add((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(treeSet.size() &gt; k)&#123;</span><br><span class="line">                treeSet.remove((<span class="keyword">long</span>)nums[i - k]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(nlog(min(n,k)))，我们需要遍历这个 n 长度的数组。对于每次遍历，在 BST 中 搜索，插入 或者 删除 都需要花费 O(logmin(k,n)) 的时间。</li>
+<li>空间复杂度：O(min(n,k))，空间复杂度由 BST 的大小决定，其大小的上限由 kk 和 nn 共同决定。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>ArrayList</tag>
+        <tag>TreeSet</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0220.存在重复元素3</title>
+    <url>/2020/10/12/0220.%E5%AD%98%E5%9C%A8%E9%87%8D%E5%A4%8D%E5%85%83%E7%B4%A03/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/contains-duplicate-iii/">https://leetcode-cn.com/problems/contains-duplicate-iii/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">containsNearbyAlmostDuplicate</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> k, <span class="keyword">int</span> t)</span> </span>&#123;</span><br><span class="line">        TreeSet&lt;Long&gt; treeSet = <span class="keyword">new</span> TreeSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums.length; i++)&#123;</span><br><span class="line">            Long c = treeSet.ceiling((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(c != <span class="keyword">null</span> &amp;&amp; c &lt;= nums[i] + t)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            Long f = treeSet.floor((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(f != <span class="keyword">null</span> &amp;&amp; nums[i] &lt;= f + t)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            treeSet.add((<span class="keyword">long</span>)nums[i]);</span><br><span class="line">            <span class="keyword">if</span>(treeSet.size() &gt; k)&#123;</span><br><span class="line">                treeSet.remove((<span class="keyword">long</span>)nums[i - k]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(nlog(min(n,k)))，我们需要遍历这个 n 长度的数组。对于每次遍历，在 BST 中 搜索，插入或者删除都需要花O(logmin(k,n)) 的时间。</li>
+<li>空间复杂度：O(min(n,k))，空间复杂度由 BST 的大小决定，其大小的上限由 k 和 n 共同决定。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>HashMap</tag>
+        <tag>ArrayList</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0530.二叉搜索树的最小绝对差</title>
+    <url>/2020/10/12/0530.%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E7%9A%84%E6%9C%80%E5%B0%8F%E7%BB%9D%E5%AF%B9%E5%B7%AE/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/">https://leetcode-cn.com/problems/minimum-absolute-difference-in-bst/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> pre;</span><br><span class="line">    <span class="keyword">int</span> ans;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getMinimumDifference</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        ans = Integer.MAX_VALUE;</span><br><span class="line">        pre = -<span class="number">1</span>;</span><br><span class="line">        dfs(root);</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(TreeNode node)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(node == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        dfs(node.left);</span><br><span class="line">        <span class="keyword">if</span>(pre == -<span class="number">1</span>)&#123;</span><br><span class="line">            pre = node.val;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            ans = Math.min(ans, node.val - pre);</span><br><span class="line">            pre = node.val;</span><br><span class="line">        &#125;</span><br><span class="line">        dfs(node.right);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(n)，其中 n 为二叉树节点的个数。二叉树的遍历中每个节点会被访问一次且只会被访问一次。</li>
+<li>空间复杂度：O(n)。空间复杂度取决于递归的栈深度，而栈深度在二叉树为一条链的情况下会达到 O(n) 的级别。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>Tree</tag>
       </tags>
   </entry>
 </search>
