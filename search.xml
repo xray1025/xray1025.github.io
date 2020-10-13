@@ -643,27 +643,33 @@
 <li>编译器线程：在运行时将字节码动态的编译成本地平台相关的机器码</li>
 <li>信号分发线程：负责接收发送到JVM的信号并调用适当的JVM方法处理</li>
 </ul>
-<h2 id="2-JVM内存区域"><a href="#2-JVM内存区域" class="headerlink" title="2 JVM内存区域"></a>2 JVM内存区域</h2><h3 id="2-1-程序计数器"><a href="#2-1-程序计数器" class="headerlink" title="2.1 程序计数器"></a>2.1 程序计数器</h3><ul>
+<h2 id="2-JVM内存区域"><a href="#2-JVM内存区域" class="headerlink" title="2 JVM内存区域"></a>2 JVM内存区域</h2><h3 id="2-1-程序计数器（线程私有）"><a href="#2-1-程序计数器（线程私有）" class="headerlink" title="2.1 程序计数器（线程私有）"></a>2.1 程序计数器（线程私有）</h3><ul>
 <li>当前线程所执行的字节码的行号指示器，占用内存空间较小，没有规定OutOfMemoryError</li>
 </ul>
-<h3 id="2-2-栈"><a href="#2-2-栈" class="headerlink" title="2.2 栈"></a>2.2 栈</h3><ul>
+<h3 id="2-2-栈（线程私有）"><a href="#2-2-栈（线程私有）" class="headerlink" title="2.2 栈（线程私有）"></a>2.2 栈（线程私有）</h3><ul>
 <li>描述java方法的内存模型，每个方法在执行的同时都会创建一个栈帧用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每个方法从调用到执行完成的过程，都对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</li>
 <li>栈帧是用来存储数据和部分过程结果的数据结构，同时也被用来处理动态链接、方法返回值和异常分派。</li>
 </ul>
-<h3 id="2-3-本地方法栈"><a href="#2-3-本地方法栈" class="headerlink" title="2.3 本地方法栈"></a>2.3 本地方法栈</h3><p>为Native方法服务</p>
-<h3 id="2-4-堆"><a href="#2-4-堆" class="headerlink" title="2.4 堆"></a>2.4 堆</h3><ul>
-<li>线程共享，</li>
+<h3 id="2-3-本地方法栈（线程私有）"><a href="#2-3-本地方法栈（线程私有）" class="headerlink" title="2.3 本地方法栈（线程私有）"></a>2.3 本地方法栈（线程私有）</h3><p>为Native方法服务</p>
+<h3 id="2-4-堆（线程共享）"><a href="#2-4-堆（线程共享）" class="headerlink" title="2.4 堆（线程共享）"></a>2.4 堆（线程共享）</h3><ul>
 <li>创建的对象和数组都保存在Java堆内存中，也是垃圾收集器进行垃圾收集的最重要的内存区域</li>
 <li>根据分代收集算法，可以细分为：新生代（Eden、SurvivorFrom、ServivorTo）和老年代</li>
 </ul>
-<h3 id="2-5-方法区"><a href="#2-5-方法区" class="headerlink" title="2.5 方法区"></a>2.5 方法区</h3><p>即永久代（Permanent Generation），用于储存被Java加载的类信息、常量、静态常量、即时编译器编译后的代码等数据。</p>
-<p>运行时常量池（Runtime Constant Pool）是方法区的一部分，负责存放Class文件中的常量池</p>
+<h3 id="2-5-方法区（线程共享）"><a href="#2-5-方法区（线程共享）" class="headerlink" title="2.5 方法区（线程共享）"></a>2.5 方法区（线程共享）</h3><ul>
+<li><p>即永久代（Permanent Generation），用于储存被Java加载的类信息、常量、静态常量、即时编译器编译后的代码等数据。</p>
+</li>
+<li><p>运行时常量池（Runtime Constant Pool）是方法区的一部分，负责存放Class文件中的常量池</p>
+</li>
+</ul>
 <h2 id="3-Java运行时内存"><a href="#3-Java运行时内存" class="headerlink" title="3 Java运行时内存"></a>3 Java运行时内存</h2><h3 id="3-1-新生代"><a href="#3-1-新生代" class="headerlink" title="3.1 新生代"></a>3.1 新生代</h3><ul>
 <li>用来存放新生的对象，占堆1/3的空间</li>
-<li>新生代分为<ul>
-<li>Eden区</li>
-<li>ServivorFrom</li>
-<li>ServivorTo</li>
+<li>新生代分为：<ul>
+<li>Eden区：新对象的出生地</li>
+<li><blockquote>
+<p>ServivorFrom：保留了上一次GC的幸存者，作为这一次GC的被扫描者</p>
+</blockquote>
+</li>
+<li>ServivorTo：保留了一次MinorGC过程中的幸存者</li>
 </ul>
 </li>
 <li>MinorGC：<ul>
@@ -758,7 +764,7 @@
 <li>虚引用<ul>
 <li>PhantomReference类</li>
 <li>必须和引用队列联合使用</li>
-<li>主要用来跟踪对象呗垃圾回收的状态</li>
+<li>主要用来跟踪对象被垃圾回收的状态</li>
 </ul>
 </li>
 </ul>
@@ -766,25 +772,25 @@
 <li>将整个堆空间划分为连续的不同小区间，每个小区间独立使用，独立回收。</li>
 <li>可以控制一次回收多少个小区间，减少一次GC所产生的停顿</li>
 </ul>
-<h2 id="7-垃圾收集器"><a href="#7-垃圾收集器" class="headerlink" title="7 垃圾收集器"></a>7 垃圾收集器</h2><p>分类：</p>
+<h2 id="7-垃圾收集器"><a href="#7-垃圾收集器" class="headerlink" title="7 垃圾收集器"></a>7 垃圾收集器</h2><p><strong>分类：</strong></p>
 <ul>
 <li><p>新生代：</p>
 <ul>
-<li>Serial</li>
-<li>ParNew</li>
-<li>Parallel Scavenge</li>
+<li>Serial（复制）</li>
+<li>ParNew（复制）</li>
+<li>Parallel Scavenge（复制）</li>
 <li>G1</li>
 </ul>
 </li>
 <li><p>老年代：</p>
 <ul>
-<li><p>CMS</p>
+<li><p>CMS（标记清除）</p>
 </li>
-<li><p>Serial Old（MSC）</p>
+<li><p>Serial Old（MSC）（标记整理）</p>
 </li>
-<li><p>Parallel Old</p>
+<li><p>Parallel Old（标记整理）</p>
 </li>
-<li><p>G1</p>
+<li><p>G1（标记整理）</p>
 </li>
 </ul>
 </li>
@@ -933,7 +939,7 @@
 <li>线程通常将非阻塞IO的空闲时间用于在其它通道上执行IO操作，所以一个单独的线程现在可以管理多个输入和输出通道（channel）。</li>
 </ul>
 <h2 id="9-类加载"><a href="#9-类加载" class="headerlink" title="9 类加载"></a>9 类加载</h2><h3 id="9-1-步骤"><a href="#9-1-步骤" class="headerlink" title="9.1 步骤"></a>9.1 步骤</h3><h4 id="9-1-1-加载"><a href="#9-1-1-加载" class="headerlink" title="9.1.1 加载"></a>9.1.1 加载</h4><ul>
-<li>会在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的入口。</li>
+<li>会在内存中生成一个代表这个类的java.lang.Class对象，作为这个类的各种数据的入口。</li>
 </ul>
 <h4 id="9-1-2-验证"><a href="#9-1-2-验证" class="headerlink" title="9.1.2 验证"></a>9.1.2 验证</h4><ul>
 <li>为了确保Class 文件的字节流中包含的信息是否符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。</li>
@@ -958,7 +964,7 @@
 <li><p>使用不同的类加载器最终得到的都是同样一个Object 对象</p>
 </li>
 </ul>
-<p><img src="C:\Users\x\AppData\Roaming\Typora\typora-user-images\image-20200825114823414.png" alt="image-20200825114823414"></p>
+<p><img src="https://github.com/xray1025/image01/blob/master/jvm-parents.png?raw=true"></p>
 ]]></content>
       <categories>
         <category>Java</category>
@@ -2106,585 +2112,6 @@
       <tags>
         <tag>leetcode</tag>
         <tag>dp</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>MySQL</title>
-    <url>/2020/09/02/MySQL/</url>
-    <content><![CDATA[<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><pre><code>1.持久化数据到本地
-2.可以实现结构化查询，方便管理</code></pre>
-<a id="more"></a>
-
-<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><pre><code>1、DB：数据库，保存一组有组织的数据的容器
-2、DBMS：数据库管理系统，又称为数据库软件（产品），用于管理DB中的数据
-3、SQL:结构化查询语言，用于和DBMS通信的语言</code></pre>
-<h2 id="存储数据的特点"><a href="#存储数据的特点" class="headerlink" title="存储数据的特点"></a>存储数据的特点</h2><pre><code>1、将数据放到表中，表再放到库中
-2、一个数据库中可以有多个表，每个表都有一个的名字，用来标识自己。表名具有唯一性。
-3、表具有一些特性，这些特性定义了数据在表中如何存储，类似java中 “类”的设计。
-4、表由列组成，我们也称为字段。所有表都是由一个或多个列组成的，每一列类似java 中的”属性”
-5、表中的数据是按行存储的，每一行类似于java中的“对象”。</code></pre>
-<h2 id="MySQL产品的介绍和安装"><a href="#MySQL产品的介绍和安装" class="headerlink" title="MySQL产品的介绍和安装"></a>MySQL产品的介绍和安装</h2><h3 id="MySQL服务的启动和停止"><a href="#MySQL服务的启动和停止" class="headerlink" title="MySQL服务的启动和停止"></a>MySQL服务的启动和停止</h3><pre><code>方式一：计算机——右击管理——服务
-方式二：通过管理员身份运行
-net start 服务名（启动服务）
-net stop 服务名（停止服务）</code></pre>
-<h3 id="MySQL服务的登录和退出"><a href="#MySQL服务的登录和退出" class="headerlink" title="MySQL服务的登录和退出"></a>MySQL服务的登录和退出</h3><pre><code>方式一：通过mysql自带的客户端
-只限于root用户
-
-方式二：通过windows自带的客户端
-登录：
-mysql 【-h主机名 -P端口号 】-u用户名 -p密码
-
-退出：
-exit或ctrl+C    </code></pre>
-<h2 id="MySQL的常见命令"><a href="#MySQL的常见命令" class="headerlink" title="MySQL的常见命令"></a>MySQL的常见命令</h2><pre><code>1.查看当前所有的数据库
-show databases;
-2.打开指定的库
-use 库名
-3.查看当前库的所有表
-show tables;
-4.查看其它库的所有表
-show tables from 库名;
-5.创建表
-create table 表名(
-
-    列名 列类型,
-    列名 列类型，
-    。。。
-);
-6.查看表结构
-desc 表名;
-
-
-7.查看服务器的版本
-方式一：登录到mysql服务端
-select version();
-方式二：没有登录到mysql服务端
-mysql --version
-或
-mysql --V</code></pre>
-<h3 id="MySQL的语法规范"><a href="#MySQL的语法规范" class="headerlink" title="MySQL的语法规范"></a>MySQL的语法规范</h3><pre><code>1.不区分大小写,但建议关键字大写，表名、列名小写
-2.每条命令最好用分号结尾
-3.每条命令根据需要，可以进行缩进 或换行
-4.注释
-    单行注释：#注释文字
-    单行注释：-- 注释文字
-    多行注释：/* 注释文字  */</code></pre>
-<p>​<br>​    </p>
-<h3 id="SQL的语言分类"><a href="#SQL的语言分类" class="headerlink" title="SQL的语言分类"></a>SQL的语言分类</h3><pre><code>DQL（Data Query Language）：数据查询语言
-    select 
-DML(Data Manipulate Language):数据操作语言
-    insert 、update、delete
-DDL（Data Define Languge）：数据定义语言
-    create、drop、alter
-TCL（Transaction Control Language）：事务控制语言
-    commit、rollback</code></pre>
-<h3 id="SQL的常见命令"><a href="#SQL的常见命令" class="headerlink" title="SQL的常见命令"></a>SQL的常见命令</h3><pre><code>show databases； 查看所有的数据库
-use 库名； 打开指定 的库
-show tables ; 显示库中的所有表
-show tables from 库名;显示指定库中的所有表
-create table 表名(
-    字段名 字段类型,    
-    字段名 字段类型
-); 创建表
-
-desc 表名; 查看指定表的结构
-select * from 表名;显示表中的所有数据</code></pre>
-<h2 id="DQL语言的学习"><a href="#DQL语言的学习" class="headerlink" title="DQL语言的学习"></a>DQL语言的学习</h2><h3 id="进阶1：基础查询"><a href="#进阶1：基础查询" class="headerlink" title="进阶1：基础查询"></a>进阶1：基础查询</h3><pre><code>语法：
-SELECT 要查询的东西
-【FROM 表名】;
-
-类似于Java中 :System.out.println(要打印的东西);
-特点：
-①通过select查询完的结果 ，是一个虚拟的表格，不是真实存在
-② 要查询的东西 可以是常量值、可以是表达式、可以是字段、可以是函数</code></pre>
-<h3 id="进阶2：条件查询"><a href="#进阶2：条件查询" class="headerlink" title="进阶2：条件查询"></a>进阶2：条件查询</h3><pre><code>条件查询：根据条件过滤原始表的数据，查询到想要的数据
-语法：
-select 
-    要查询的字段|表达式|常量值|函数
-from 
-    表
-where 
-    条件 ;
-
-分类：
-一、条件表达式
-    示例：salary&gt;10000
-    条件运算符：
-    &gt; &lt; &gt;= &lt;= = != &lt;&gt;
-
-二、逻辑表达式
-示例：salary&gt;10000 &amp;&amp; salary&lt;20000
-
-逻辑运算符：
-
-    and（&amp;&amp;）:两个条件如果同时成立，结果为true，否则为false
-    or(||)：两个条件只要有一个成立，结果为true，否则为false
-    not(!)：如果条件成立，则not后为false，否则为true
-
-三、模糊查询
-示例：last_name like &#39;a%&#39;</code></pre>
-<h3 id="进阶3：排序查询"><a href="#进阶3：排序查询" class="headerlink" title="进阶3：排序查询"></a>进阶3：排序查询</h3><pre><code>语法：
-select
-    要查询的东西
-from
-    表
-where 
-    条件
-
-order by 排序的字段|表达式|函数|别名 【asc|desc】</code></pre>
-<p>​    </p>
-<h3 id="进阶4：常见函数"><a href="#进阶4：常见函数" class="headerlink" title="进阶4：常见函数"></a>进阶4：常见函数</h3><pre><code>一、单行函数
-1、字符函数
-    concat拼接
-    substr截取子串
-    upper转换成大写
-    lower转换成小写
-    trim去前后指定的空格和字符
-    ltrim去左边空格
-    rtrim去右边空格
-    replace替换
-    lpad左填充
-    rpad右填充
-    instr返回子串第一次出现的索引
-    length 获取字节个数
-
-2、数学函数
-    round 四舍五入
-    rand 随机数
-    floor向下取整
-    ceil向上取整
-    mod取余
-    truncate截断
-3、日期函数
-    now当前系统日期+时间
-    curdate当前系统日期
-    curtime当前系统时间
-    str_to_date 将字符转换成日期
-    date_format将日期转换成字符
-4、流程控制函数
-    if 处理双分支
-    case语句 处理多分支
-        情况1：处理等值判断
-        情况2：处理条件判断
-
-5、其他函数
-    version版本
-    database当前库
-    user当前连接用户</code></pre>
-<p>​    </p>
-<p>二、分组函数</p>
-<pre><code>    sum 求和
-    max 最大值
-    min 最小值
-    avg 平均值
-    count 计数
-
-    特点：
-    1、以上五个分组函数都忽略null值，除了count(*)
-    2、sum和avg一般用于处理数值型
-        max、min、count可以处理任何数据类型
-    3、都可以搭配distinct使用，用于统计去重后的结果
-    4、count的参数可以支持：
-        字段、*、常量值，一般放1
-
-       建议使用 count(*)</code></pre>
-<h3 id="进阶5：分组查询"><a href="#进阶5：分组查询" class="headerlink" title="进阶5：分组查询"></a>进阶5：分组查询</h3><pre><code>语法：
-select 查询的字段，分组函数
-from 表
-group by 分组的字段</code></pre>
-<p>​<br>​    特点：<br>​    1、可以按单个字段分组<br>​    2、和分组函数一同查询的字段最好是分组后的字段<br>​    3、分组筛选<br>​            针对的表    位置            关键字<br>​    分组前筛选：    原始表        group by的前面        where<br>​    分组后筛选：    分组后的结果集    group by的后面        having<br>​<br>​    4、可以按多个字段分组，字段之间用逗号隔开<br>​    5、可以支持排序<br>​    6、having后可以支持别名</p>
-<h3 id="进阶6：多表连接查询"><a href="#进阶6：多表连接查询" class="headerlink" title="进阶6：多表连接查询"></a>进阶6：多表连接查询</h3><pre><code>笛卡尔乘积：如果连接条件省略或无效则会出现
-解决办法：添加上连接条件</code></pre>
-<h4 id="一、传统模式下的连接-：等值连接——非等值连接"><a href="#一、传统模式下的连接-：等值连接——非等值连接" class="headerlink" title="一、传统模式下的连接 ：等值连接——非等值连接"></a>一、传统模式下的连接 ：等值连接——非等值连接</h4><pre><code>1.等值连接的结果 = 多个表的交集
-2.n表连接，至少需要n-1个连接条件
-3.多个表不分主次，没有顺序要求
-4.一般为表起别名，提高阅读性和性能</code></pre>
-<h4 id="二、sql99语法：通过join关键字实现连接"><a href="#二、sql99语法：通过join关键字实现连接" class="headerlink" title="二、sql99语法：通过join关键字实现连接"></a>二、sql99语法：通过join关键字实现连接</h4><pre><code>含义：1999年推出的sql语法
-支持：
-等值连接、非等值连接 （内连接）
-外连接
-交叉连接
-
-语法：
-
-select 字段，...
-from 表1
-【inner|left outer|right outer|cross】join 表2 on  连接条件
-【inner|left outer|right outer|cross】join 表3 on  连接条件
-【where 筛选条件】
-【group by 分组字段】
-【having 分组后的筛选条件】
-【order by 排序的字段或表达式】
-
-好处：语句上，连接条件和筛选条件实现了分离，简洁明了！</code></pre>
-<h4 id="三、自连接"><a href="#三、自连接" class="headerlink" title="三、自连接"></a>三、自连接</h4><p>案例：查询员工名和直接上级的名称</p>
-<p>sql99</p>
-<pre><code>SELECT e.last_name,m.last_name
-FROM employees e
-JOIN employees m ON e.`manager_id`=m.`employee_id`;</code></pre>
-<p>sql92</p>
-<pre><code>SELECT e.last_name,m.last_name
-FROM employees e,employees m 
-WHERE e.`manager_id`=m.`employee_id`;</code></pre>
-<h3 id="进阶7：子查询"><a href="#进阶7：子查询" class="headerlink" title="进阶7：子查询"></a>进阶7：子查询</h3><p>含义：</p>
-<pre><code>一条查询语句中又嵌套了另一条完整的select语句，其中被嵌套的select语句，称为子查询或内查询
-在外面的查询语句，称为主查询或外查询</code></pre>
-<p>特点：</p>
-<pre><code>1、子查询都放在小括号内
-2、子查询可以放在from后面、select后面、where后面、having后面，但一般放在条件的右侧
-3、子查询优先于主查询执行，主查询使用了子查询的执行结果
-4、子查询根据查询结果的行数不同分为以下两类：
-① 单行子查询
-    结果集只有一行
-    一般搭配单行操作符使用：&gt; &lt; = &lt;&gt; &gt;= &lt;= 
-    非法使用子查询的情况：
-    a、子查询的结果为一组值
-    b、子查询的结果为空
-
-② 多行子查询
-    结果集有多行
-    一般搭配多行操作符使用：any、all、in、not in
-    in： 属于子查询结果中的任意一个就行
-    any和all往往可以用其他查询代替</code></pre>
-<h3 id="进阶8：分页查询"><a href="#进阶8：分页查询" class="headerlink" title="进阶8：分页查询"></a>进阶8：分页查询</h3><p>应用场景：</p>
-<pre><code>实际的web项目中需要根据用户的需求提交对应的分页查询的sql语句</code></pre>
-<p>语法：</p>
-<pre><code>select 字段|表达式,...
-from 表
-【where 条件】
-【group by 分组字段】
-【having 条件】
-【order by 排序的字段】
-limit 【起始的条目索引，】条目数;</code></pre>
-<p>特点：</p>
-<pre><code>1.起始条目索引从0开始
-
-2.limit子句放在查询语句的最后
-
-3.公式：select * from  表 limit （page-1）*sizePerPage,sizePerPage
-假如:
-每页显示条目数sizePerPage
-要显示的页数 page</code></pre>
-<h3 id="进阶9：联合查询"><a href="#进阶9：联合查询" class="headerlink" title="进阶9：联合查询"></a>进阶9：联合查询</h3><p>引入：<br>    union 联合、合并</p>
-<p>语法：</p>
-<pre><code>select 字段|常量|表达式|函数 【from 表】 【where 条件】 union 【all】
-select 字段|常量|表达式|函数 【from 表】 【where 条件】 union 【all】
-select 字段|常量|表达式|函数 【from 表】 【where 条件】 union  【all】
-.....
-select 字段|常量|表达式|函数 【from 表】 【where 条件】</code></pre>
-<p>特点：</p>
-<pre><code>1、多条查询语句的查询的列数必须是一致的
-2、多条查询语句的查询的列的类型几乎相同
-3、union代表去重，union all代表不去重</code></pre>
-<h2 id="DML语言"><a href="#DML语言" class="headerlink" title="DML语言"></a>DML语言</h2><h3 id="插入"><a href="#插入" class="headerlink" title="插入"></a>插入</h3><p>语法：<br>    insert into 表名(字段名，…)<br>    values(值1，…);</p>
-<p>特点：</p>
-<pre><code>1、字段类型和值类型一致或兼容，而且一一对应
-2、可以为空的字段，可以不用插入值，或用null填充
-3、不可以为空的字段，必须插入值
-4、字段个数和值的个数必须一致
-5、字段可以省略，但默认所有字段，并且顺序和表中的存储顺序一致</code></pre>
-<h3 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h3><p>修改单表语法：</p>
-<pre><code>update 表名 set 字段=新值,字段=新值
-【where 条件】</code></pre>
-<p>修改多表语法：</p>
-<pre><code>update 表1 别名1,表2 别名2
-set 字段=新值，字段=新值
-where 连接条件
-and 筛选条件</code></pre>
-<h3 id="删除"><a href="#删除" class="headerlink" title="删除"></a>删除</h3><p>方式1：delete语句 </p>
-<p>单表的删除： ★<br>    delete from 表名 【where 筛选条件】</p>
-<p>多表的删除：<br>    delete 别名1，别名2<br>    from 表1 别名1，表2 别名2<br>    where 连接条件<br>    and 筛选条件;</p>
-<p>方式2：truncate语句</p>
-<pre><code>truncate table 表名</code></pre>
-<p>两种方式的区别【面试题】</p>
-<pre><code>#1.truncate不能加where条件，而delete可以加where条件
-
-#2.truncate的效率高一丢丢
-
-#3.truncate 删除带自增长的列的表后，如果再插入数据，数据从1开始
-#delete 删除带自增长列的表后，如果再插入数据，数据从上一次的断点处开始
-
-#4.truncate删除不能回滚，delete删除可以回滚</code></pre>
-<h2 id="DDL语句"><a href="#DDL语句" class="headerlink" title="DDL语句"></a>DDL语句</h2><h3 id="库和表的管理"><a href="#库和表的管理" class="headerlink" title="库和表的管理"></a>库和表的管理</h3><p>库的管理：</p>
-<pre><code>一、创建库
-create database 库名
-二、删除库
-drop database 库名</code></pre>
-<p>表的管理：</p>
-<h4 id="1-创建表"><a href="#1-创建表" class="headerlink" title="1.创建表"></a>1.创建表</h4><pre><code>CREATE TABLE IF NOT EXISTS stuinfo(
-    stuId INT,
-    stuName VARCHAR(20),
-    gender CHAR,
-    bornDate DATETIME
-    );
-
-DESC studentinfo;</code></pre>
-<h4 id="2-修改表-alter"><a href="#2-修改表-alter" class="headerlink" title="2.修改表 alter"></a>2.修改表 alter</h4><pre><code>语法：ALTER TABLE 表名 ADD|MODIFY|DROP|CHANGE COLUMN 字段名 【字段类型】;
-
-#①修改字段名
-ALTER TABLE studentinfo CHANGE  COLUMN sex gender CHAR;
-
-#②修改表名
-ALTER TABLE stuinfo RENAME [TO]  studentinfo;
-#③修改字段类型和列级约束
-ALTER TABLE studentinfo MODIFY COLUMN borndate DATE ;
-
-#④添加字段
-
-ALTER TABLE studentinfo ADD COLUMN email VARCHAR(20) first;
-#⑤删除字段
-ALTER TABLE studentinfo DROP COLUMN email;</code></pre>
-<h4 id="3-删除表"><a href="#3-删除表" class="headerlink" title="3.删除表"></a>3.删除表</h4><pre><code>DROP TABLE [IF EXISTS] studentinfo;</code></pre>
-<p>​    </p>
-<h3 id="常见类型"><a href="#常见类型" class="headerlink" title="常见类型"></a>常见类型</h3><pre><code>整型：
-
-小数：
-    浮点型
-    定点型
-字符型：
-日期型：
-Blob类型：</code></pre>
-<h3 id="常见约束"><a href="#常见约束" class="headerlink" title="常见约束"></a>常见约束</h3><pre><code>NOT NULL
-DEFAULT
-UNIQUE
-CHECK
-PRIMARY KEY
-FOREIGN KEY</code></pre>
-<h2 id="数据库事务"><a href="#数据库事务" class="headerlink" title="数据库事务"></a>数据库事务</h2><h3 id="含义"><a href="#含义" class="headerlink" title="含义"></a>含义</h3><pre><code>通过一组逻辑操作单元（一组DML——sql语句），将数据从一种状态切换到另外一种状态</code></pre>
-<h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><pre><code>（ACID）
-原子性：要么都执行，要么都回滚
-一致性：保证数据的状态操作前和操作后保持一致
-隔离性：多个事务同时操作相同数据库的同一个数据时，一个事务的执行不受另外一个事务的干扰
-持久性：一个事务一旦提交，则数据将持久化到本地，除非其他事务对其进行修改</code></pre>
-<p>相关步骤：</p>
-<pre><code>1、开启事务
-2、编写事务的一组逻辑操作单元（多条sql语句）
-3、提交事务或回滚事务</code></pre>
-<h3 id="事务的分类："><a href="#事务的分类：" class="headerlink" title="事务的分类："></a>事务的分类：</h3><p>隐式事务，没有明显的开启和结束事务的标志</p>
-<pre><code>比如
-insert、update、delete语句本身就是一个事务</code></pre>
-<p>显式事务，具有明显的开启和结束事务的标志</p>
-<pre><code>    1、开启事务
-    取消自动提交事务的功能
-
-    2、编写事务的一组逻辑操作单元（多条sql语句）
-    insert
-    update
-    delete
-
-    3、提交事务或回滚事务</code></pre>
-<h3 id="使用到的关键字"><a href="#使用到的关键字" class="headerlink" title="使用到的关键字"></a>使用到的关键字</h3><pre><code>set autocommit=0;
-start transaction;
-commit;
-rollback;
-
-savepoint  断点
-commit to 断点
-rollback to 断点</code></pre>
-<h3 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h3><p>事务并发问题如何发生？</p>
-<pre><code>当多个事务同时操作同一个数据库的相同数据时</code></pre>
-<p>事务的并发问题有哪些？</p>
-<pre><code>脏读：一个事务读取到了另外一个事务未提交的数据
-不可重复读：同一个事务中，多次读取到的数据不一致
-幻读：一个事务读取数据时，另外一个事务进行更新，导致第一个事务读取到了没有更新的数据</code></pre>
-<p>如何避免事务的并发问题？</p>
-<pre><code>通过设置事务的隔离级别
-1、READ UNCOMMITTED
-2、READ COMMITTED 可以避免脏读
-3、REPEATABLE READ 可以避免脏读、不可重复读和一部分幻读
-4、SERIALIZABLE可以避免脏读、不可重复读和幻读</code></pre>
-<p>设置隔离级别：</p>
-<pre><code>set session|global  transaction isolation level 隔离级别名;</code></pre>
-<p>查看隔离级别：</p>
-<pre><code>select @@tx_isolation;</code></pre>
-<h2 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h2><p>含义：理解成一张虚拟的表</p>
-<p>视图和表的区别：</p>
-<pre><code>    使用方式    占用物理空间
-
-视图    完全相同    不占用，仅仅保存的是sql逻辑
-
-表    完全相同    占用</code></pre>
-<p>视图的好处：</p>
-<pre><code>1、sql语句提高重用性，效率高
-2、和表实现了分离，提高了安全性</code></pre>
-<h3 id="视图的创建"><a href="#视图的创建" class="headerlink" title="视图的创建"></a>视图的创建</h3><p>​    语法：<br>​    CREATE VIEW  视图名<br>​    AS<br>​    查询语句;</p>
-<h3 id="视图的增删改查"><a href="#视图的增删改查" class="headerlink" title="视图的增删改查"></a>视图的增删改查</h3><p>1、查看视图的数据 ★</p>
-<pre><code>SELECT * FROM my_v4;
-SELECT * FROM my_v1 WHERE last_name=&#39;Partners&#39;;
-
-2、插入视图的数据
-INSERT INTO my_v4(last_name,department_id) VALUES(&#39;虚竹&#39;,90);
-
-3、修改视图的数据
-
-UPDATE my_v4 SET last_name =&#39;梦姑&#39; WHERE last_name=&#39;虚竹&#39;;</code></pre>
-<p>​<br>​    4、删除视图的数据<br>​    DELETE FROM my_v4;</p>
-<h3 id="某些视图不能更新"><a href="#某些视图不能更新" class="headerlink" title="某些视图不能更新"></a>某些视图不能更新</h3><p>​    包含以下关键字的sql语句：分组函数、distinct、group  by、having、union或者union all<br>​    常量视图<br>​    Select中包含子查询<br>​    join<br>​    from一个不能更新的视图<br>​    where子句的子查询引用了from子句中的表</p>
-<h3 id="视图逻辑的更新"><a href="#视图逻辑的更新" class="headerlink" title="视图逻辑的更新"></a>视图逻辑的更新</h3><figure class="highlight n1ql"><table><tr><td class="code"><pre><span class="line">方式一：</span><br><span class="line">	<span class="keyword">CREATE</span> <span class="keyword">OR</span> <span class="built_in">REPLACE</span> <span class="keyword">VIEW</span> test_v7</span><br><span class="line">	<span class="keyword">AS</span></span><br><span class="line">	<span class="keyword">SELECT</span> last_name <span class="keyword">FROM</span> employees</span><br><span class="line">	<span class="keyword">WHERE</span> employee_id&gt;<span class="number">100</span>;</span><br></pre></td></tr></table></figure>
-
-<p>​    </p>
-<pre><code>#方式二:
-ALTER VIEW test_v7
-AS
-SELECT employee_id FROM employees;
-
-SELECT * FROM test_v7;</code></pre>
-<h3 id="视图的删除"><a href="#视图的删除" class="headerlink" title="视图的删除"></a>视图的删除</h3><p>​    DROP VIEW test_v1,test_v2,test_v3;</p>
-<h3 id="视图结构的查看"><a href="#视图结构的查看" class="headerlink" title="视图结构的查看"></a>视图结构的查看</h3><p>​    DESC test_v7;<br>​    SHOW CREATE VIEW test_v7;</p>
-<h2 id="存储过程"><a href="#存储过程" class="headerlink" title="存储过程"></a>存储过程</h2><p>含义：一组经过预先编译的sql语句的集合<br>好处：</p>
-<pre><code>1、提高了sql语句的重用性，减少了开发程序员的压力
-2、提高了效率
-3、减少了传输次数</code></pre>
-<p>分类：</p>
-<pre><code>1、无返回无参
-2、仅仅带in类型，无返回有参
-3、仅仅带out类型，有返回无参
-4、既带in又带out，有返回有参
-5、带inout，有返回有参
-注意：in、out、inout都可以在一个存储过程中带多个</code></pre>
-<h3 id="创建存储过程"><a href="#创建存储过程" class="headerlink" title="创建存储过程"></a>创建存储过程</h3><p>语法：</p>
-<pre><code>create procedure 存储过程名(in|out|inout 参数名  参数类型,...)
-begin
-    存储过程体
-
-end</code></pre>
-<p>类似于方法：</p>
-<pre><code>修饰符 返回类型 方法名(参数类型 参数名,...)&#123;
-
-    方法体;
-&#125;</code></pre>
-<p>注意</p>
-<pre><code>1、需要设置新的结束标记
-delimiter 新的结束标记
-示例：
-delimiter $
-
-CREATE PROCEDURE 存储过程名(IN|OUT|INOUT 参数名  参数类型,...)
-BEGIN
-    sql语句1;
-    sql语句2;
-
-END $
-
-2、存储过程体中可以有多条sql语句，如果仅仅一条sql语句，则可以省略begin end
-
-3、参数前面的符号的意思
-in:该参数只能作为输入 （该参数不能做返回值）
-out：该参数只能作为输出（该参数只能做返回值）
-inout：既能做输入又能做输出</code></pre>
-<h3 id="调用存储过程"><a href="#调用存储过程" class="headerlink" title="调用存储过程"></a>调用存储过程</h3><p>​    call 存储过程名(实参列表)</p>
-<h4 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h4><h5 id="创建函数"><a href="#创建函数" class="headerlink" title="创建函数"></a>创建函数</h5><p>学过的函数：LENGTH、SUBSTR、CONCAT等<br>语法：</p>
-<pre><code>CREATE FUNCTION 函数名(参数名 参数类型,...) RETURNS 返回类型
-BEGIN
-    函数体
-
-END</code></pre>
-<h5 id="调用函数"><a href="#调用函数" class="headerlink" title="调用函数"></a>调用函数</h5><p>​    SELECT 函数名（实参列表）</p>
-<h5 id="函数和存储过程的区别"><a href="#函数和存储过程的区别" class="headerlink" title="函数和存储过程的区别"></a>函数和存储过程的区别</h5><pre><code>        关键字        调用语法    返回值            应用场景
-函数        FUNCTION    SELECT 函数()    只能是一个        一般用于查询结果为一个值并返回时，当有返回值而且仅仅一个
-存储过程    PROCEDURE    CALL 存储过程()    可以有0个或多个        一般用于更新</code></pre>
-<h2 id="流程控制结构"><a href="#流程控制结构" class="headerlink" title="流程控制结构"></a>流程控制结构</h2><h3 id="系统变量"><a href="#系统变量" class="headerlink" title="系统变量"></a>系统变量</h3><p>一、全局变量</p>
-<p>作用域：针对于所有会话（连接）有效，但不能跨重启</p>
-<pre><code>查看所有全局变量
-SHOW GLOBAL VARIABLES;
-查看满足条件的部分系统变量
-SHOW GLOBAL VARIABLES LIKE &#39;%char%&#39;;
-查看指定的系统变量的值
-SELECT @@global.autocommit;
-为某个系统变量赋值
-SET @@global.autocommit=0;
-SET GLOBAL autocommit=0;</code></pre>
-<p>二、会话变量</p>
-<p>作用域：针对于当前会话（连接）有效</p>
-<pre><code>查看所有会话变量
-SHOW SESSION VARIABLES;
-查看满足条件的部分会话变量
-SHOW SESSION VARIABLES LIKE &#39;%char%&#39;;
-查看指定的会话变量的值
-SELECT @@autocommit;
-SELECT @@session.tx_isolation;
-为某个会话变量赋值
-SET @@session.tx_isolation=&#39;read-uncommitted&#39;;
-SET SESSION tx_isolation=&#39;read-committed&#39;;</code></pre>
-<h3 id="自定义变量"><a href="#自定义变量" class="headerlink" title="自定义变量"></a>自定义变量</h3><p>一、用户变量</p>
-<p>声明并初始化：</p>
-<pre><code>SET @变量名=值;
-SET @变量名:=值;
-SELECT @变量名:=值;</code></pre>
-<p>赋值：</p>
-<pre><code>方式一：一般用于赋简单的值
-SET 变量名=值;
-SET 变量名:=值;
-SELECT 变量名:=值;
-
-
-方式二：一般用于赋表 中的字段值
-SELECT 字段名或表达式 INTO 变量
-FROM 表;</code></pre>
-<p>使用：</p>
-<pre><code>select @变量名;</code></pre>
-<p>二、局部变量</p>
-<p>声明：</p>
-<pre><code>declare 变量名 类型 【default 值】;</code></pre>
-<p>赋值：</p>
-<pre><code>方式一：一般用于赋简单的值
-SET 变量名=值;
-SET 变量名:=值;
-SELECT 变量名:=值;
-
-
-方式二：一般用于赋表 中的字段值
-SELECT 字段名或表达式 INTO 变量
-FROM 表;</code></pre>
-<p>使用：</p>
-<pre><code>select 变量名</code></pre>
-<p>二者的区别：</p>
-<pre><code>        作用域            定义位置        语法</code></pre>
-<p>用户变量    当前会话        会话的任何地方        加@符号，不用指定类型<br>局部变量    定义它的BEGIN END中     BEGIN END的第一句话    一般不用加@,需要指定类型</p>
-<h3 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h3><p>一、if函数<br>    语法：if(条件，值1，值2)<br>    特点：可以用在任何位置</p>
-<p>二、case语句</p>
-<p>语法：</p>
-<pre><code>情况一：类似于switch
-case 表达式
-when 值1 then 结果1或语句1(如果是语句，需要加分号) 
-when 值2 then 结果2或语句2(如果是语句，需要加分号)
-...
-else 结果n或语句n(如果是语句，需要加分号)
-end 【case】（如果是放在begin end中需要加上case，如果放在select后面不需要）
-
-情况二：类似于多重if
-case 
-when 条件1 then 结果1或语句1(如果是语句，需要加分号) 
-when 条件2 then 结果2或语句2(如果是语句，需要加分号)
-...
-else 结果n或语句n(如果是语句，需要加分号)
-end 【case】（如果是放在begin end中需要加上case，如果放在select后面不需要）</code></pre>
-<p>特点：<br>    可以用在任何位置</p>
-<p>三、if elseif语句</p>
-<p>语法：</p>
-<pre><code>if 情况1 then 语句1;
-elseif 情况2 then 语句2;
-...
-else 语句n;
-end if;</code></pre>
-<p>特点：<br>    只能用在begin end中！！！！！！！！！！！！！！！</p>
-<p>三者比较：<br>            应用场合<br>    if函数        简单双分支<br>    case结构    等值判断 的多分支<br>    if结构        区间判断 的多分支</p>
-<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><p>语法：</p>
-<pre><code>【标签：】WHILE 循环条件  DO
-    循环体
-END WHILE 【标签】;</code></pre>
-<p>特点：</p>
-<pre><code>只能放在BEGIN END里面
-
-如果要搭配leave跳转语句，需要使用标签，否则可以不用标签
-
-leave类似于java中的break语句，跳出所在循环！！！</code></pre>
-]]></content>
-      <categories>
-        <category>Java</category>
-      </categories>
-      <tags>
-        <tag>MySQL</tag>
       </tags>
   </entry>
   <entry>
@@ -4743,6 +4170,490 @@ leave类似于java中的break语句，跳出所在循环！！！</code></pre>
       <tags>
         <tag>leetcode</tag>
         <tag>Tree</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java集合</title>
+    <url>/2020/10/12/JAVA%E9%9B%86%E5%90%88/</url>
+    <content><![CDATA[<h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><ul>
+<li>Collection：List（列表）、Queue（队列）、Set（集）</li>
+<li>Iterator（迭代器）</li>
+</ul>
+<a id="more"></a>
+
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/JAVA-283.jpg"></p>
+<h2 id="1-ArrayList和LinkedList的区别？"><a href="#1-ArrayList和LinkedList的区别？" class="headerlink" title="1 ArrayList和LinkedList的区别？"></a>1 ArrayList和LinkedList的区别？</h2><ul>
+<li><strong>是否线程安全：</strong>ArrayList和LinkedList都不是线程安全的；</li>
+<li><strong>底层数据结构：</strong>ArrayList底层使用数组，LinkedList底层使用双向链表；</li>
+<li><strong>快速随机访问：</strong>ArrayList支持，LinkedList不支持；</li>
+<li><strong>随机位置插入删除的时间复杂度：</strong>ArrayList为O(n)，LinkedList为O(1);</li>
+<li><strong>内存占用：</strong>ArrayList会在列表结尾预留一定容量空间，LinkedList的每个元素都要额外存储直接前驱和直接后继。</li>
+</ul>
+<h2 id="2-ArrayList和Vector的区别？"><a href="#2-ArrayList和Vector的区别？" class="headerlink" title="2 ArrayList和Vector的区别？"></a>2 ArrayList和Vector的区别？</h2><ul>
+<li>ArrayList不是线程安全的；</li>
+<li>Vector是线程安全的，但是在同步操作上会耗费大量时间。</li>
+</ul>
+<h2 id="3-ArrayList的扩容机制？"><a href="#3-ArrayList的扩容机制？" class="headerlink" title="3 ArrayList的扩容机制？"></a>3 ArrayList的扩容机制？</h2><ul>
+<li><p>默认初始大小为10；</p>
+</li>
+<li><p>底层其实是调用Arrays.copyOf`方法来进行扩充数组容量。</p>
+</li>
+<li><p>默认情况下，新的容量会是原容量的1.5倍，这里用了位运算提高效率。一般情况下，如果扩容1.5倍后就大于期望容量，那就返回这个1.5倍旧容量的值。而如果小于期望容量，那就返回期望容量。</p>
+</li>
+<li><p>使用1.5倍这个数值而不是直接使用期望容量，是为了防止频繁扩容影响性能。试想如果每次add操作都要扩容一次，那性能将会非常低下。</p>
+</li>
+<li><p>可以手动扩容，没有缩容。</p>
+</li>
+</ul>
+<h2 id="4-HashMap和HashTable的区别？"><a href="#4-HashMap和HashTable的区别？" class="headerlink" title="4 HashMap和HashTable的区别？"></a>4 HashMap和HashTable的区别？</h2><ul>
+<li><strong>线程是否安全：</strong>HashMap是非线程安全的，HashTable使用synchronized修饰，是线程安全的；</li>
+<li><strong>效率：</strong>HashTable的效率低，已被淘汰；</li>
+<li><strong>Null值：</strong>HashMap的Key和Value可以为null，HashTab的Key如果为null，则会跑出NullPointerException。</li>
+<li><strong>初始容量和扩容：</strong>HashMap的初始大小为16，扩容因子为0.75，每次扩容变为2倍，HashTable的初始大小为11，每次扩容变为原来的2n+1;</li>
+<li><strong>底层实现不同。</strong></li>
+</ul>
+<h2 id="5-HashMap和HashSet的区别？"><a href="#5-HashMap和HashSet的区别？" class="headerlink" title="5 HashMap和HashSet的区别？"></a>5 HashMap和HashSet的区别？</h2><ul>
+<li>HashSet的底层是基于HashMap实现的；</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">HashMap</th>
+<th align="center">HashSet</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">实现Map接口</td>
+<td align="center">实现Set接口</td>
+</tr>
+<tr>
+<td align="center">存储键值对</td>
+<td align="center">仅存储值</td>
+</tr>
+<tr>
+<td align="center">使用put()添加元素</td>
+<td align="center">使用add()添加元素</td>
+</tr>
+<tr>
+<td align="center">使用key计算hashCode</td>
+<td align="center">使用value计算hashCode</td>
+</tr>
+</tbody></table>
+<h2 id="6-HashSet如何检查重复？"><a href="#6-HashSet如何检查重复？" class="headerlink" title="6 HashSet如何检查重复？"></a>6 HashSet如何检查重复？</h2><p>向HashSet添加元素时，HashSet会计算元素的hashCode判断元素加入的位置，同时与其他已添加的元素的hashCode作比较，如果没有hashCode相同的元素，则添加，否则会调用equals()方法检查hashCode相同的元素是否真的相同。</p>
+<h3 id="6-1-hashCode-和equals"><a href="#6-1-hashCode-和equals" class="headerlink" title="6.1 hashCode()和equals()"></a>6.1 hashCode()和equals()</h3><ul>
+<li>如果两个对象相等，则hashCode相等，equals()为true；</li>
+<li>两个对象即使hashCode相等，也不一定相等；</li>
+<li>覆盖equals()必须覆盖hashCode()；</li>
+<li>如果没有重写hashCode()，则两个对象绝对不相等。</li>
+</ul>
+<h3 id="6-2-和equals-的区别？"><a href="#6-2-和equals-的区别？" class="headerlink" title="6.2 ==和equals()的区别？"></a>6.2 ==和equals()的区别？</h3><ul>
+<li>对于基本类型的变量来说（如 <code>short</code>、 <code>int</code>、 <code>long</code>、 <code>float</code>、 <code>double</code>），只能使用 == ，因为这些基本类型的变量没有 equals 方法。对于基本类型变量的比较，使用 == 比较， <strong>一般比较的是它们的值</strong>。</li>
+<li>对于引用类型的变量来说（例如 String 类）才有 equals 方法。对于该类型对象的比较，默认情况下，也就是没有复写 Object 类的 equals 方法，使用 == 和 equals 比较是一样效果的，都是<strong>比较的是它们在内存中的存放地址</strong>。<strong>String 类存在 equals 方法被复写的情况，使用 equals 方法会比较它们的值</strong>；</li>
+</ul>
+<h2 id="7-HashMap的底层实现"><a href="#7-HashMap的底层实现" class="headerlink" title="7 HashMap的底层实现"></a>7 HashMap的底层实现</h2><ul>
+<li>JDK1.8以前，HashMap的底层是数组和链表组合在一起。HashMap计算key的hashCode经过扰动函数处理后得到hash值，然后通过 (n-1) &amp; hash判断当前元素存放的位置，如果当前位置存在元素，则判断该元素与要存入的元素的hash值和key是否相等，如果相等则覆盖，否则通过拉链法解决冲突。</li>
+</ul>
+<blockquote>
+<p>扰动函数：即hash方法</p>
+</blockquote>
+<ul>
+<li>JDK1.7的hash方法：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(<span class="keyword">int</span> h)</span></span>&#123;</span><br><span class="line">    h ^= (h &gt;&gt;&gt; <span class="number">20</span>) ^ (h &gt;&gt;&gt;<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">return</span> h ^ (h &gt;&gt;&gt; <span class="number">7</span>) ^ (h &gt;&gt;&gt; <span class="number">4</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>JDK1.8以后，当数组长度大于64，链表长度大于8时，将链表转化为红黑树；链表长度小于7时，红黑树转化为链表。</p>
+</li>
+<li><p>JDK1.8的hash方法：</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(<span class="keyword">int</span> h)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (key == <span class="keyword">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-HashMap的长度为什么是2的幂次方？"><a href="#8-HashMap的长度为什么是2的幂次方？" class="headerlink" title="8 HashMap的长度为什么是2的幂次方？"></a>8 HashMap的长度为什么是2的幂次方？</h2><p>hash % length == hash &amp; (length - 1)的前提是length == 2 的幂次方。</p>
+<h2 id="9-ConcurrentHashMap和HashTable的区别？"><a href="#9-ConcurrentHashMap和HashTable的区别？" class="headerlink" title="9 ConcurrentHashMap和HashTable的区别？"></a>9 ConcurrentHashMap和HashTable的区别？</h2><ul>
+<li>实现线程安全的方式不同：<ul>
+<li>JDK1.7的ConcurrentHashMap使用分段锁对整个数组进行分段加锁（Segment），多线程访问不同数据段的数据就不会发生锁竞争，提高并发效率；</li>
+<li>JDK1.8的ConcurrentHashMap使用synchronized和CAS进行并发控制；</li>
+<li>HashTable使用synchronized保证线程安全，效率低下。</li>
+</ul>
+</li>
+<li>底层数据结构不同。</li>
+</ul>
+<blockquote>
+<p>Segment：实现了ReentrantLock，是可重入锁。</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>数据库</title>
+    <url>/2020/10/13/Database/</url>
+    <content><![CDATA[<h1 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h1><blockquote>
+<p>原作者：</p>
+</blockquote>
+<hr>
+<h3 id="事务的概念和特性？"><a href="#事务的概念和特性？" class="headerlink" title="事务的概念和特性？"></a>事务的概念和特性？</h3><p>概念：事务（Transaction）是一个操作序列，不可分割的工作单位，以BEGIN TRANSACTION开始，以ROLLBACK/COMMIT结束</p>
+<p>特性（ACID）：</p>
+<ul>
+<li><strong>原子性</strong>（Atomicity）：逻辑上是不可分割的操作单元，事务的所有操作要么全部提交成功，要么全部失败回滚（用回滚日志实现，反向执行日志中的操作）；</li>
+<li><strong>一致性</strong>（Consistency）：事务的执行必须使数据库保持一致性状态。在一致性状态下，所有事务对一个数据的读取结果都是相同的；</li>
+<li><strong>隔离性</strong>（Isolation）：一个事务所做的修改在最终提交以前，对其它事务是不可见的（并发执行的事务之间不能相互影响）；</li>
+<li><strong>持久性</strong>（Durability）：一旦事务提交成功，对数据的修改是永久性的</li>
+</ul>
+<h3 id="会出现哪些并发一致性问题？"><a href="#会出现哪些并发一致性问题？" class="headerlink" title="会出现哪些并发一致性问题？"></a>会出现哪些并发一致性问题？</h3><ul>
+<li><strong>丢失修改</strong>：一个事务对数据进行了修改，在事务提交之前，另一个事务对同一个数据进行了修改，覆盖了之前的修改；</li>
+<li><strong>脏读</strong>（Dirty Read）：一个事务读取了被另一个事务修改、但未提交（进行了回滚）的数据，造成两个事务得到的数据不一致；</li>
+<li><strong>不可重复读</strong>（Nonrepeatable Read）：在同一个事务中，某查询操作在一个时间读取某一行数据和之后一个时间读取该行数据，发现数据已经发生修改（可能被更新或删除了）；</li>
+<li><strong>幻读</strong>（Phantom Read）：当同一查询多次执行时，由于其它事务在这个数据范围内执行了<strong>插入操作</strong>，会导致每次返回不同的结果集（和不可重复读的区别：针对的是一个数据整体/范围；并且需要是插入操作）</li>
+</ul>
+<h3 id="数据库的四种隔离级别？"><a href="#数据库的四种隔离级别？" class="headerlink" title="数据库的四种隔离级别？"></a>数据库的四种隔离级别？</h3><ul>
+<li><strong>未提交读</strong>（Read Uncommited）：在一个事务提交之前，它的执行结果对其它事务也是可见的。会导致脏读、不可重复读、幻读；</li>
+<li><strong>提交读</strong>（Read Commited）：一个事务只能看见已经提交的事务所作的改变。可避免脏读问题；</li>
+<li><strong>可重复读</strong>（Repeatable Read）：可以确保同一个事务在多次读取同样的数据时得到相同的结果。（MySQL的默认隔离级别）。可避免不可重复读；</li>
+<li><strong>可串行化</strong>（Serializable）：强制事务串行执行，使之不可能相互冲突，从而解决幻读问题。可能导致大量的超时现象和锁竞争，实际很少使用。</li>
+</ul>
+<h3 id="什么是乐观锁和悲观锁？"><a href="#什么是乐观锁和悲观锁？" class="headerlink" title="什么是乐观锁和悲观锁？"></a>什么是乐观锁和悲观锁？</h3><ul>
+<li>悲观锁：认为数据随时会被修改，因此每次读取数据之前都会上锁，防止其它事务读取或修改数据；应用于<strong>数据更新比较频繁</strong>的场景；</li>
+<li>乐观锁：操作数据时不会上锁，但是更新时会判断在此期间有没有别的事务更新这个数据，若被更新过，则失败重试；适用于<strong>读多写少</strong>的场景。乐观锁的实现方式有：<ul>
+<li>加一个版本号或者时间戳字段，每次数据更新时同时更新这个字段；</li>
+<li>先读取想要更新的字段或者所有字段，更新的时候比较一下，只有字段没有变化才进行更新</li>
+</ul>
+</li>
+</ul>
+<h3 id="常见的封锁类型？"><a href="#常见的封锁类型？" class="headerlink" title="常见的封锁类型？"></a>常见的封锁类型？</h3><p>意向锁是 InnoDB 自动加的， 不需用户干预。<br>对于 UPDATE、 DELETE 和 INSERT 语句， InnoDB<br>会自动给涉及数据集加排他锁（X)；<br>对于普通 SELECT 语句，InnoDB 不会加任何锁；<br>事务可以通过以下语句显式给记录集加共享锁或排他锁：<br>共享锁（S）：SELECT * FROM table_name WHERE … LOCK IN SHARE MODE。 其他 session 仍然可以查询记录，并也可以对该记录加 share mode 的共享锁。但是如果当前事务需要对该记录进行更新操作，则很有可能造成死锁。<br>排他锁（X)：SELECT * FROM table_name WHERE … FOR UPDATE。其他 session 可以查询该记录，但是不能对该记录加共享锁或排他锁，而是等待获得锁</p>
+<ul>
+<li><strong>排它锁</strong>（Exclusive Lock）/ X锁：事务对数据加上X锁时，只允许此事务读取和修改此数据，并且其它事务不能对该数据加任何锁；</li>
+<li><strong>共享锁</strong>（Shared Lock）/ S锁：加了S锁后，该事务只能对数据进行读取而不能修改，并且其它事务只能加S锁，不能加X锁</li>
+<li><strong>意向锁</strong>（Intention Locks）：<ul>
+<li>一个事务在获得某个<strong>数据行</strong>对象的 S 锁之前，必须先获得<strong>整个表</strong>的 IS 锁或更强的锁；</li>
+<li>一个事务在获得某个数据行对象的 X 锁之前，必须先获得整个表的 IX 锁；</li>
+<li>IS/IX 锁之间都是兼容的；</li>
+<li>好处：如果一个事务想要对整个表加X锁，就需要先检测是否有其它事务对该表或者该表中的某一行加了锁，这种检测非常耗时。有了意向锁之后，只需要检测整个表是否存在IX/IS/X/S锁就行了</li>
+</ul>
+</li>
+</ul>
+<p>锁的作用：用于管理对共享资源的并发访问，保证数据库的完整性和一致性</p>
+<details>
+<summary>封锁粒度的概念</summary>
+
+<p>MySQL 中提供了两种封锁粒度：<strong>行级锁</strong>以及<strong>表级锁</strong>。</p>
+<p>封锁粒度小：</p>
+<ul>
+<li>好处：锁定的数据量越少，发生锁争用的可能就越小，系统的<strong>并发程度</strong>就越高；</li>
+<li>坏处：<strong>系统开销</strong>大（加锁、释放锁、检查锁的状态都需要消耗资源）</details>
+
+</li>
+</ul>
+<details>
+<summary>MySQL加锁</summary>
+
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> ... <span class="keyword">LOCK</span> <span class="keyword">In</span> <span class="keyword">SHARE</span> <span class="keyword">MODE</span>;</span><br><span class="line"><span class="keyword">SELECT</span> ... <span class="keyword">FOR</span> <span class="keyword">UPDATE</span>;</span><br></pre></td></tr></table></figure>
+</details>
+
+<h3 id="什么是三级封锁协议？"><a href="#什么是三级封锁协议？" class="headerlink" title="什么是三级封锁协议？"></a>什么是三级封锁协议？</h3><ul>
+<li>一级封锁协议：事务在修改数据之前必须先对其加X锁，直到事务结束才释放。可以解决丢失修改问题（两个事务不能同时对一个数据加X锁，避免了修改被覆盖）；</li>
+<li>二级封锁协议：在一级的基础上，事务在读取数据之前必须先加S锁，读完后释放。可以解决脏读问题（如果已经有事务在修改数据，就意味着已经加了X锁，此时想要读取数据的事务并不能加S锁，也就无法进行读取，避免了读取脏数据）；</li>
+<li>三级封锁协议：在二级的基础上，事务在读取数据之前必须先加S锁，直到事务结束才能释放。可以解决不可重复读问题（避免了在事务结束前其它事务对数据加X锁进行修改，保证了事务期间数据不会被其它事务更新）</li>
+</ul>
+<h3 id="什么是两段锁协议？"><a href="#什么是两段锁协议？" class="headerlink" title="什么是两段锁协议？"></a>什么是两段锁协议？</h3><p>事务必须严格分为两个阶段对数据进行<strong>加锁和解锁</strong>的操作，第一阶段加锁，第二阶段解锁。也就是说一个事务中一旦释放了锁，就不能再申请新锁了。</p>
+<p><strong>可串行化调度</strong>是指，通过并发控制，使得并发执行的事务结果与某个串行执行的事务结果相同。事务遵循两段锁协议是保证可串行化调度的充分条件。</p>
+<h3 id="什么是-MVCC？"><a href="#什么是-MVCC？" class="headerlink" title="什么是 MVCC？"></a>什么是 MVCC？</h3><p>多版本并发控制（Multi-Version Concurrency Control, MVCC），MVCC在每行记录后面都保存有两个隐藏的列，用来存储<strong>创建版本号</strong>和<strong>删除版本号</strong>。</p>
+<ul>
+<li>创建版本号：创建一个数据行时的事务版本号（<strong>事务版本号</strong>：事务开始时的系统版本号；系统版本号：每开始一个新的事务，系统版本号就会自动递增）；</li>
+<li>删除版本号：删除操作时的事务版本号；</li>
+<li>各种操作：<ul>
+<li>插入操作时，记录创建版本号；</li>
+<li>删除操作时，记录删除版本号；</li>
+<li>更新操作时，先记录删除版本号，再新增一行记录创建版本号；</li>
+<li>查询操作时，要符合以下条件才能被查询出来：删除版本号未定义或大于当前事务版本号（删除操作是在当前事务启动之后做的）；创建版本号小于或等于当前事务版本号（创建操作是事务完成或者在事务启动之前完成）</li>
+</ul>
+</li>
+</ul>
+<p>通过版本号减少了锁的争用，<strong>提高了系统性能</strong>；可以实现<strong>提交读</strong>和<strong>可重复读</strong>两种隔离级别，未提交读无需使用MVCC</p>
+<details>
+<summary>快照读与当前读</summary>
+
+<p>使用 MVCC 读取的是快照中的数据，这样可以减少加锁所带来的开销：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> ...;</span><br></pre></td></tr></table></figure>
+
+<p>当前读读取的是最新的数据，需要加锁。以下第一个语句需要加 S 锁，其它都需要加 X 锁：</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> ? <span class="keyword">lock</span> <span class="keyword">in</span> <span class="keyword">share</span> <span class="keyword">mode</span>;</span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">table</span> <span class="keyword">where</span> ? <span class="keyword">for</span> <span class="keyword">update</span>;</span><br><span class="line"><span class="keyword">insert</span>;</span><br><span class="line"><span class="keyword">update</span>;</span><br><span class="line"><span class="keyword">delete</span>;</span><br></pre></td></tr></table></figure>
+
+</details>
+
+<h3 id="数据库的范式？"><a href="#数据库的范式？" class="headerlink" title="数据库的范式？"></a>数据库的范式？</h3><ul>
+<li><p><strong>第一范式</strong>（1NF，Normal Form）：<strong>属性不应该是可分的</strong>。举例：如果将“电话”作为一个属性（一列），是不符合1NF的，因为电话这个属性可以分解为家庭电话和移动电话…如果将“移动电话”作为一个属性，就符合1NF；</p>
+</li>
+<li><p><strong>第二范式</strong> 2NF：每个非主属性<strong>完全依赖</strong>于主属性集（候选键集）；</p>
+<ul>
+<li>B完全依赖于A，就是说A中的所有属性唯一决定B，属性少了就不能唯一决定，属性多了则有冗余（叫依赖不叫完全依赖）。举例：（学号，课程名）这个主属性集可以唯一决定成绩，但是对于学生姓名这个属性，（学号，课程名）这个属性集就是冗余的，所以学生姓名不完全依赖于（学号，课程名）这一属性集；</li>
+<li>主属性集/候选码集：某一组属性能够唯一确定其它的属性（主键就是从候选键集中选的一个键），而其子集不能，这样的属性组中的属性就是主属性；不在候选码集中的属性成为非主属性；</li>
+<li>可以通过分解来满足 2NF：将（学号，课程名，成绩）做成一张表；（学号，学生姓名）做成另一张表，避免大量的数据冗余；<br>满足1NF后，要求表中的所有列，都必须依赖于主键，而不能有任何一列与主键没有关系，也就是说一个表只描述一件事情；</li>
+</ul>
+</li>
+<li><p><strong>第三范式</strong> 3NF：在 2NF 的基础上，非主属性<strong>不传递依赖</strong>于主属性</p>
+<ul>
+<li>传递依赖：如果C依赖于B，B依赖于A，那么C传递依赖于A；</li>
+<li>3NF在2NF的基础上，消除了非主属性之间的依赖；比如一个表中，主属性有（学号），非主属性有（姓名，院系，院长名），可以看到院长名这个非主属性依赖于院系，传递依赖于学号。消除的办法是分解。<br>必须先满足第二范式（2NF），要求：表中的每一列只与主键直接相关而不是间接相关，（表中的每一列只能依赖于主键）；<details>
+<summary>不符合范式会出现哪些异常？</summary>
+</li>
+</ul>
+</li>
+<li><p>冗余数据：某些同样的数据多次出现（如学生姓名）；</p>
+</li>
+<li><p>修改异常：修改了一个记录中的信息，另一个记录中相同的信息却没有修改；</p>
+</li>
+<li><p>删除异常：删除一个信息，那么也会丢失其它信息（删除一个课程，丢失了一个学生的信息）；</p>
+</li>
+<li><p>插入异常：无法插入（插入一个还没有课程信息的学生）</p>
+</details>
+
+</li>
+</ul>
+<h3 id="列举几种表连接方式？"><a href="#列举几种表连接方式？" class="headerlink" title="列举几种表连接方式？"></a>列举几种表连接方式？</h3><p><img src="_v_images/20191207081711185_20242.png" alt="SQL连接"></p>
+<ul>
+<li>内连接（Inner Join）：仅将两个表中满足连接条件的行组合起来作为结果集<ul>
+<li>自然连接：只考虑属性相同的元组对；</li>
+<li>等值连接：给定条件进行查询</li>
+</ul>
+</li>
+<li>外连接（Outer Join）<ul>
+<li>左连接：左边表的所有数据都有显示出来，右边的表数据只显示共同有的那部分，没有对应的部分补NULL；</li>
+<li>右连接：和左连接相反；</li>
+<li>全外连接（Full Outer Join）：查询出左表和右表所有数据，但是去除两表的重复数据</li>
+</ul>
+</li>
+<li>交叉连接（Cross Join）：返回两表的笛卡尔积（对于所含数据分别为m、n的表，返回m*n的结果）</li>
+</ul>
+<h3 id="什么是存储过程？有哪些优缺点？"><a href="#什么是存储过程？有哪些优缺点？" class="headerlink" title="什么是存储过程？有哪些优缺点？"></a>什么是存储过程？有哪些优缺点？</h3><p>存储过程是事先经过编译并存储在数据库中的一段SQL语句的集合。想要实现相应的功能时，只需要调用这个存储过程就行了（类似于函数，输入具有输出参数）。</p>
+<p>优点：</p>
+<ul>
+<li>预先编译，而不需要每次运行时编译，提高了数据库执行<strong>效率</strong>；</li>
+<li>封装了一系列操作，对于一些数据交互比较多的操作，相比于单独执行SQL语句，可以<strong>减少网络通信量</strong>；</li>
+<li>具有<strong>可复用性</strong>，减少了数据库开发的工作量；</li>
+<li><strong>安全性高</strong>，可以让没有权限的用户通过存储过程间接操作数据库；</li>
+<li>更<strong>易于维护</strong></li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li><strong>可移植性差</strong>，存储过程将应用程序绑定到了数据库上；</li>
+<li><strong>开发调试复杂</strong>：没有好的IDE；</li>
+<li><strong>修改复杂</strong>，需要重新编译，有时还需要更新程序中的代码以更新调用</li>
+</ul>
+<h3 id="Drop-Delete-Truncate的区别？"><a href="#Drop-Delete-Truncate的区别？" class="headerlink" title="Drop/Delete/Truncate的区别？"></a>Drop/Delete/Truncate的区别？</h3><ul>
+<li><strong>Delete</strong>用来删除表的全部或者<strong>部分数据</strong>，执行delete之后，用户<strong>需要提交</strong>之后才会执行，会触发表上的DELETE<strong>触发器</strong>（包含一个OLD的虚拟表，可以只读访问被删除的数据），DELETE之后表结构还在，删除很慢，一行一行地删，因为会记录日志，可以利用日志还原数据；</li>
+<li><strong>Truncate</strong>删除表中的所有数据，这个操作<strong>不能回滚</strong>，也不会触发这个表上的触发器。操作比DELETE快很多（直接把表drop掉，再创建一个新表，删除的数据不能找回）。如果表中有自增（AUTO_INCREMENT）列，则重置为1；</li>
+<li><strong>Drop</strong>命令从数据库中<strong>删除表</strong>，所有的数据行，索引和约束都会被删除；不能回滚，不会触发触发器；</li>
+</ul>
+<details>
+<summary>什么是触发器？</summary>
+
+<p>触发器（TRIGGER）是由事件（比如INSERT/UPDATE/DELETE）来触发运行的操作（不能被直接调用，不能接收参数）。在数据库里以独立的对象存储，用于<strong>保证数据完整性</strong>（比如可以检验或转换数据）。</p>
+</details>
+
+<details>
+<summary>有哪些约束类型？</summary>
+
+<p>约束（Constraint）类型：主键（Primary Key）约束，唯一约束（Unique），检查约束，非空约束，外键（Foreign Key）约束。</p>
+</details>
+
+<h3 id="什么是视图？什么是游标？"><a href="#什么是视图？什么是游标？" class="headerlink" title="什么是视图？什么是游标？"></a>什么是视图？什么是游标？</h3><ul>
+<li>视图：从数据库的基本表中通过查询选取出来的数据组成的<strong>虚拟表</strong>（数据库中存放视图的定义）。可以对其进行增/删/改/查等操作。视图是对若干张基本表的引用，一张虚表，查询语句执行的结果，不存储具体的数据（基本表数据发生了改变，视图也会跟着改变）；可以跟基本表一样，进行增删改查操作(ps:增删改操作有条件限制)；如连表查询产生的视图无法进行，对视图的增删改会影响原表的数据。好处：<ul>
+<li>通过只给用户访问视图的权限，保证数据的<strong>安全性</strong>；</li>
+<li><strong>简化</strong>复杂的SQL操作，隐藏数据的复杂性（比如复杂的连接）；</li>
+</ul>
+</li>
+<li>游标（Cursor）：用于定位在查询返回的<strong>结果集的特定行</strong>，以对特定行进行操作。使用游标可以方便地对结果集进行移动遍历，根据需要滚动或对浏览/修改任意行中的数据。主要用于交互式应用。</li>
+</ul>
+<hr>
+<h3 id="数据库索引的实现原理（B-树）"><a href="#数据库索引的实现原理（B-树）" class="headerlink" title="数据库索引的实现原理（B+树）"></a>数据库索引的实现原理（B+树）</h3><p>见<a href="https://github.com/wolverinn/Iridescent/blob/master/Data%20Structure.md#b%E6%A0%91">数据结构部分：B树，B+树</a></p>
+<h5 id="使用B树和B-树的比较"><a href="#使用B树和B-树的比较" class="headerlink" title="使用B树和B+树的比较"></a>使用B树和B+树的比较</h5><p>InnoDB的索引使用的是B+树实现，B+树对比B树的好处：</p>
+<ul>
+<li>IO次数少：B+树的中间结点只存放索引，数据都存在叶结点中，因此中间结点可以存更多的数据，让索引树更加矮胖；</li>
+<li>范围查询效率更高：B树需要中序遍历整个树，只B+树需要遍历叶结点中的链表；</li>
+<li>查询效率更加稳定：每次查询都需要从根结点到叶结点，路径长度相同，所以每次查询的效率都差不多</li>
+</ul>
+<h5 id="使用B树索引和哈希索引的比较"><a href="#使用B树索引和哈希索引的比较" class="headerlink" title="使用B树索引和哈希索引的比较"></a>使用B树索引和哈希索引的比较</h5><p>哈希索引能以 O(1) 时间进行查找，但是只支持精确查找，无法用于部分查找和范围查找，无法用于排序与分组；B树索引支持大于小于等于查找，范围查找。哈希索引遇到大量哈希值相等的情况后查找效率会降低。哈希索引不支持数据的排序。</p>
+<h3 id="使用索引的优点"><a href="#使用索引的优点" class="headerlink" title="使用索引的优点"></a>使用索引的优点</h3><ul>
+<li>大大加快了数据的<strong>检索速度</strong>；</li>
+<li>可以显著减少查询中<strong>分组和排序</strong>的时间；</li>
+<li>通过创建唯一性索引，可以保证数据库表中每一行数据的唯一性；</li>
+<li>将随机 I/O 变为<strong>顺序 I/O</strong>（B+Tree 索引是有序的，会将相邻的数据都存储在一起）</li>
+</ul>
+<p>缺点：建立和维护索引耗费时间空间，更新索引很慢。</p>
+<h3 id="哪些情况下索引会失效？"><a href="#哪些情况下索引会失效？" class="headerlink" title="哪些情况下索引会失效？"></a>哪些情况下索引会失效？</h3><ul>
+<li>以“%(表示任意0个或多个字符)”开头的LIKE语句；</li>
+<li>OR语句前后没有同时使用索引；</li>
+<li>数据类型出现隐式转化（如varchar不加单引号的话可能会自动转换为int型）；</li>
+<li>对于多列索引，必须满足 <strong>最左匹配原则</strong>/最左前缀原则 (最左优先，eg：多列索引col1、col2和col3，则 索引生效的情形包括 col1或col1，col2或col1，col2，col3)；</li>
+<li>如果MySQL估计全表扫描比索引快，则不使用索引（比如非常小的表）</li>
+</ul>
+<h3 id="在哪些地方适合创建索引？"><a href="#在哪些地方适合创建索引？" class="headerlink" title="在哪些地方适合创建索引？"></a>在哪些地方适合创建索引？</h3><ul>
+<li>某列经常作为最大最小值；</li>
+<li>经常被查询的字段；</li>
+<li>经常用作表连接的字段；</li>
+<li>经常出现在ORDER BY/GROUP BY/DISDINCT后面的字段</li>
+</ul>
+<h5 id="创建索引时需要注意什么？"><a href="#创建索引时需要注意什么？" class="headerlink" title="创建索引时需要注意什么？"></a>创建索引时需要注意什么？</h5><details>
+<summary>展开</summary>
+
+<ul>
+<li>只应建立在<strong>小字段</strong>上，而不要对大文本或图片建立索引（一页存储的数据越多一次IO操作获取的数据越大效率越高）；</li>
+<li>建立索引的字段应该<strong>非空</strong>，在MySQL中，含有空值的列很难进行查询优化，因为它们使得索引、索引的统计信息以及比较运算更加复杂。应该用0、一个特殊的值或者一个空串代替NULL；</li>
+<li>选择<strong>数据密度大</strong>（唯一值占总数的百分比很大）的字段作索引</details>
+
+</li>
+</ul>
+<h3 id="索引的分类？"><a href="#索引的分类？" class="headerlink" title="索引的分类？"></a>索引的分类？</h3><ul>
+<li>普通索引</li>
+<li>唯一索引 UNIQUE：索引列的值必须唯一，但允许有空值；</li>
+<li>主键索引 PRIMARY KEY：必须唯一，不允许空值（是一种特殊的唯一索引；MySQL创建主键时默认为聚集索引，但主键也可以是非聚集索引）；</li>
+<li>单列索引和多列索引/复合索引（Composite）：索引的列数；</li>
+<li>覆盖（Covering）索引：索引包含了所有满足查询所需要的数据，查询的时候只需要读取索引而不需要回表读取数据；</li>
+<li>聚集（Clustered）索引/非聚集索引：对磁盘上存放数据的物理地址重新组织以使这些数据按照指定规则排序的一种索引（数据的物理排列顺序和索引排列顺序一致）。因此每张表只能创建一个聚集索引（因为要改变物理存储顺序）。优点是查询速度快，因为可以直接按照顺序得到需要数据的物理地址。缺点是进行修改的速度较慢。对于需要经常搜索范围的值很有效。非聚集索引只记录逻辑顺序，并不改变物理顺序；</li>
+<li>分区索引（？）</li>
+<li>虚拟索引（Virtual）：模拟索引的存在而不用真正创建一个索引，用于快速测试创建索引对执行计划的影响。没有相关的索引段，不增加存储空间的使用</li>
+</ul>
+<h3 id="MySQL的两种存储引擎-InnoDB-和-MyISAM-的区别？"><a href="#MySQL的两种存储引擎-InnoDB-和-MyISAM-的区别？" class="headerlink" title="MySQL的两种存储引擎 InnoDB 和 MyISAM 的区别？"></a>MySQL的两种存储引擎 InnoDB 和 MyISAM 的区别？</h3><ul>
+<li>InnoDB<strong>支持事务</strong>，可以进行Commit和Rollback；</li>
+<li>MyISAM 只支持表级锁，而 InnoDB 还<strong>支持行级锁</strong>，提高了并发操作的性能；</li>
+<li>InnoDB <strong>支持外键</strong>；</li>
+<li>MyISAM <strong>崩溃</strong>后发生损坏的概率比 InnoDB 高很多，而且<strong>恢复的速度</strong>也更慢；</li>
+<li>MyISAM 支持<strong>压缩</strong>表和空间数据索引，InnoDB需要更多的内存和存储；</li>
+<li>InnoDB 支持在线<strong>热备份</strong></li>
+</ul>
+<details>
+<summary>应用场景</summary>
+
+<ul>
+<li><strong>MyISAM</strong> 管理非事务表。它提供高速存储和检索（MyISAM强调的是性能，每次查询具有原子性，其执行速度比InnoDB更快），以及全文搜索能力。如果表比较小，或者是只读数据（有大量的SELECT），还是可以使用MyISAM；</li>
+<li><strong>InnoDB</strong> 支持事务，并发情况下有很好的性能，基本可以替代MyISAM</details>
+
+</li>
+</ul>
+<details>
+<summary>热备份和冷备份</summary>
+
+<ul>
+<li>热备份：在数据库运行的情况下备份的方法。优点：可按表或用户备份，备份时数据库仍可使用，可恢复至任一时间点。但是不能出错</li>
+<li>冷备份：数据库正常关闭后，将关键性文件复制到另一位置的备份方式。优点：操作简单快速，恢复简单</details>
+
+</li>
+</ul>
+<h3 id="如何优化数据库？"><a href="#如何优化数据库？" class="headerlink" title="如何优化数据库？"></a>如何优化数据库？</h3><details>
+<summary>SQL 语句的优化</summary>
+
+<blockquote>
+<p>分析慢查询日志：记录了在MySQL中响应时间超过阀值long_query_time的SQL语句，通过日志去找出IO大的SQL以及发现未命中索引的SQL</p>
+</blockquote>
+<blockquote>
+<p>使用 Explain 进行分析：通过explain命令可以得到表的读取顺序、数据读取操作的操作类型、哪些索引可以使用、<strong>哪些索引被实际使用</strong>、表之间的引用以及<strong>被扫描的行数</strong>等问题；</p>
+</blockquote>
+<ul>
+<li>应尽量避免在 where 子句中使用<code>!=</code>、<code>&lt;</code>、<code>&gt;</code>操作符或对字段进行null值判断，否则将引擎放弃使用索引而进行全表扫描；</li>
+<li>只返回必要的列：最好不要使用 SELECT * 语句；</li>
+<li>只返回必要的行：使用 LIMIT 语句来限制返回的数据；</li>
+<li>将一个大连接查询分解成对每一个表进行一次单表查询，然后在应用程序中进行关联，这样做的好处有：<ul>
+<li>让缓存更高效。对于连接查询，如果其中一个表发生变化，那么整个查询缓存就无法使用。而分解后的多个查询，即使其中一个表发生变化，对其它表的查询缓存依然可以使用；</li>
+<li>分解成多个单表查询，这些单表查询的缓存结果更可能被其它查询使用到，从而减少冗余的查询；</li>
+<li>减少锁竞争</details>
+
+</li>
+</ul>
+</li>
+</ul>
+<details>
+<summary>索引的优化</summary>
+
+<p>注意会引起索引失效的情况，以及在适合的地方建立索引</p>
+</details>
+
+<details>
+<summary>数据库表结构的优化</summary>
+
+<ul>
+<li>设计表时遵循<strong>三大范式</strong>；</li>
+<li>选择合适的<strong>数据类型</strong>：尽可能不要存储NULL字段；使用简单的数据类型（int, varchar/ text）；</li>
+<li>表的<strong>水平切分</strong>（Sharding）：将同一个表中的记录拆分到多个结构相同的表中（策略：哈希取模；根据ID范围来分）。当一个表的数据不断增多时，Sharding 是必然的选择，它可以将数据分布到集群的不同节点上，从而缓解单个数据库的压力；</li>
+<li>表的<strong>垂直切分</strong>：将一张表按列切分成多个表。可以将不常用的字段单独放在同一个表中；把大字段独立放入一个表中；或者把经常使用的字段（关系密切的）放在一张表中。垂直切分之后业务更加清晰，系统之间整合或扩展容易，数据维护简单</details>
+
+</li>
+</ul>
+<details>
+<summary>系统配置的优化</summary>
+
+<ul>
+<li>操作系统：增加TCP支持的队列数；</li>
+<li>MySQL配置文件优化：缓存池大小和个数设置</details>
+
+</li>
+</ul>
+<details>
+<summary>硬件的优化</summary>
+
+<ul>
+<li>磁盘性能：固态硬盘；</li>
+<li>CPU：多核且高频；</li>
+<li>内存：增大内存</details>
+
+</li>
+</ul>
+<h3 id="什么是主从复制？实现原理是什么？"><a href="#什么是主从复制？实现原理是什么？" class="headerlink" title="什么是主从复制？实现原理是什么？"></a>什么是主从复制？实现原理是什么？</h3><p>主从复制（Replication）是指数据可以从一个MySQL数据库主服务器复制到一个或多个从服务器，从服务器可以复制主服务器中的所有数据库或者特定的数据库，或者特定的表。默认采用异步模式。</p>
+<p>实现原理：</p>
+<ul>
+<li>主服务器 <strong>binary log dump 线程</strong>：将主服务器中的数据更改（增删改）日志写入 Binary log 中；</li>
+<li>从服务器 <strong>I/O 线程</strong>：负责从主服务器读取binary log，并写入本地的 Relay log；</li>
+<li>从服务器 <strong>SQL 线程</strong>：负责读取 Relay log，解析出主服务器已经执行的数据更改，并在从服务器中重新执行（Replay），保证主从数据的一致性</li>
+</ul>
+<h5 id="为什么要主从复制？"><a href="#为什么要主从复制？" class="headerlink" title="为什么要主从复制？"></a>为什么要主从复制？</h5><details>
+<summary>展开</summary>
+
+<ul>
+<li>读写分离：主服务器负责写，从服务器负责读<ul>
+<li>缓解了锁的争用，即使主服务器中加了锁，依然可以进行读操作；</li>
+<li>从服务器可以使用 MyISAM，提升查询性能以及节约系统开销；</li>
+<li>增加冗余，提高可用性</li>
+</ul>
+</li>
+<li>数据实时备份，当系统中某个节点发生故障时，可以方便的故障切换</li>
+<li>降低单个服务器磁盘I/O访问的频率，提高单个机器的I/O性能</details>
+
+</li>
+</ul>
+<h3 id="关系型数据库和非关系型数据库的区别？"><a href="#关系型数据库和非关系型数据库的区别？" class="headerlink" title="关系型数据库和非关系型数据库的区别？"></a>关系型数据库和非关系型数据库的区别？</h3><h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
+<li><a href="https://blog.csdn.net/weixin_43433032/article/details/89293663">数据库六大范式详解 – CSDN博客</a></li>
+<li><a href="https://www.cnblogs.com/alice-cj/p/10354737.html">delete，truncate 和 delete之间的区别 – 博客园</a></li>
+<li><a href="https://baijiahao.baidu.com/s?id=1617888740370098866&wfr=spider&for=pc">深度探索MySQL主从复制原理</a></li>
+<li>数据库程序员面试笔试宝典-机械工业出版社</li>
+<li><a href="https://github.com/CyC2018/CS-Notes/blob/master/notes/%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B3%BB%E7%BB%9F%E5%8E%9F%E7%90%86.md">CS-Notes/数据库系统原理 – GitHub</a></li>
+<li><a href="https://blog.csdn.net/justloveyou_/article/details/78308460">面试/笔试第三弹 —— 数据库面试问题集锦 – CSDN博客</a></li>
+<li><a href="https://www.cnblogs.com/wenxiaofei/p/9853682.html">史上最全的数据库面试题，不看绝对后悔 – 博客园</a></li>
+</ul>
+<h3 id="待完成"><a href="#待完成" class="headerlink" title="待完成"></a>待完成</h3><ul>
+<li><input disabled="" type="checkbox"> E-R 模型</li>
+<li><input disabled="" type="checkbox"> 数据库的三级模式和二级映像</li>
+<li><input disabled="" type="checkbox"> <a href="https://github.com/CyC2018/CS-Notes/blob/master/notes/MySQL.md#%E5%9B%9B%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B">数据类型</a>：VARCHAR和CHAR的区别，DATETIME和TIMESATMP的区别</li>
+<li><input disabled="" type="checkbox"> Redis 面试<ul>
+<li><a href="https://github.com/CyC2018/CS-Notes/blob/master/notes/Redis.md">CyC2018</a></li>
+<li><a href="https://blog.csdn.net/Butterfly_resting/article/details/89668661">几率大的Redis面试题（含答案） - CSDN</a></li>
+<li><a href="https://www.jianshu.com/p/65765dd10671">Redis面试题总结 - 简书</a></li>
+<li><a href="https://www.cnblogs.com/jasontec/p/9699242.html">Redis常见面试题 - 博客园</a></li>
+<li><a href="https://github.com/0voice/interview_internal_reference#10">0voice/interview_internal_reference</a></li>
+</ul>
+</li>
+<li><input disabled="" type="checkbox"> <a href="https://www.cnblogs.com/wenxiaofei/p/9853682.html">史上最全的数据库面试题，不看绝对后悔 – 博客园</a></li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>Java</tag>
       </tags>
   </entry>
 </search>

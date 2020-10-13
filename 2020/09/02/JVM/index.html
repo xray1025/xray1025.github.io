@@ -219,27 +219,33 @@
 <li>编译器线程：在运行时将字节码动态的编译成本地平台相关的机器码</li>
 <li>信号分发线程：负责接收发送到JVM的信号并调用适当的JVM方法处理</li>
 </ul>
-<h2 id="2-JVM内存区域"><a href="#2-JVM内存区域" class="headerlink" title="2 JVM内存区域"></a>2 JVM内存区域</h2><h3 id="2-1-程序计数器"><a href="#2-1-程序计数器" class="headerlink" title="2.1 程序计数器"></a>2.1 程序计数器</h3><ul>
+<h2 id="2-JVM内存区域"><a href="#2-JVM内存区域" class="headerlink" title="2 JVM内存区域"></a>2 JVM内存区域</h2><h3 id="2-1-程序计数器（线程私有）"><a href="#2-1-程序计数器（线程私有）" class="headerlink" title="2.1 程序计数器（线程私有）"></a>2.1 程序计数器（线程私有）</h3><ul>
 <li>当前线程所执行的字节码的行号指示器，占用内存空间较小，没有规定OutOfMemoryError</li>
 </ul>
-<h3 id="2-2-栈"><a href="#2-2-栈" class="headerlink" title="2.2 栈"></a>2.2 栈</h3><ul>
+<h3 id="2-2-栈（线程私有）"><a href="#2-2-栈（线程私有）" class="headerlink" title="2.2 栈（线程私有）"></a>2.2 栈（线程私有）</h3><ul>
 <li>描述java方法的内存模型，每个方法在执行的同时都会创建一个栈帧用于存储局部变量表、操作数栈、动态链接、方法出口等信息。每个方法从调用到执行完成的过程，都对应着一个栈帧在虚拟机栈中从入栈到出栈的过程。</li>
 <li>栈帧是用来存储数据和部分过程结果的数据结构，同时也被用来处理动态链接、方法返回值和异常分派。</li>
 </ul>
-<h3 id="2-3-本地方法栈"><a href="#2-3-本地方法栈" class="headerlink" title="2.3 本地方法栈"></a>2.3 本地方法栈</h3><p>为Native方法服务</p>
-<h3 id="2-4-堆"><a href="#2-4-堆" class="headerlink" title="2.4 堆"></a>2.4 堆</h3><ul>
-<li>线程共享，</li>
+<h3 id="2-3-本地方法栈（线程私有）"><a href="#2-3-本地方法栈（线程私有）" class="headerlink" title="2.3 本地方法栈（线程私有）"></a>2.3 本地方法栈（线程私有）</h3><p>为Native方法服务</p>
+<h3 id="2-4-堆（线程共享）"><a href="#2-4-堆（线程共享）" class="headerlink" title="2.4 堆（线程共享）"></a>2.4 堆（线程共享）</h3><ul>
 <li>创建的对象和数组都保存在Java堆内存中，也是垃圾收集器进行垃圾收集的最重要的内存区域</li>
 <li>根据分代收集算法，可以细分为：新生代（Eden、SurvivorFrom、ServivorTo）和老年代</li>
 </ul>
-<h3 id="2-5-方法区"><a href="#2-5-方法区" class="headerlink" title="2.5 方法区"></a>2.5 方法区</h3><p>即永久代（Permanent Generation），用于储存被Java加载的类信息、常量、静态常量、即时编译器编译后的代码等数据。</p>
-<p>运行时常量池（Runtime Constant Pool）是方法区的一部分，负责存放Class文件中的常量池</p>
+<h3 id="2-5-方法区（线程共享）"><a href="#2-5-方法区（线程共享）" class="headerlink" title="2.5 方法区（线程共享）"></a>2.5 方法区（线程共享）</h3><ul>
+<li><p>即永久代（Permanent Generation），用于储存被Java加载的类信息、常量、静态常量、即时编译器编译后的代码等数据。</p>
+</li>
+<li><p>运行时常量池（Runtime Constant Pool）是方法区的一部分，负责存放Class文件中的常量池</p>
+</li>
+</ul>
 <h2 id="3-Java运行时内存"><a href="#3-Java运行时内存" class="headerlink" title="3 Java运行时内存"></a>3 Java运行时内存</h2><h3 id="3-1-新生代"><a href="#3-1-新生代" class="headerlink" title="3.1 新生代"></a>3.1 新生代</h3><ul>
 <li>用来存放新生的对象，占堆1/3的空间</li>
-<li>新生代分为<ul>
-<li>Eden区</li>
-<li>ServivorFrom</li>
-<li>ServivorTo</li>
+<li>新生代分为：<ul>
+<li>Eden区：新对象的出生地</li>
+<li><blockquote>
+<p>ServivorFrom：保留了上一次GC的幸存者，作为这一次GC的被扫描者</p>
+</blockquote>
+</li>
+<li>ServivorTo：保留了一次MinorGC过程中的幸存者</li>
 </ul>
 </li>
 <li>MinorGC：<ul>
@@ -334,7 +340,7 @@
 <li>虚引用<ul>
 <li>PhantomReference类</li>
 <li>必须和引用队列联合使用</li>
-<li>主要用来跟踪对象呗垃圾回收的状态</li>
+<li>主要用来跟踪对象被垃圾回收的状态</li>
 </ul>
 </li>
 </ul>
@@ -342,25 +348,25 @@
 <li>将整个堆空间划分为连续的不同小区间，每个小区间独立使用，独立回收。</li>
 <li>可以控制一次回收多少个小区间，减少一次GC所产生的停顿</li>
 </ul>
-<h2 id="7-垃圾收集器"><a href="#7-垃圾收集器" class="headerlink" title="7 垃圾收集器"></a>7 垃圾收集器</h2><p>分类：</p>
+<h2 id="7-垃圾收集器"><a href="#7-垃圾收集器" class="headerlink" title="7 垃圾收集器"></a>7 垃圾收集器</h2><p><strong>分类：</strong></p>
 <ul>
 <li><p>新生代：</p>
 <ul>
-<li>Serial</li>
-<li>ParNew</li>
-<li>Parallel Scavenge</li>
+<li>Serial（复制）</li>
+<li>ParNew（复制）</li>
+<li>Parallel Scavenge（复制）</li>
 <li>G1</li>
 </ul>
 </li>
 <li><p>老年代：</p>
 <ul>
-<li><p>CMS</p>
+<li><p>CMS（标记清除）</p>
 </li>
-<li><p>Serial Old（MSC）</p>
+<li><p>Serial Old（MSC）（标记整理）</p>
 </li>
-<li><p>Parallel Old</p>
+<li><p>Parallel Old（标记整理）</p>
 </li>
-<li><p>G1</p>
+<li><p>G1（标记整理）</p>
 </li>
 </ul>
 </li>
@@ -509,7 +515,7 @@
 <li>线程通常将非阻塞IO的空闲时间用于在其它通道上执行IO操作，所以一个单独的线程现在可以管理多个输入和输出通道（channel）。</li>
 </ul>
 <h2 id="9-类加载"><a href="#9-类加载" class="headerlink" title="9 类加载"></a>9 类加载</h2><h3 id="9-1-步骤"><a href="#9-1-步骤" class="headerlink" title="9.1 步骤"></a>9.1 步骤</h3><h4 id="9-1-1-加载"><a href="#9-1-1-加载" class="headerlink" title="9.1.1 加载"></a>9.1.1 加载</h4><ul>
-<li>会在内存中生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的入口。</li>
+<li>会在内存中生成一个代表这个类的java.lang.Class对象，作为这个类的各种数据的入口。</li>
 </ul>
 <h4 id="9-1-2-验证"><a href="#9-1-2-验证" class="headerlink" title="9.1.2 验证"></a>9.1.2 验证</h4><ul>
 <li>为了确保Class 文件的字节流中包含的信息是否符合当前虚拟机的要求，并且不会危害虚拟机自身的安全。</li>
@@ -534,7 +540,7 @@
 <li><p>使用不同的类加载器最终得到的都是同样一个Object 对象</p>
 </li>
 </ul>
-<p><img src="C:\Users\x\AppData\Roaming\Typora\typora-user-images\image-20200825114823414.png" alt="image-20200825114823414"></p>
+<p><img src="https://github.com/xray1025/image01/blob/master/jvm-parents.png?raw=true"></p>
 
         </div>
 
