@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="X_ray">
+
+
+    <meta name="subtitle" content="yesterday you said tomorrow">
+
+
+
+
+<title>信号量 | X_ray&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xray&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xray&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">信号量</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">X_ray</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十月 14, 2020&nbsp;&nbsp;21:43:37</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li><code>Semaphore</code> 通常用于限制可以访问某些资源（物理或逻辑的）的线程数目。</li>
+<li>比如数据库的连接资源是非常有限的，如果同时有上千个线程去数据获取连接，对数据造成的压力是非常的，会造成数据库无法连接而报错，<code>Semaphore</code>就可以限制此类问题</li>
+<li><code>Semaphore</code>有非公平和公平模式，默认是非公平的。当<code>Semaphore</code>设置为1时，可以排它锁使用，同一个时刻，只能限制一个线程访问。和<code>CountDownLatch</code>一样的，内部都有一个Sync内部类，基于AQS实现同步状态的释放和获取。</li>
+</ul>
+<h2 id="Semaphore提供的方法"><a href="#Semaphore提供的方法" class="headerlink" title="Semaphore提供的方法"></a>Semaphore提供的方法</h2><ul>
+<li><code>Semaphore(int permits) </code> 创建非公平的指定许可数的信号量</li>
+<li><code>Semaphore(int permits, boolean fair) </code> 创建指定的许可数和指定是否是公平模式的信号量</li>
+<li><code>void acquire() </code> 从此信号量获取一个许可，在提供一个许可前一直将线程阻塞，否则线程被中断</li>
+<li><code>void acquire(int permits) </code>  从此信号量获取给定数目的许可，在提供这些许可前一直将线程阻塞，或者线程已被中断。</li>
+<li><code>int availablePermits() </code> 返回此信号量中当前可用的许可数。</li>
+<li><code>int getQueueLength() </code> 返回正在等待获取的线程的估计数目。</li>
+<li><code>boolean hasQueuedThreads() </code> 查询是否有线程正在等待获取。</li>
+<li><code>Collection&lt;Thread&gt;   getQueuedThreads() </code>  返回一个 collection，包含可能等待获取的线程。</li>
+<li><code>reducePermits(int reduction) </code>  根据指定的缩减量减小可用许可的数目。</li>
+<li><code>release() </code> 释放一个许可，将其返回给信号量。</li>
+<li><code>release(int permits) </code> 返回标识此信号量的字符串，以及信号量的状态。</li>
+<li><h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SemaphoreTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> Semaphore s=<span class="keyword">new</span> Semaphore(<span class="number">3</span>); <span class="comment">//非公平</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span>  <span class="class"><span class="keyword">class</span> <span class="title">Task</span> <span class="keyword">implements</span>   <span class="title">Runnable</span></span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                s.acquire();  <span class="comment">//获取一个许可</span></span><br><span class="line">                System.out.println(Thread.currentThread().getName()+<span class="string">&quot; 获取一个许可开始执行...&quot;</span>);</span><br><span class="line">                Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">                System.out.println(Thread.currentThread().getName()+<span class="string">&quot; 退出。&quot;</span>);</span><br><span class="line">            &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                s.release();  <span class="comment">//规划一个许可</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt;=<span class="number">5</span> ; i++) &#123;</span><br><span class="line">            <span class="keyword">new</span> Thread(<span class="keyword">new</span> Task()).start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li>输出结果,可以看出同一时刻只能三个线程进入执行，当有一个线程退出归还许可后，立马就会有其余线程去竞争这个多出的许可。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Thread-<span class="number">0</span> 获取一个许可开始执行...</span><br><span class="line">Thread-<span class="number">1</span> 获取一个许可开始执行...</span><br><span class="line">Thread-<span class="number">2</span> 获取一个许可开始执行...</span><br><span class="line">Thread-<span class="number">2</span> 退出。</span><br><span class="line">Thread-<span class="number">1</span> 退出。</span><br><span class="line">Thread-<span class="number">3</span> 获取一个许可开始执行...</span><br><span class="line">Thread-<span class="number">0</span> 退出。</span><br><span class="line">Thread-<span class="number">4</span> 获取一个许可开始执行...</span><br><span class="line">Thread-<span class="number">5</span> 获取一个许可开始执行...</span><br><span class="line">Thread-<span class="number">4</span> 退出。</span><br><span class="line">Thread-<span class="number">3</span> 退出。</span><br><span class="line">Thread-<span class="number">5</span> 退出</span><br></pre></td></tr></table></figure>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><h3 id="初始化一个信号时"><a href="#初始化一个信号时" class="headerlink" title="初始化一个信号时"></a>初始化一个信号时</h3><ul>
+<li>当执行<code>new Semaphore(3)</code>时，默认是非公平的实现方式。看看内部是如何是实现的</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Semaphore</span><span class="params">(<span class="keyword">int</span> permits)</span> </span>&#123;</span><br><span class="line">    sync = <span class="keyword">new</span> NonfairSync(permits);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>源码中可以看出是通过<code>NonfairSync``这个</code>内部类返回的一个实列，<code>NonfairSync</code>是<code>Sync</code>子类。<h3 id="acquire-获取一个许可"><a href="#acquire-获取一个许可" class="headerlink" title="acquire 获取一个许可"></a>acquire 获取一个许可</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">acquire</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">       sync.acquireSharedInterruptibly(<span class="number">1</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></li>
+<li>获取许可时调用的是AQS中的<code>acquireSharedInterruptibly</code>方法，以共享模式获同步状态，如果被中断则中止。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">acquireSharedInterruptibly</span><span class="params">(<span class="keyword">int</span> arg)</span></span></span><br><span class="line"><span class="function">        <span class="keyword">throws</span> InterruptedException </span>&#123;</span><br><span class="line">        <span class="comment">// 判断线程是否中断</span></span><br><span class="line">    <span class="keyword">if</span> (Thread.interrupted())</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> InterruptedException();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (tryAcquireShared(arg) &lt; <span class="number">0</span>)</span><br><span class="line">    <span class="comment">//获取同步状态失败 执行如下方法，这个方法以自旋的方式一直获取同步状态</span></span><br><span class="line">        doAcquireSharedInterruptibly(arg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>tryAcquireShared</code>由Sync类提供实现，非公平模式调用<code>NonfairSync</code>的,否则调用<code>FairSync</code>类的方法</li>
+</ul>
+<h3 id="非公平"><a href="#非公平" class="headerlink" title="非公平"></a>非公平</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">NonfairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = -<span class="number">2694183684443567898L</span>;</span><br><span class="line"></span><br><span class="line">      NonfairSync(<span class="keyword">int</span> permits) &#123;</span><br><span class="line">          <span class="keyword">super</span>(permits);</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">//获取锁</span></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">tryAcquireShared</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">      	<span class="comment">// Sync类的非公平获取同步状态方法</span></span><br><span class="line">          <span class="keyword">return</span> nonfairTryAcquireShared(acquires);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="公平"><a href="#公平" class="headerlink" title="公平"></a>公平</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">FairSync</span> <span class="keyword">extends</span> <span class="title">Sync</span> </span>&#123;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">2014338818796000944L</span>;</span><br><span class="line"></span><br><span class="line">      FairSync(<span class="keyword">int</span> permits) &#123;</span><br><span class="line">          <span class="keyword">super</span>(permits);</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">//公平模式获取信号量</span></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">tryAcquireShared</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">      	<span class="comment">//自旋操作</span></span><br><span class="line">          <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">          	<span class="comment">//公平模式，先要判断该线程是否位于CLH同步队列的列头</span></span><br><span class="line">              <span class="keyword">if</span> (hasQueuedPredecessors())</span><br><span class="line">                  <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">                  <span class="comment">//获取同步状态总数（信号量）</span></span><br><span class="line">              <span class="keyword">int</span> available = getState();</span><br><span class="line">              <span class="comment">//当前信号量减去获取的acquires个信号。</span></span><br><span class="line">              <span class="keyword">int</span> remaining = available - acquires;</span><br><span class="line">              <span class="comment">//CAS方式设置信号量。unsafe类提供实现，返回信号量</span></span><br><span class="line">              <span class="keyword">if</span> (remaining &lt; <span class="number">0</span> ||</span><br><span class="line">                  compareAndSetState(available, remaining))</span><br><span class="line">                  <span class="keyword">return</span> remaining;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Sync`是继承AQS队列同步器，是自定义同步组件的具体的实现。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">  <span class="keyword">abstract</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Sync</span> <span class="keyword">extends</span> <span class="title">AbstractQueuedSynchronizer</span> </span>&#123;</span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1192457210091910933L</span>;</span><br><span class="line"></span><br><span class="line">      Sync(<span class="keyword">int</span> permits) &#123;</span><br><span class="line">          setState(permits);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">final</span> <span class="keyword">int</span> <span class="title">getPermits</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          <span class="keyword">return</span> getState();</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">//非公平获取信号量</span></span><br><span class="line">      <span class="function"><span class="keyword">final</span> <span class="keyword">int</span> <span class="title">nonfairTryAcquireShared</span><span class="params">(<span class="keyword">int</span> acquires)</span> </span>&#123;</span><br><span class="line">      	<span class="comment">//自旋 </span></span><br><span class="line">          <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">          	<span class="comment">//获取同步状态总数（信号量）</span></span><br><span class="line">              <span class="keyword">int</span> available = getState();</span><br><span class="line">              <span class="comment">//当前信号量减去获取的acquires个信号。</span></span><br><span class="line">              <span class="keyword">int</span> remaining = available - acquires;</span><br><span class="line">              <span class="comment">//CAS方式设置信号量。unsafe类提供实现，返回信号量</span></span><br><span class="line">              <span class="keyword">if</span> (remaining &lt; <span class="number">0</span> ||</span><br><span class="line">                  compareAndSetState(available, remaining))</span><br><span class="line">                  <span class="keyword">return</span> remaining;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">reducePermits</span><span class="params">(<span class="keyword">int</span> reductions)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">              <span class="keyword">int</span> current = getState();</span><br><span class="line">              <span class="keyword">int</span> next = current - reductions;</span><br><span class="line">              <span class="keyword">if</span> (next &gt; current) <span class="comment">// underflow</span></span><br><span class="line">                  <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Permit count underflow&quot;</span>);</span><br><span class="line">              <span class="keyword">if</span> (compareAndSetState(current, next))</span><br><span class="line">                  <span class="keyword">return</span>;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="function"><span class="keyword">final</span> <span class="keyword">int</span> <span class="title">drainPermits</span><span class="params">()</span> </span>&#123;</span><br><span class="line">          <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">              <span class="keyword">int</span> current = getState();</span><br><span class="line">              <span class="keyword">if</span> (current == <span class="number">0</span> || compareAndSetState(current, <span class="number">0</span>))</span><br><span class="line">                  <span class="keyword">return</span> current;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+<li>从源码中得出，Semaphore获取信号量许可时，公平和非公平的区别是，公平模式首先判断当前线程是否位于CLH同步队列的队列头中。</li>
+<li>而非公平模式是的竞争是抢占式，谁竞争到就谁获取。</li>
+<li>先是获取当前信号总数减去<code>acquires</code>个许可信号，然后以CAS方式设置CAS方式设置信号，并返回新的信号总数。CAS内部是依赖于AQS队列同步器中的<code>unsafel</code>类提供实现。</li>
+</ul>
+<h3 id="release归还许可"><a href="#release归还许可" class="headerlink" title="release归还许可"></a>release归还许可</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">release</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     sync.releaseShared(<span class="number">1</span>);</span><br><span class="line"> &#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">releaseShared</span><span class="params">(<span class="keyword">int</span> arg)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (tryReleaseShared(arg)) &#123;</span><br><span class="line">         doReleaseShared();</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>释放信号量 <code>release</code> 首先会调用AQS<code>releaseShared</code>.</li>
+<li><code>tryReleaseShared</code> 会调用<code>Sync</code>的<code>tryReleaseShared</code>方法</li>
+<li>释放操作时以自旋方式执行，首先获取总的信号建去要释放的信号量，然后判断这个信号量是否小于大于总的信号量，如果大于则抛出异常，否则以CAS的方式设置信号量</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//释放同步状态，也就是归还信号量</span></span><br><span class="line">      <span class="function"><span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryReleaseShared</span><span class="params">(<span class="keyword">int</span> releases)</span> </span>&#123;</span><br><span class="line">      	<span class="comment">// 自旋操作</span></span><br><span class="line">          <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">              <span class="keyword">int</span> current = getState();</span><br><span class="line">              <span class="keyword">int</span> next = current + releases;</span><br><span class="line">              <span class="keyword">if</span> (next &lt; current) <span class="comment">// overflow</span></span><br><span class="line">                  <span class="keyword">throw</span> <span class="keyword">new</span> Error(<span class="string">&quot;Maximum permit count exceeded&quot;</span>);</span><br><span class="line">              <span class="keyword">if</span> (compareAndSetState(current, next))</span><br><span class="line">                  <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>从源码中可以看出Semaphore的实现方式主要是依靠AQS实现的，以<code>state</code>同步状态成变量作为信号量的总数，获取和释放都是以CAS+自旋操作的方式设置<code>state</code>成员变量。</li>
+<li>JDK并发包中的工具了哦都是AQS为基石实现的。大多都是使用CAS+自旋的方式去改变state来达到锁的获和释放</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/JUC/"># JUC</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/10/14/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%92%8CJVM%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/">多线程和JVM</a>
+            
+            
+            <a class="next" rel="next" href="/2020/10/14/MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2%E7%AC%94%E8%AE%B0/">MySQL实战45讲</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© X_ray | Powered by <a href="https://xray1025.top" target="_blank">Xray</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

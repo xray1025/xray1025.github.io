@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="X_ray">
+
+
+    <meta name="subtitle" content="yesterday you said tomorrow">
+
+
+
+
+<title>并发相关概念 | X_ray&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xray&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xray&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">并发相关概念</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">X_ray</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十月 14, 2020&nbsp;&nbsp;21:07:51</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="并发相关概念"><a href="#并发相关概念" class="headerlink" title="并发相关概念"></a>并发相关概念</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><h3 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a>同步和异步</h3><ul>
+<li>同步：调用者必须等到方法调用返回后才能继续后续行为</li>
+<li>异步：更像是消息传递，当异步调用完成后会通知调用者</li>
+</ul>
+<h3 id="并发和并行"><a href="#并发和并行" class="headerlink" title="并发和并行"></a>并发和并行</h3><ul>
+<li>相同点：都可以表示多个任务一起执行</li>
+<li>并发(Concurrent)：侧重于多个任务交替执行</li>
+<li>并行(Parallel)：真正意义上的“同时执行”</li>
+<li>由于二者最终效果一样，所以没有特别需要不用强调二者区别</li>
+</ul>
+<h3 id="临界区"><a href="#临界区" class="headerlink" title="临界区"></a>临界区</h3><ul>
+<li>一种共享数据， 可以被多个线程使用。但是每一次只能有一个线程使用它，</li>
+</ul>
+<h3 id="阻塞和非阻塞"><a href="#阻塞和非阻塞" class="headerlink" title="阻塞和非阻塞"></a>阻塞和非阻塞</h3><ul>
+<li>阻塞：一个线程占用临界区资源时，其他需要这个资源的线程必须在临界区等待，导致线程挂起</li>
+<li>非阻塞：没有一个线程可以妨碍其他线程，所有线程都会尝试不断前向执行</li>
+</ul>
+<h3 id="活跃性问题"><a href="#活跃性问题" class="headerlink" title="活跃性问题"></a>活跃性问题</h3><ul>
+<li><p>死锁</p>
+</li>
+<li><ul>
+<li><a target="_blank" rel="noopener" href="https://www.yuque.com/luka/note/deadlock">死锁的四个必要条件&amp;如何避免与预防死锁</a></li>
+</ul>
+</li>
+<li><p>饥饿：</p>
+</li>
+<li><ul>
+<li>当线程由于无法访问它所需要的资源而不能继续执行时，就发生了饥饿。</li>
+<li>引发饥饿的最常见资源就是CPU时钟周期。如果对线程的优先级使用不当，或者在持有锁时执行一些无法结束的结构（如无限循环等），那么也可能导致饥饿</li>
+<li>大多数Java应用中，所有线程都具有相同的优先级，尽量不要改变线程的优先级，改变了就可能发生饥饿问题</li>
+</ul>
+</li>
+<li><p>活锁：</p>
+</li>
+<li><ul>
+<li>两个线程请求资源时，互相“谦让”，主动将资源释放给对方，导致没有一个线程可以同时拿到所有资源</li>
+<li>活锁通常发生在处理事务消息的程序中</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>如果消息处理器不能处理某种特定类型的消息，发生错误回滚事务，并且将其重新放在队列的开头</li>
+<li>这样虽然处理消息的线程没有阻塞，但也无法继续执行下去</li>
+<li>这种问题是由于过度的错误回复代码造成的，将不可修复问题错误的作为可修复问题</li>
+<li>之前iPhone手机接收到某个消息会卡死的bug说不定就是这个原因，我猜的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>要解决活锁问题，可以在重试机制中引入随机性，例如：计算机网络中数据链路层的CSMA/CD（载波监听多路访问/冲突检测方法）</li>
+</ul>
+</li>
+</ul>
+<h2 id="并发级别"><a href="#并发级别" class="headerlink" title="并发级别"></a>并发级别</h2><h3 id="阻塞-Blocking"><a href="#阻塞-Blocking" class="headerlink" title="阻塞(Blocking)"></a>阻塞(Blocking)</h3><ul>
+<li>一个线程是阻塞的，那么在其他线程释放资源之前， 当前线程无法继续执行</li>
+<li>使用synchronized 关键字或者重入锁时，得到的就是阻塞的线程</li>
+</ul>
+<h3 id="无饥饿-Starvation-Free"><a href="#无饥饿-Starvation-Free" class="headerlink" title="无饥饿(Starvation-Free)"></a>无饥饿(Starvation-Free)</h3><ul>
+<li>非公平锁：优先级高的线程可以插队，导致饥饿</li>
+<li>公平锁：不分优先级乖乖排队，这样就无饥饿</li>
+</ul>
+<h3 id="无障碍-Obstruction-Free"><a href="#无障碍-Obstruction-Free" class="headerlink" title="无障碍(Obstruction-Free)"></a>无障碍(Obstruction-Free)</h3><ul>
+<li><p>乐观策略：最弱的非阻塞调度，对临界区数据可以自由修改，如果发生并发问题就回滚</p>
+</li>
+<li><p>实现：一致性标记</p>
+</li>
+<li><ul>
+<li>线程操作前后读取标记，如果标记一致，认为没有冲突，不一致需要重试操作</li>
+<li>修改资源的线程在修改前需要更新标记，表示数据不再安全</li>
+</ul>
+</li>
+<li><p>如果临界区严重冲突可能导致所有线程不断地回滚，没有一个线程可以走出临界区，影响程序正常进行</p>
+</li>
+</ul>
+<h3 id="无锁-Lock-Free"><a href="#无锁-Lock-Free" class="headerlink" title="无锁(Lock-Free)"></a>无锁(Lock-Free)</h3><ul>
+<li>和无障碍不同的是必然保证有一个线程可以完成在有限步内完成操作离开临界区</li>
+</ul>
+<h3 id="无等待-Wait-Free"><a href="#无等待-Wait-Free" class="headerlink" title="无等待(Wait-Free)"></a>无等待(Wait-Free)</h3><ul>
+<li><p>比无锁更进一步，要求所有的线程都必须在有限步内完成操作，这样不会引起饥饿问题</p>
+</li>
+<li><p>典型应用：RCU (Read Copy Update)</p>
+</li>
+<li><ul>
+<li>读无等待直接读</li>
+<li>写的时候遵循 复制–&gt;修改副本–&gt;找时机回写数据</li>
+</ul>
+</li>
+</ul>
+<h2 id="JMM技术的关键基础概念"><a href="#JMM技术的关键基础概念" class="headerlink" title="JMM技术的关键基础概念"></a>JMM技术的关键基础概念</h2><h3 id="原子性-Atomicity"><a href="#原子性-Atomicity" class="headerlink" title="原子性(Atomicity)"></a>原子性(Atomicity)</h3><ul>
+<li>指一个操作是不可中断的。即使是在多个线程一起执行的时候， 一个操作一旦开始， 就不会被其他线程干扰</li>
+<li>基本类型的读写是原子性的，long和double类型除外，这两种类型可以使用volatile实现原子性操作，这也是volatile在原子性上唯一贡献</li>
+</ul>
+<h3 id="可见性-Visibility"><a href="#可见性-Visibility" class="headerlink" title="可见性(Visibility)"></a>可见性(Visibility)</h3><ul>
+<li><p>当一个线程修改了某一个共享变量的值时， 其他线程是否能够立即知道这个修改</p>
+</li>
+<li><p>导致可见性问题的原因</p>
+</li>
+<li><ul>
+<li>编译器优化指令重排+线程切换+当前线程会访问其他线程的变量</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>Thread 1     Thread 2:<br>y=A;         x=B;<br>B=1          A=2;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>无论并发怎么在Thread1和Thread2中跳转，x=1并且y=2肯定不会同时出现</li>
+<li>结果1：x=1,y=A</li>
+<li>结果2：x=B,y=2</li>
+<li>结果3：x=B,y=A</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>编译器优化指令重排：Thread1的step1和step2交换顺序</li>
+<li>Thread 1     Thread 2:<br>B=1;          x=B;<br>y=A;          A=2;</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>结果有可能出现：x1并且y2</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>编译器优化或者硬件优化</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>CPU1上的线程将变量t进行了优化，将其缓存在cache或者寄存器中</li>
+<li>如果在CPU2上的某个线程修改了变量t的实际值，那么CPU1上的线程可能无法意识到这个改动，依然会读取cache 中或者寄存器里的数据</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="有序性-Ordering"><a href="#有序性-Ordering" class="headerlink" title="有序性(Ordering)"></a>有序性(Ordering)</h3><ul>
+<li><p>串行语义指令重排后是没有问题的，并行时语义可能会出现问题</p>
+</li>
+<li><p>但是指令重排可以有效的提高CPU处理性能，因此是必要的，能够提高的原因</p>
+</li>
+<li><ul>
+<li>详细内容在《实战Java高并发程序设计》1.5.3(P24) TODO: 拍下这一部分的那个流水线的图</li>
+<li>1.即使是简单的给寄存器赋值也会涉及到多个步骤</li>
+<li>2.CPU不会等待当前语句彻底执行完才执行下一条语句</li>
+<li>3.给寄存器赋值可能会用到PC（Program Counter）寄存器、存储器、ALU等</li>
+<li>4.比如赋值操作的第一个小步会用到PC寄存器（用来指出下一条指令在主存储器中的地址）</li>
+<li>5.第一小步完成后，CPU同时执行下一个步骤(比如仍然是赋值操作，同样需要使用PC寄存器)</li>
+<li>6.这样可以让PC寄存器流水线式不停的工作</li>
+<li>7.但是有些操作需要前置操作完成后才能进行，比如ADD需要两个寄存器都赋值完成</li>
+<li>8.这样就会出现等待的情况，编译器进行指令重排优化，<strong>将可以直接执行的步骤提到ADD前执行</strong>，这样可以有效减少等待时间，提高CPU处理性能</li>
+</ul>
+</li>
+<li><p>有序性不可违背的原则(happens-before)（即重排序不会破坏的规则）</p>
+</li>
+<li><ul>
+<li>程序顺序原则： 一个线程内保证语义的串行性。</li>
+<li>volatile 规则： volatile 变量的写先于读发生， 这保证了volatile 变量的可见性。</li>
+<li>锁规则： 解锁(unlock)必然发生在随后的加锁(lock)前。</li>
+<li>传递性： A 先于B, B 先于C ， 那么A 必然先于C 。</li>
+<li>线程的start()方法先于它的每一个动作。</li>
+<li>线程的所有操作先于线程的终结( Thread.join() )</li>
+<li>线程的中断( interrupt() )先于被中断线程的代码。</li>
+<li>对象的构造函数的执行、结束先于finalize()方法。</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/JUC/"># JUC</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/10/14/%E5%B9%B6%E5%8F%91%E7%A8%8B%E5%BA%8F%E5%9F%BA%E7%A1%80/">并发程序基础</a>
+            
+            
+            <a class="next" rel="next" href="/2020/10/14/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B/">Java内存模型与线程</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© X_ray | Powered by <a href="https://xray1025.top" target="_blank">Xray</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
