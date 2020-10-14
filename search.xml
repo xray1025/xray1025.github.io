@@ -1427,10 +1427,11 @@
 
 ]]></content>
       <categories>
-        <category>Java</category>
+        <category>Algorithm</category>
       </categories>
       <tags>
-        <tag>ListNode</tag>
+        <tag>LinkedList</tag>
+        <tag>Algorithm</tag>
       </tags>
   </entry>
   <entry>
@@ -4651,6 +4652,1580 @@
       </categories>
       <tags>
         <tag>Java</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JVM内存区域</title>
+    <url>/2020/10/14/JVM%E5%86%85%E5%AD%98%E5%8C%BA%E5%9F%9F/</url>
+    <content><![CDATA[<h1 id="JVM内存区域"><a href="#JVM内存区域" class="headerlink" title="JVM内存区域"></a>JVM内存区域</h1><h2 id="JVM内存结构"><a href="#JVM内存结构" class="headerlink" title="JVM内存结构"></a>JVM内存结构</h2><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1586828131069-3c2041fb-d254-414c-a3ab-5b3673990be1.jpeg"></p>
+<a id="more"></a>
+
+<ul>
+<li>根据线程划分的内存模型</li>
+</ul>
+<img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1586828210341-73dfbc31-682b-40bd-9e9b-9f6078789bdb.jpeg" style="zoom:200%;" />
+
+<h3 id="程序计数器"><a href="#程序计数器" class="headerlink" title="程序计数器"></a>程序计数器</h3><ul>
+<li>当前线程执行的字节码的行号指示器(帮助执行时的分支循环异常处理等)</li>
+<li>线程私有的，每个线程都有一个独立的程序计数器，目的是线程切换后能恢复到正确的执行位置</li>
+<li><strong>唯一不会出现OOM的区域</strong></li>
+</ul>
+<h3 id="虚拟机栈"><a href="#虚拟机栈" class="headerlink" title="虚拟机栈"></a>虚拟机栈</h3><ul>
+<li><p>生命周期和线程相同，线程私有的，保证线程中的局部变量不被别的线程访问到</p>
+</li>
+<li><p>每个方法从调用到执行完成对应着一个栈帧在虚拟机栈的入栈出栈，所以栈帧不用垃圾回收</p>
+</li>
+<li><p><strong>栈帧存储</strong>：<strong>局部变量表(本地变量表)、操作数栈、动态链接、方法出入口</strong>等信息</p>
+</li>
+<li><ul>
+<li>常说的栈内存指的是局部变量表(存储基本类型变量&amp;引用类型变量)</li>
+<li>局部变量表的大小在栈帧分配时固定好了</li>
+</ul>
+</li>
+<li><p>StackOverflowError异常：线程请求的栈深度大于虚拟机允许的深度</p>
+</li>
+<li><p>OutOfMemoryError异常：虚拟机栈扩展时无法申请到足够的内存</p>
+</li>
+</ul>
+<h3 id="本地方法栈"><a href="#本地方法栈" class="headerlink" title="本地方法栈"></a>本地方法栈</h3><ul>
+<li>作用类似虚拟机栈，区别是本地方法栈Native方法服务</li>
+<li>同样会抛出StackOverflowError异常和OutOfMemoryError异常</li>
+</ul>
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><ul>
+<li><p>所有线程共享的内存区域，虚拟机启动时创建，用来存储对象实例</p>
+</li>
+<li><p>可以是物理上不连续的内存空间</p>
+</li>
+<li><p>默认空间分配</p>
+</li>
+<li><ul>
+<li>新生代(1/3堆空间)</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>Eden空间(8/10)</li>
+<li>From Survivor空间(1/10)</li>
+<li>To Survivor空间(1/10)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>老生代(2/3堆空间)</li>
+</ul>
+</li>
+<li><p>OutOfMemoryError异常：无法满足内存分配需求且堆无法扩展时</p>
+</li>
+</ul>
+<h3 id="方法区"><a href="#方法区" class="headerlink" title="方法区"></a>方法区</h3><ul>
+<li>JDK1.8前称为永生代(Permanent Generation)，之后属于MetaSpace元空间</li>
+<li>存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据</li>
+<li>运行时常量池是方法区一部分：Class文件类加载后，常量池会存储在此处，包括符号引用和直接引用等(String.intern()会用到区域（P.S.该方法是Native方法）)</li>
+<li>垃圾收集行为较少</li>
+<li>OutOfMemoryError异常：无法满足内存分配需求时抛出</li>
+</ul>
+<h3 id="直接内存"><a href="#直接内存" class="headerlink" title="直接内存"></a>直接内存</h3><ul>
+<li>不属于JVM内存区域，但频繁使用</li>
+<li><strong>NIO类(New Input/Output)使用基于Channel与Buffer的I/O方式，可以使用Native函数库直接分配堆外内存，使用堆中的DirectBuffer对象对该内存引用，避免Java堆和Native堆之间来回复制数据</strong></li>
+<li>OutOfMemoryError异常：内存无法扩展时同样会抛出OOM异常</li>
+</ul>
+<h2 id="Java对象"><a href="#Java对象" class="headerlink" title="Java对象"></a>Java对象</h2><h3 id="对象的创建"><a href="#对象的创建" class="headerlink" title="对象的创建"></a>对象的创建</h3><ul>
+<li><p>虚拟机接受到new指令后</p>
+</li>
+<li><p>检查指令参数在常量池中是否有符号引用，并检查该符号引用的类是否被加载、解析和初始化</p>
+</li>
+<li><ul>
+<li>如果没有，先执行类加载</li>
+</ul>
+</li>
+<li><p><strong>分配内存–&gt;两种方案</strong>(防止并发时指针指向错误)</p>
+</li>
+<li><ul>
+<li>CAS+失败重试–&gt;保证原子性</li>
+<li>按照线程将内存划分成不同的空间，即Thread Local Allocation Buffer(TLAB)</li>
+</ul>
+</li>
+<li><p>分配的内存空间初始化</p>
+</li>
+<li><ul>
+<li>赋零值，不包括对象头</li>
+</ul>
+</li>
+<li><p>设置对象头</p>
+</li>
+<li><ul>
+<li>根据是否使用偏向锁对象头会有不同的设置方法</li>
+<li>设置信息包括：对象属于哪个实例，如何找到类的元数据信息，对象的哈希码，对象的GC分代年龄。</li>
+</ul>
+</li>
+</ul>
+<h3 id="对象的内存布局"><a href="#对象的内存布局" class="headerlink" title="对象的内存布局"></a>对象的内存布局</h3><ul>
+<li><p><strong>对象头</strong></p>
+</li>
+<li><ul>
+<li><strong>第一部分信息：对象自身运行时数据</strong></li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>哈希码、GC分代年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等</li>
+<li>该部分称为Mark Word，32位虚拟机32bit，64虚拟机64bit</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>设计为非固定的数据结构，根据对象状态复用存储空间</li>
+<li>例如处于非锁定状态：25bit存储对象哈希码、4bit存储对象分代年龄、2bit存储锁标志位，1bit固定为0</li>
+<li>其他状态可能就不存哈希码、分代年龄这些信息了，根据标志位确定信息类型(标志位也有复用的情况)</li>
+<li>Mark Word</li>
+<li><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1586828407799-ef6dbfba-a2af-4b45-bde8-8a47ec078357.png"></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><strong>第二部分信息：指向类元数据的指针</strong></li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>虚拟机通过这个指针确定对象是哪个类的实例</li>
+<li>如果对象是数组，对象头中还会存有数组长度</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>实例数据</strong></p>
+</li>
+<li><p><strong>对齐填充</strong></p>
+</li>
+<li><ul>
+<li>JVM要求对象起始地址必须是8字节的倍数</li>
+</ul>
+</li>
+</ul>
+<h3 id="对象的访问定位"><a href="#对象的访问定位" class="headerlink" title="对象的访问定位"></a>对象的访问定位</h3><ul>
+<li><p>句柄</p>
+</li>
+<li><ul>
+<li>对象被移动时(GC时移动对象)，只需要改变句柄中的实例数据指针，reference本身不用修改。对象类型数据可以认为是.class文件数据</li>
+<li><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1586828461888-152ceb3b-361c-4b2e-831e-1cc60761b898.png"></li>
+</ul>
+</li>
+<li><p>直接指针</p>
+</li>
+<li><ul>
+<li>优点：快，节省一次指针定位的时间</li>
+<li><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1586828477137-1a9f694f-17f1-4814-9ad9-39b01fc767f8.jpeg"></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>垃圾收集器与内存分配策略</title>
+    <url>/2020/10/14/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8%E4%B8%8E%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5/</url>
+    <content><![CDATA[<h1 id="垃圾收集器与内存分配策略"><a href="#垃圾收集器与内存分配策略" class="headerlink" title="垃圾收集器与内存分配策略"></a>垃圾收集器与内存分配策略</h1><h2 id="栈帧不用垃圾回收"><a href="#栈帧不用垃圾回收" class="headerlink" title="栈帧不用垃圾回收"></a>栈帧不用垃圾回收</h2><ul>
+<li>栈帧在创建的时候就可以基本确定占用内存的大小，而一个接口的多个实现类需要的内存可能不一样，一个方法中的多个分支需要的内存也可能不一样，只有在程序运行的时候才知道。所以，栈帧不用清理垃圾是因为出栈使用的时候就相当于清理垃圾了</li>
+</ul>
+<h2 id="如何判断对象没有被引用"><a href="#如何判断对象没有被引用" class="headerlink" title="如何判断对象没有被引用"></a>如何判断对象没有被引用</h2><h3 id="1-引用计数器-主流JVM都没有用这个方法"><a href="#1-引用计数器-主流JVM都没有用这个方法" class="headerlink" title="1.引用计数器(主流JVM都没有用这个方法)"></a>1.引用计数器(主流JVM都没有用这个方法)</h3><ul>
+<li>给对象添加一个引用计数器，每当被引用时就+1，引用失效时就-1，引用计数器等于0时认为对象就死了</li>
+<li>实现简单，判定效率高，但是当两个对象互相引用且没有别的对象引用他们时，认为两个对象都死了，但是引用计数器难以解决这个问题</li>
+</ul>
+<h3 id="2-可达性分析-主流JVM都使用这个算法"><a href="#2-可达性分析-主流JVM都使用这个算法" class="headerlink" title="2.可达性分析(主流JVM都使用这个算法)"></a>2.可达性分析(主流JVM都使用这个算法)</h3><ul>
+<li><p>以一系列”GC Roots”为起点，向下搜索，搜索走过的路径称为引用链，如果对象到GC Roots没有引用链的话(即，对象不可达)证明对象已死</p>
+</li>
+<li><p><strong>可以作为GC Roots的对象包括：</strong></p>
+</li>
+<li><ul>
+<li>栈帧中局部变量表(本地变量表)中引用的对象</li>
+<li>方法区中类静态属性引用的对象</li>
+<li>方法区中常量引用的对象</li>
+<li>本地方法栈中Native方法引用的对象</li>
+</ul>
+</li>
+<li><p>即使不可达的对象至少要经历两次标记过程才会宣告死亡</p>
+</li>
+<li><ul>
+<li>1.第一次标记是可达性分析</li>
+<li>2.第二次是筛选：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>如果对象没有覆盖finalize()方法或者虚拟机已经调用过对象的finalize()方法就不会被筛选出来，直接宣告死亡等待GC清理</li>
+<li>如果通过筛选，虚拟机会用一个低优先级的线程执行finalize()，对象如果可以在finalize()方法中拯救自己使得自己变成可达就不会被宣告死亡/GC清理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="方法区的回收"><a href="#方法区的回收" class="headerlink" title="方法区的回收"></a>方法区的回收</h2><ul>
+<li><p>方法区垃圾收集的效率很低，大部分空间不会被当作垃圾回收</p>
+</li>
+<li><p>如果要回收主要回收两部分，可以设置参数是否回收</p>
+</li>
+<li><ul>
+<li>废弃常量</li>
+<li>无用的类</li>
+</ul>
+</li>
+<li><p>但是，大量使用<strong>反射、动态规划</strong>等框架频繁自定义ClassLoader，都需要虚拟机具备类卸载功能，以保证方法区不会溢出</p>
+</li>
+<li><p>类需要同时满足下面3个条件才能算是“无用的类”，从而被垃圾回收</p>
+</li>
+<li><ul>
+<li>该类所有的实例都已经被回收,也就是Java堆中不存在该类的任何实例</li>
+<li>加载该类的ClassLoader已经被回收</li>
+<li>该类对应的java.lang.Class对象没有在任何地方被引用,无法在任何地方通过反射访问该类的方法</li>
+</ul>
+</li>
+</ul>
+<h2 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h2><ul>
+<li><p>堆内存被分为新生代和老年代，新生代包括Eden区，Survivor区</p>
+</li>
+<li><p>新生代GC称为Minor GC，老生代GC称为Major GC，整个堆GC称为Full GC</p>
+</li>
+<li><p>对象主要分配在新生代Eden区，如果启动了本地线程分配缓冲，将按照线程优先在TLAB上分配</p>
+</li>
+<li><p>大对象直接进入老年代</p>
+</li>
+<li><p>长期存活的对象将进入老年代</p>
+</li>
+<li><ul>
+<li>每一个对象有对象年龄计数器，如果Eden出生的对象经历了Minor GC并复制到Survivor区则计数器+1，默认计数器达到15后进入老年代</li>
+<li>动态年龄判定</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>如果Survivor区中相同年龄所有对象的大小大于Survivor空间的一半，则年龄大于或等于该年龄的对象直接进入老年代</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>空间分配担保</p>
+</li>
+<li><ul>
+<li>Minor GC时有多少对象存活是不确定的，Survivor空间可能不够，可以用老年代的空间进行担保。如果发现Minor GC后发现老年代连续空间也不够了就需要发起Full GC</li>
+</ul>
+</li>
+</ul>
+<h2 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h2><h3 id="标记-清除算法"><a href="#标记-清除算法" class="headerlink" title="标记-清除算法"></a>标记-清除算法</h3><ul>
+<li><p>思路</p>
+</li>
+<li><ul>
+<li>1.标记需要回收的对象，细节上面有，可能是两次标记</li>
+<li>2.统一回收所有被标记的对象</li>
+</ul>
+</li>
+<li><p>缺点</p>
+</li>
+<li><ul>
+<li>• 效率问题</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>标记和清理两个过程效率都不高</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>• 空间问题</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>标记清除后会产生大量不连续的内存碎片，分配大内存时可能没有连续内存而提前出发下一次GC</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h3><ul>
+<li><p>思路</p>
+</li>
+<li><ul>
+<li>将可用内存分成大小相等的两块，当一块内存用完后将活着的对象复制到另一块上，.然后把使用过的内存空间一次清理掉</li>
+</ul>
+</li>
+<li><p>优点</p>
+</li>
+<li><ul>
+<li>内存分配不用考虑内存碎片的情况，只需要移动堆顶指针顺序分配内存即可，实现简单，运行高效</li>
+</ul>
+</li>
+<li><p>缺点</p>
+</li>
+<li><ul>
+<li>可用内存只有原来的一般，代价较高</li>
+</ul>
+</li>
+<li><p>改进</p>
+</li>
+<li><ul>
+<li>新生代空间不用1:1划分内存，按照Eden:Survivor1：Survior2=8:1:1进行划分</li>
+<li>使用Eden和其中一块Survivor分配内存，回收时 将活着的对象复制到另一个Survivor上，最后清理使用的Eden和Survivor空间</li>
+<li>如果存活对象超过10%，Survivor空间不够时直接分配到老年代</li>
+</ul>
+</li>
+</ul>
+<h3 id="标记-整理算法"><a href="#标记-整理算法" class="headerlink" title="标记-整理算法"></a>标记-整理算法</h3><ul>
+<li><p>对象存活率高时使用复制算法效率就会变低，所以堆内存中的老生代不使用复制算法</p>
+</li>
+<li><p>思路</p>
+</li>
+<li><ul>
+<li>标记过程和标记-清除算法一样，标记完后不直接清理而是让存活的对象都向一端移动，然后直接清理端边界以外的内存</li>
+</ul>
+</li>
+</ul>
+<h3 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h3><ul>
+<li>说白了就是新生代用复制算法，老年代用标记-清理/标记-整理算法</li>
+</ul>
+<h2 id="HotSpot对上述GC算法的实现"><a href="#HotSpot对上述GC算法的实现" class="headerlink" title="HotSpot对上述GC算法的实现"></a>HotSpot对上述GC算法的实现</h2><h3 id="如何快速且准确完成GC-Roots枚举"><a href="#如何快速且准确完成GC-Roots枚举" class="headerlink" title="如何快速且准确完成GC Roots枚举"></a>如何快速且准确完成GC Roots枚举</h3><ul>
+<li>每一个对象内部的数据都有对应的类型，但是编译后就只有变量在栈上的位置信息了，所以类加载完成时就会把对象内什么偏移量上是什么类型数据计算出来，使用称为OopMap的数据结构记录栈上哪个位置是什么类型数据（栈上有引用类型也有基本数据类型，需要类似索引的结构记录哪些位置是引用类型，方便获取所有的GC Roots）</li>
+</ul>
+<h3 id="安全点-SafePoint"><a href="#安全点-SafePoint" class="headerlink" title="安全点(SafePoint)"></a>安全点(SafePoint)</h3><ul>
+<li><p>为什么要建立安全点</p>
+</li>
+<li><ul>
+<li>造成OopMap内容变化的指令非常多，如果为每一个指令都建立对应的OopMap需要大量的额外空间</li>
+<li>HotSpot只在特定的位置建立了OopMap，这些点称为安全点，程序只有执行到安全点才能进行GC</li>
+</ul>
+</li>
+<li><p>GC时如何让所有线程都在安全点停顿（Stop The World？）</p>
+</li>
+<li><ul>
+<li>• 抢先式中断</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>GC时，先把所有线程中断，不在安全点上的线程恢复起来然后运行到安全点上</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>• 主动式中断</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>在安全点上设置标志，各线程执行时主动轮询这个标志，发现标志为真时自己主动中断挂起</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="安全区域-Safe-Region"><a href="#安全区域-Safe-Region" class="headerlink" title="安全区域(Safe Region)"></a>安全区域(Safe Region)</h3><ul>
+<li><p>有了安全点为什么还要安全区域</p>
+</li>
+<li><ul>
+<li>如果线程处于Sleep或者Blocked状态就无法响应JVM的中断请求（Stop The World是通过设置中断标志位实现的？），”走”到安全点挂起，此时就需要安全区域来解决</li>
+<li>安全区域可以看成是扩展了的安全点，一段代码中引用关系不会发生变化，这个区域内任意地方开始GC都是安全的</li>
+</ul>
+</li>
+<li><p>执行步骤</p>
+</li>
+<li><ul>
+<li>线程执行到安全区域时，标识自己进入安全区域了，GC时知道这个线程安全了，就不会管这个这个线程了</li>
+<li>随着线程执行要离开安全区域时检查是否发生了GC Roots枚举，如果发生了就一直等待直到收到信号</li>
+</ul>
+</li>
+</ul>
+<h2 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h2><h3 id="新生代垃圾收集器"><a href="#新生代垃圾收集器" class="headerlink" title="新生代垃圾收集器"></a>新生代垃圾收集器</h3><ul>
+<li><p>新生代/老年代的垃圾收集器</p>
+</li>
+<li><ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/1266758/1586829276099-3eddf69c-0067-4cce-9b96-7d0d9467ae5d.jpeg?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="新生代老年代垃圾收集器.jpg"></li>
+</ul>
+</li>
+<li><p>Serial收集器</p>
+</li>
+<li><ul>
+<li><strong>使用复制算法</strong></li>
+<li>进行垃圾收集时必须暂停其他所有工作线程，直到收集结束(Stop The World)</li>
+<li>和其他收集器的单线程相比，简单而高效</li>
+<li>Client模式下默认新生代垃圾收集器，桌面应用GC时停顿时间一般在几十毫秒最多一百多毫秒以内</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586829364564-b7c8f968-a706-4bd0-8215-ffe94304e156.png" alt="serial.png"></li>
+</ul>
+</li>
+<li><p>ParNew收集器</p>
+</li>
+<li><ul>
+<li><strong>使用复制算法</strong></li>
+<li>Serial收集器的多线程版本</li>
+<li>Server模式下首选的新生代收集器，有一个原因是目前只有它可以和CMS收集配合工作</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586829343410-96b18712-02a9-4d98-b8cd-dfb76c79354c.png" alt="Parallel New.png"></li>
+</ul>
+</li>
+<li><p>Parallel Scavenge收集器(吞吐量优先收集器)</p>
+</li>
+<li><ul>
+<li><strong>使用复制算法</strong></li>
+<li>特点</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>吞吐量=运行用户代码时间/(运行用户代码时间+垃圾收集时间)</li>
+<li>CMS等收集器目的是尽可能缩短垃圾收集时用户线程的停顿时间，但是Parallel Scavenge收集器目的是达到可控制的吞吐量(Throughput)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>停顿时间/高吞吐量</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>【停顿时间短】适合与【用户交互】程序，响应速度较好</li>
+<li>【高吞吐量】适合后台运算，可以高效率地利用CPU时间</li>
+<li><strong>GC停顿时间短是以牺牲吞吐量和新生代空间来换取的</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>当新生代空间比较小时，收集300MB新生代肯定比500MB的快，但是会导致垃圾收集频率增加。</li>
+<li>比如原来10秒收集一次，一次停顿100毫秒，现在5秒停顿一次，一次停顿70毫秒</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1594179322388-c0db3118-758f-477c-a815-0e6f92cc7d8e.png" alt="image"></li>
+</ul>
+</li>
+</ul>
+<h3 id="老年代垃圾收集器"><a href="#老年代垃圾收集器" class="headerlink" title="老年代垃圾收集器"></a>老年代垃圾收集器</h3><ul>
+<li><p>Serial Old收集器</p>
+</li>
+<li><ul>
+<li>Serial收集器的老年版本，使用<strong>标记-整理算法</strong></li>
+<li>用途</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>1.JDK1.5之前与Parrllel Scaenge收集器搭配使用</li>
+<li>2.作为CMS收集器的后备预案，在并发收集发生Concurrent Mode Failure时使用</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Parrallel Old收集器</p>
+</li>
+<li><ul>
+<li>Parallel Scavenge收集器的老年代版本，使用<strong>标记-整理算法</strong></li>
+<li>用途</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>和Parallel Scavenge配合应用在注重吞吐量以及CPU敏感的场景</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>CMS(Concurrent Mark Sweep)收集器</p>
+</li>
+<li><ul>
+<li>目的是获取最短停顿时间的垃圾收集器，使用【<strong>标记-清除算法</strong>】</li>
+<li>步骤</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>初始标记(CMS initial mark)【需要Stop The World】</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>仅仅标记GC Roots可以直接关联的对象，速度很快</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>并发标记(CMS concurrent mark)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>实际就是<strong>GC Roots Tracing</strong>过程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>重新标记(CMS remark)【需要Stop The World】</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>修正并发标记期间因用户线程继续运行而导致标记产生变动的那一部分对象</li>
+<li>停顿时间比初始标记稍长但是远比并发标记短</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>并发清除(CMS concurrent sweep)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>这个阶段用户线程出现的垃圾称为浮动垃圾(Floating Garbage)只能留下一次GC再清理</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><strong>CMS缺点</strong></li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>属于并发程序，对CPU非常敏感，由于程序占用了一部分用户进程导致总吞吐量降低</li>
+<li><strong>一般的老年代收集器可以等到老年代几乎完全填满再执行，而CMS收集器必须留有一定的空间留给并发标记阶段的用户线程使用</strong>。如果此时内存不满足需求就会出现Concurrent Mode Failure导致使用Serial Old再执行一次额外的Full GC</li>
+<li><strong>由于使用标记-清除算法，会产生大量的内存碎片</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586829391835-938404ed-d002-42fd-a60d-0b80ea543cef.png" alt="CMS.png"></li>
+</ul>
+</li>
+</ul>
+<h3 id="全区域垃圾收集器"><a href="#全区域垃圾收集器" class="headerlink" title="全区域垃圾收集器"></a>全区域垃圾收集器</h3><ul>
+<li><p><a href="https://blog.csdn.net/jiankunking/article/details/85626279">G1(Garbage-First)收集器</a></p>
+</li>
+<li><ul>
+<li>特点</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>和CMS一样，目的都是降低停顿时间</li>
+<li>化整为零</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>将整个Java堆划分为多个大小相等的独立区域(Region)，逻辑上保留新生代和老年代概念，只是不是连续内存空间。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>不会出现内存空间碎片</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li><strong>整体上使用标记-整理算法，对于Region来说使用复制算法</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><strong>可预测停顿时间</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li><strong>和CMS比最大的优势，可以将停顿时间控制在根据使用者设定的时间</strong></li>
+<li><strong>G1跟踪各个Region里垃圾的价值大小(回收需要的时间和释放的空间)，后台维护一个优先列表</strong></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>步骤</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>初始标记(Initial Marking)</li>
+<li>并发标记(Concurrent Marking)</li>
+<li>最终标记(Final Marking)</li>
+<li>筛选回收(Live Data Counting and Evacuation)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>使用Region必须解决的问题(所有垃圾收集器都有的问题，G1最明显)</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>Region不可能是独立的，老年代会引用新生代的对象，而新生代GC频率高于老年代，如果新生代内存不足GC时都扫描老年代会很浪费</li>
+<li>所以Region之间的引用和其他垃圾收集器新老代之间的引用都是使用Remembered Set避免扫描全堆</li>
+<li>Remembered Set记录老年代引用新生代对象的关系</li>
+<li>新生代GC Roots=新生代GC Root+Remembered Set</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586829490914-d6efd7e4-37c8-45c9-a47b-2982d2b6103c.png" alt="G1.png"></li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>类加载机制</title>
+    <url>/2020/10/14/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<h1 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h1><h2 id="类加载的优势"><a href="#类加载的优势" class="headerlink" title="类加载的优势"></a>类加载的优势</h2><ul>
+<li>类的加载、连接、初始化都是在程序运行期间完成的，虽然会令类加载时稍微增加一些性能开销，但是会为Java程序提供高度的灵活性</li>
+<li>例如，面向接口的应用程序可以等到运行时再指定其实际实现类。用户可以通过Java预定义/自定义类加载器在运行时从网络或其他地方加载一个二进制流作为程序代码的一部分</li>
+</ul>
+<h2 id="类加载的时机"><a href="#类加载的时机" class="headerlink" title="类加载的时机"></a>类加载的时机</h2><ul>
+<li><p>类从加载到虚拟机内存开始，到卸载出内存为止，整个生命周期包括</p>
+</li>
+<li><ul>
+<li>加载(Loading)(和类加载不一样)</li>
+<li>验证(Verification)</li>
+<li>准备(Preparation)</li>
+<li>解析(Resolution)</li>
+<li>初始化(Initialization)</li>
+<li>使用(Using)</li>
+<li>卸载(Unloading)</li>
+<li>其中验证、准备、解析统称为连接</li>
+</ul>
+</li>
+<li><p>类加载过程必须按照顺序按部就班的开始，但是不用按照顺序完成</p>
+</li>
+<li><p>解析阶段某些情况下可以在初始化阶段之后开始</p>
+</li>
+<li><ul>
+<li>为了支持Java运行时绑定(动态绑定/晚期绑定)</li>
+</ul>
+</li>
+<li><p>加载的时机</p>
+</li>
+<li><ul>
+<li>什么时候开始加载虚拟机规范没有强制约束</li>
+</ul>
+</li>
+<li><p>初始化的时机</p>
+</li>
+<li><ul>
+<li>虚拟机规范严格规定有且只有5种情况必须立即对类进行初始化(加载、验证、准备自然要在其之前)</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>1.遇到new, getstatic, putstatic, invokestatic四条字节码时，常见的场景：new实例化对象，读取或设置类的静态字段</li>
+<li>2.使用java.lang.reflect包的方法对类进行反射调用时</li>
+<li>3.初始化一个类但是父类还没初始化时先初始化父类</li>
+<li>4.虚拟机启动时，main()方法的类</li>
+<li>5.java.lang.invoke.MethodHandle实例后解析结果REF_getStatic, REF_putStatic, REF_inokeStatic的方法句柄，并且句柄对应的类没有初始化时</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="类加载的过程"><a href="#类加载的过程" class="headerlink" title="类加载的过程"></a>类加载的过程</h2><h3 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h3><ul>
+<li><p>加载阶段需要完成三件事</p>
+</li>
+<li><ul>
+<li>1.通过类的全限定名来获取定义此类的二进制字节流</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>没有限制从什么地方获取，可以使用自定义类加载器，这是众多Java技术的基础（PowerMockito使用了自定义类加载器）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>1.从jar包获取</li>
+<li>2.从网络获取，如Applet</li>
+<li>3.运算时计算生成，如动态代理技术完成对原功能的增强，在java.lang.reflect.Proxy中，就是利用ProxyGenerator.generateProxyClass来为特定的接口生成形式为”*$Proxy”的代理类的二进制字节流</li>
+<li>4.其他文件生成，如由JSP文件生成Class类</li>
+<li>5.从数据库中读取，把程序安装到数据库完成程序代码在集群间的分发</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>2.将这个字节流所代表的静态存储结构转化为方法区运行时的数据结构</li>
+<li>3.<strong>在内存中生成一个代表此类的java.lang.Class对象</strong>，作为方法区这个类的各种数据的访问入口(HotSpot虚拟机将其存放在方法区，比较特殊，对象存在方法区)</li>
+</ul>
+</li>
+<li><p>加载阶段尚未完成，连接阶段就可能开始了，如验证</p>
+</li>
+</ul>
+<h3 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h3><ul>
+<li><p>1.文件格式验证</p>
+</li>
+<li><ul>
+<li>如是否以魔数开头，指向常量池的索引值中是否有指向不存在的常量或不符合类型的常量，等</li>
+</ul>
+</li>
+<li><p>2.元数据验证</p>
+</li>
+<li><ul>
+<li>语义校验，如，是否继承了final类，这个类不是抽象类是否实现了父类或接口中要求的所有方法，等</li>
+</ul>
+</li>
+<li><p>3.字节码验证</p>
+</li>
+<li><ul>
+<li>对方法体进行校验，如，类型转换是否有效，是否用long类型操作int类型数据，等</li>
+</ul>
+</li>
+<li><p>4.符号引用验证</p>
+</li>
+<li><ul>
+<li>将在连接的解析阶段发生，符号引用确定的全限定名是否能找到对应的类，符号引用的类、字段、方法是否可以被当前类访问</li>
+</ul>
+</li>
+<li><p>如果确定加载的类没问题可以使用 -Xverify:none来关闭验证，缩短类加载时间</p>
+</li>
+</ul>
+<h3 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h3><ul>
+<li>正式为类变量(static)分配内存并设置初始值为0(不包括实例变量)</li>
+</ul>
+<h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><ul>
+<li><strong>将常量池中的符号引用替换为直接引用，即**</strong>从偏移量翻译成内存地址**</li>
+<li>虚拟机可以将第一次解析的结果缓存(在运行时常量池中记录直接引用，并把常量标记为已解析状态)，避免反复解析</li>
+</ul>
+<h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><ul>
+<li>类初始化阶段是类加载过程的最后一步，是类构造器方法的执行过程，由类变量的赋值(static) 和静态代码块(static{ }) 合并而成</li>
+</ul>
+<h3 id="卸载"><a href="#卸载" class="headerlink" title="卸载"></a>卸载</h3><ul>
+<li><p>Class作为JVM中的一个特殊对象，也会被GC回收卸载</p>
+</li>
+<li><p>Class的卸载就是清空方法区中Class的信息和堆区中的java.lang.Class对象。这时Class的声明周期就结束了</p>
+</li>
+<li><p>Class被回收要满足以下三个条件:</p>
+</li>
+<li><ul>
+<li>No Instance：该类所有的实例都已经被GC;也就是java堆中不存在该类的任何实例</li>
+<li>No ClassLoader：加载该类的ClassLoader实例已经被GC</li>
+<li>No Reference：该类的java.lang.Class对象没有被引用。(XXX.class,静态变量/方法),即没有反射来使用class对象，</li>
+</ul>
+</li>
+</ul>
+<h2 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h2><h3 id="类与类加载器"><a href="#类与类加载器" class="headerlink" title="类与类加载器"></a>类与类加载器</h3><ul>
+<li>执行获取类的二进制字节流的操作的代码模块称为类加载器</li>
+<li>任意一个类需要和它的加载器一起确定唯一性，每一个类加载器，都有独立的类名称空间。即，即使是同一个Class文件，只要类加载器不同，那么这两个类不相等</li>
+</ul>
+<h3 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h3><ul>
+<li><p>类加载器分两种</p>
+</li>
+<li><ul>
+<li>启动类加载器/引导类加载器(Bootstrap ClassLoader),使用C++实现</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>无法被Java程序直接引用</li>
+<li>自定义类加载器可以把加载请求委托给引导类加载器</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>所有其他类加载器，使用Java实现，独立于虚拟机外部，全都继承抽象类java.lang.ClassLoader</li>
+</ul>
+</li>
+<li><p>系统提供了3中类加载器</p>
+</li>
+<li><ul>
+<li>1.引导类加载器</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>加载<JAVA_HOME>\lib目录中的类库</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>2.扩展类加载器(Extension ClassLoader)</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>加载<JAVA_HOME>\lib\ext中的类库</li>
+<li>开发者可以直接使用这个类加载器</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>3.应用程序类加载器</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>加载用户路径(ClassPath)上的类库</li>
+<li>开发者可以直接使用这个类加载器</li>
+<li>如果应用程序没有自定义加载器，一般情况下默认使用这个类加载器</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>双亲委派模型</p>
+</li>
+<li><ul>
+<li>要求除顶层的启动类加载器外，其余的类加载器当有自己的父类加载器</li>
+<li>类加载器之间的父子关系不是用继承实现的，而是用组合关系复用父加载器</li>
+<li>只有父加载器反馈自己无法完成加载请求(搜索范围内没有找到所需的类)时，子加载器才会尝试自己去加载</li>
+<li>双亲委派模型保证了，无论哪个加载器要加载某个类，都是由同一个类加载器进行加载，保证了某个类在各种类加载器环境中都是同一个类</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>例如，用户自己写了java.lang.Object类放在ClassPath下，不使用该模型的话，就有可能加载到不同的Object类</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>双亲委派模型保证了越基础的类越上层的加载器进行加载</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586834262259-688884e9-8898-41a9-a488-267efb94f1dd.png" alt="双亲委派模型.png"></li>
+</ul>
+</li>
+<li><p>破坏双亲委派模型</p>
+</li>
+<li><ul>
+<li>第一次破环：JDK1.2引入该模型，之前用的时java.lang.ClassLoader，现在不用管了</li>
+<li>第二次破坏：历史原因，出现了基础类调用用户类的代码，使用线程上下文类加载器。Java中的JDBC就是这样的(ˉ▽ˉ；)…</li>
+<li>第三次被破坏：OSGi模块化技术中不使用双亲委派模型，体统了代码热替换(HotSwap)，模块热部署(Hot Deplotment)技术</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>JVM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>线程安全与锁优化</title>
+    <url>/2020/10/14/%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E4%B8%8E%E9%94%81%E4%BC%98%E5%8C%96/</url>
+    <content><![CDATA[<h1 id="线程安全与锁优化"><a href="#线程安全与锁优化" class="headerlink" title="线程安全与锁优化"></a>线程安全与锁优化</h1><h1 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h1><ul>
+<li>定义：当多个线程访问一个对象时，如果不用考虑这些线程在运行时环境下的调度和交替执行，也不需要进行额外的同步，或者在调用方进行任何其他的协调操作，调用这个对象的行为都可以获得正确的结果，那这个对象是线程安全的。</li>
+</ul>
+<h2 id="Java中的线程安全类型"><a href="#Java中的线程安全类型" class="headerlink" title="Java中的线程安全类型"></a>Java中的线程安全类型</h2><p>由Brian Goetz发表的论文中提出</p>
+<ul>
+<li>不可变：final修饰的的数据就是不可变的</li>
+<li>绝对线程安全：不管运行时环境如何，调用者都不需要任何额外的同步措施(Java API中标注是线程安全的类大都不满足这一条)</li>
+<li>相对线程安全：通常意义上的线程安全</li>
+<li>线程兼容：对象本身不是线程安全的，但是可以通过在调用端正确地使用同步手段保证对象在并发环境中可以安全地使用</li>
+<li>线程对立：无论调用段是否采用同步措施，都无法在多线程环境下并发使用。Java中这种很少见，如，Thread类的suspend()和resume()，所以被弃用了</li>
+</ul>
+<h2 id="线程安全的实现方法"><a href="#线程安全的实现方法" class="headerlink" title="线程安全的实现方法"></a>线程安全的实现方法</h2><h3 id="互斥同步"><a href="#互斥同步" class="headerlink" title="互斥同步"></a>互斥同步</h3><ul>
+<li>互斥是方法，同步是目的</li>
+<li>互斥同步手段包括synchronized,ReentrantLock</li>
+<li>synchronized编译后会在同步块前后分别形成monitorenter指令，首先尝试获取对象的锁，如果这个对象没被锁定，或者当前线程已经拥有了那个对象的锁，则锁的计数器加1，相应的，执行monitorexit指令时锁计数器减1</li>
+<li>其他细节在并发相关笔记中</li>
+</ul>
+<h3 id="非阻塞同步-CAS"><a href="#非阻塞同步-CAS" class="headerlink" title="非阻塞同步(CAS)"></a>非阻塞同步(CAS)</h3><ul>
+<li><p>互斥同步最主要的问题就是进行线程阻塞和唤醒所带来的性能问题，因此这种同步也称为阻塞同步</p>
+</li>
+<li><p>互斥同步属于悲观并发策略，随着硬件指令集的发展，有了新的选择：基于冲突检测的乐观并发策略。即，先进行操作，如果共享数据不争用则成功，如果争用则不断尝试直到成功，由于这种策略不需要挂起线程，所以称为非阻塞同步</p>
+</li>
+<li><p>上述策略实现需要硬件指令集的支持，需要操作和冲突检测这两个逻辑上两个步骤具备原子性(即一次完成两个操作)</p>
+</li>
+<li><p><strong>非阻塞同步中，CAS是最著名的代表</strong></p>
+</li>
+<li><p>CAS(Compare-and-Swap)当且仅当内存中变量的值等于旧预期值时才会写入新的值，原理基于MESI协议：</p>
+</li>
+<li><ul>
+<li>CAS翻译的汇编指令时：lock cmpxchg a,b,c</li>
+<li>例如core0和core1同时执行针对同一地址的CAS指令</li>
+<li>实际上他们是在试图修改每个core自己持有的cache line</li>
+<li>假设两个core各自对应的cache line状态都是S，这时如果要想成功修改,就首先需要把S转为E或者M, 则需要是的其它core invalidate这个地址的cache line</li>
+<li>则两个core都会向ring bus发出 invalidate这个操作, 那么在ringbus上就会根据特定的设计协议仲裁是core0,还是core1能赢得这个invalidate</li>
+<li>胜者完成操作, 失败者需要接受结果, invalidate自己对应的cacheline,再读取胜者修改后的值, 回到起点</li>
+</ul>
+</li>
+<li><p><strong>对于CAS操作来说, 其实锁并没有消失,只是转移到了ring bus的总线仲裁协议中**</strong>. 而且大量的多核同时针对一个地址的CAS操作会引起反复的互相invalidate 同一c**<strong>ache line**</strong>,同样会降低性能**</p>
+</li>
+<li><p><strong>CAS对应的汇编命令</strong></p>
+</li>
+<li><ul>
+<li>单核CPU时CAS翻译的汇编命令没有lock，即：cmpxchg a,b,c ，这个操作也是原子性的</li>
+<li>多核时使用命令增加lock是让总线仲裁器工作，决定执行哪个核的CAS操作</li>
+<li>单CPU系统中，CAS通常只需要很少的时钟周期，多CPU系统中需要10-150个时钟周期</li>
+<li>一个经验法则：大多数处理器上，无竞争的锁获取和释放的“快速代码路径”上的开销，大约是CAS开销的两倍</li>
+<li>但是CAS可以实现更细粒度的操作，所以我相信实际使用肯定不是慢2倍</li>
+</ul>
+</li>
+<li><p><strong>CAS与ABA问题</strong></p>
+</li>
+<li><ul>
+<li><strong>CAS不会导致ABA问题，但是CAS没法发现ABA问题</strong></li>
+<li>实际上CAS和cmpxchg压根就没处理过ABA问题。严格来说CAS就不会有ABA的问题，它只是一个简单的，原子的”比较-设置值”的指令而已</li>
+<li>ABA问题的危害</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>如果CAS操作的是链表头，ABA问题使得链表后面的元素发生了变化，但是链表头没变，这样就会出现问题</li>
+<li>大部分情况下ABA并不影响并发的正确性</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>解决ABA问题，需要上层代码来处理，如使用版本戳</li>
+</ul>
+</li>
+<li><p><strong>CAS可能会造成饥饿，如果多个线程修改对同一个变量执行CAS操作的话</strong></p>
+</li>
+<li><p>CAS的特性使得他称为实现任何高层“锁”的必要的构建。几乎所有的“锁”，如Mutex，ReentrantLock等都得用CAS让线程先原子性的抢到一个东西（比如一个队列的头部——阻塞队列），然后才能维护其他锁相关的数据</p>
+</li>
+<li><p><strong>CAS与volatile相同与区别：</strong></p>
+</li>
+<li><ul>
+<li>volatile修饰的变量翻译成汇编后会多以来一个命令：<strong>lock addl $0x0,(%esp)</strong> </li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>执行一个lock修饰的给寄存器+0的空命令，目的是利用lock的性质，锁缓存然后将本CPU的Cache写入内存</li>
+<li>这里完全没有考虑并发问题，就单纯的锁住缓存行然后写入</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>CAS对应的汇编命令是：<strong>lock cmpxchg …</strong></li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>不仅使用了lock，还有cmpxchg，多了一个对竞态条件的检测，考虑到并发问题了</li>
+<li>volatile不能满足原子性，因为根本没考虑到并发，而CAS的目的就是解决并发，所以满足原子性</li>
+<li>使用lock语句就会满足可见性和有序性（不难理解，详见笔记《Java内存模型与线程》)</li>
+<li><strong>那么：</strong>CAS满足原子性+可见性+有序性</li>
+<li>synchronized可以广义上满足这三个条件，但是synchronized代码块内部不满足有序性</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>应用：多线程执行i++</p>
+</li>
+<li><ul>
+<li>主要问题是让i++操作具备原子性，用synchronized肯定可以，但是使用CAS性能更好</li>
+<li>JDK1.5以后sun.misc.Unsafe类中的compareAndSwapInt()和compareAndSwapLong()等几个方法包装提供CAS操作</li>
+<li>这个类需要使用Bootstrap ClassLoader加载才可以访问，所以一般使用J.U.C包里的整数原子类其中的compareAndSet()和getAndIncrement()等方法间接使用Unsafe类的CAS操作</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight arduino"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AtomicTest</span>&#123;</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> AtomicInteger i=<span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">increase</span><span class="params">()</span></span>&#123;</span><br><span class="line">        i.incrementAndGet();<span class="comment">//使用原子类的incrementAndGet()方法间接调用compareAndSet()</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> THREADS_COUNT=<span class="number">20</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(<span class="keyword">String</span>[] args)</span> throws Exception</span>&#123;</span><br><span class="line">        Thread[] threads=<span class="keyword">new</span> Thread[THREADS_COUNT];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;THREADS_COUNT;i++)&#123;</span><br><span class="line">            threads[i]=<span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable()&#123;</span><br><span class="line">                @Overrie</span><br><span class="line">                <span class="keyword">public</span> <span class="keyword">void</span> <span class="built_in">run</span>()&#123;</span><br><span class="line">                    <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;<span class="number">10000</span>;i++)&#123;</span><br><span class="line">                        increase();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">            threads[i].start();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(Thread.activeCount()&gt;<span class="number">1</span>)</span><br><span class="line">            Thread.<span class="built_in">yield</span>();<span class="comment">//等待执行完成</span></span><br><span class="line">        System.out.<span class="built_in">println</span>(i);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><ul>
+<li>能实现原子性是调用了incrementAndGet()方法，源码：</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> incrementAndGet()&#123;</span><br><span class="line">    <span class="keyword">for</span>(;;)&#123;<span class="comment">//对应CAS操作不成功无限循环</span></span><br><span class="line">        <span class="keyword">int</span> current =get();</span><br><span class="line">        <span class="keyword">int</span> <span class="keyword">next</span>=current+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(compareAndSet(current,<span class="keyword">next</span>))</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">next</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="无同步方案"><a href="#无同步方案" class="headerlink" title="无同步方案"></a>无同步方案</h3><p>保证线程安全并不一定需要同步，二者没有因果关系</p>
+<ul>
+<li><p>可重入代码：任何时刻中断，在返回后都不会出现错误。</p>
+</li>
+<li><ul>
+<li>特点：不依赖存储在堆上的数据和公用的系统资源，用到的状态量都是参数中传入，不调用非可重入的方法等</li>
+</ul>
+</li>
+<li><p>线程本地存储：ThreadLocal，细节在其他并发笔记中</p>
+</li>
+</ul>
+<h1 id="锁优化"><a href="#锁优化" class="headerlink" title="锁优化"></a>锁优化</h1><h2 id="自旋锁与自适应自旋"><a href="#自旋锁与自适应自旋" class="headerlink" title="自旋锁与自适应自旋"></a>自旋锁与自适应自旋</h2><ul>
+<li>许多应用中，共享数据的锁定状态只会持续很短的时间，为了这段时间去挂起和恢复线程并不值得</li>
+<li>所以引入自旋锁，通过自旋等待自身避免线程切换的开销</li>
+<li>使用自适应的自旋锁的自旋等待时间不固定，由前一次在同一个锁上的自旋时间决定</li>
+</ul>
+<h2 id="锁消除"><a href="#锁消除" class="headerlink" title="锁消除"></a>锁消除</h2><ul>
+<li>通过逃逸分析，如果一段代码中，堆上的所有数据都不会逃逸被其他线程访问到，那就可以把它们当作栈上数据对待，认为是线程私有的，同步加锁自然就不用了</li>
+</ul>
+<h2 id="轻量级锁"><a href="#轻量级锁" class="headerlink" title="轻量级锁"></a>轻量级锁</h2><ul>
+<li>在<strong>没有多线程竞争的前提下</strong>，减少传统的重量级锁的性能消耗（即<strong>可以多线程交替加锁</strong>）</li>
+<li>理解轻量级锁和下面的偏向锁必须理解HotSpot虚拟机的对象的内存布局</li>
+</ul>
+<h3 id="对象头的内存布局"><a href="#对象头的内存布局" class="headerlink" title="对象头的内存布局"></a>对象头的内存布局</h3><ul>
+<li><p>对象头分为两部分信息：</p>
+</li>
+<li><ul>
+<li>第一部分Mark Word：用于存储对象自身运行时数据，如哈希码、GC分代年龄等，32位/64位JVM分别是32bit/64bit</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>Mark Word根据对象的状态复用自己的存储空间</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/1266758/1586828407799-ef6dbfba-a2af-4b45-bde8-8a47ec078357.jpeg" alt="image"></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>第二部分：用于存储指向方法区对象类型数据的指针，如果是数据对象的话还会由一个额外的部分用于存储数组长度</li>
+</ul>
+</li>
+</ul>
+<h3 id="轻量级锁的执行过程"><a href="#轻量级锁的执行过程" class="headerlink" title="轻量级锁的执行过程"></a>轻量级锁的执行过程</h3><ul>
+<li><p>加锁</p>
+</li>
+<li><ul>
+<li>代码进入同步块时，如果此同步对象没有被锁定(锁标志位为01)，虚拟机首先在当前线程的栈帧中建立一个锁记录(Lock Record)空间，用于存储锁对象目前的Mark Word拷贝</li>
+<li>然后，虚拟机使用CAS操作尝试将该对象的Mark Word更新为指向Lock Record的指针，如果操作成功，则这个线程就拥有了该对象的锁，并且锁标志变为00</li>
+<li>CAS更新Mark Word操作如果失败了，虚拟机会首先检查对象的Mark Word是否指向当前线程的栈帧，如果是说明当前线程已经拥有了这个对象的锁，那就可以直接进入同步块继续执行，否则说明这个锁对象已经被其他线程抢占了。</li>
+<li>这样轻量级锁就不再有效，要膨胀为重量级锁，锁标志的状态值变为10</li>
+</ul>
+</li>
+<li><p>解锁</p>
+</li>
+<li><ul>
+<li>解锁也是通过CAS操作来进行的，如果对象的Mark Word仍然指向线程的锁记录，那就用CAS操作把对象当前的Mark Word和线程中加锁时复制的<strong>Mark Word替换回来</strong></li>
+<li>如果替换成功则整个同步完成了，如果替换失败则说明其他线程尝试过获取该锁，那么释放锁的同时唤醒被挂起的线程</li>
+</ul>
+</li>
+</ul>
+<h2 id="偏向锁"><a href="#偏向锁" class="headerlink" title="偏向锁"></a>偏向锁</h2><ul>
+<li>目的是消除数据在无竞争下的同步原语，和轻量级锁相比连CAS都不做了</li>
+<li><strong>偏向锁是在单线程执行代码块时使用的机制</strong>，如果在多线程并发的环境下（即线程A尚未执行完同步代码块，线程B发起了申请锁的申请），则一定会转化为轻量级锁或者重量级锁</li>
+<li>引入偏向锁主要目的是：为了在没有多线程竞争的情况下尽量减少不必要的轻量级锁执行路径。因为轻量级锁的加锁解锁操作是需要依赖多次CAS原子指令的，而偏向锁只需要在置换ThreadID的时候依赖一次CAS原子指令（由于一旦出现多线程竞争的情况就必须撤销偏向锁，所以偏向锁的撤销操作的性能损耗也必须小于节省下来的CAS原子指令的性能消耗）</li>
+<li>偏向锁设计者<a href="https://blogs.oracle.com/dave/biased-locking-in-hotspot">Dave Dice</a>原话：一旦设置了偏见锁，该线程便可以对该对象执行lock和unlock操作，而无需诉诸昂贵的原子指令(即CAS) (Once biased, that thread can subsequently lock and unlock the object without resorting to expensive atomic instructions)</li>
+</ul>
+<h3 id="偏向锁的执行过程"><a href="#偏向锁的执行过程" class="headerlink" title="偏向锁的执行过程"></a>偏向锁的执行过程</h3><ul>
+<li>在JVM启动偏向锁情况下(默认启动)，当锁对象第一次被线程获取的时候，虚拟机将会把对象头中的标志位设为01，同时使用CAS操作把获取到这个锁的的线程ID记录在Mark Word里，如果操作成功，持有偏向锁的线程以后每次进入这个锁相关的同步块时，虚拟机都可以不再进行任何同步操作(例如Locking、unlocking、更新Mark Word等)</li>
+<li>当有另外一个线程尝试获取这个锁时，偏向模式结束，后续的同步操作按照轻量级锁执行</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1596512292682-650bf930-4811-4816-bf7b-b5f5f40557ae.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image.png"></li>
+</ul>
+<h2 id="轻量级锁和偏向锁区别"><a href="#轻量级锁和偏向锁区别" class="headerlink" title="轻量级锁和偏向锁区别"></a>轻量级锁和偏向锁区别</h2><ul>
+<li>轻量级锁是为了在线程交替执行同步块时提高性能，而偏向锁则是在只有一个线程执行同步块时进一步提高性能</li>
+<li>偏向锁是锁对象中的对象头包含线程ID</li>
+<li>轻量级锁是锁对象中的对象头是一个指向一个线程栈帧的指针</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>JUC</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java内存模型与线程</title>
+    <url>/2020/10/14/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="Java内存模型与线程"><a href="#Java内存模型与线程" class="headerlink" title="Java内存模型与线程"></a>Java内存模型与线程</h1><h1 id="CPU缓存"><a href="#CPU缓存" class="headerlink" title="CPU缓存"></a>CPU缓存</h1><ul>
+<li><p>CPU缓存的出现主要是为了解决<strong>CPU运算速度与内存读写速度不匹配</strong>的矛盾，因为CPU运算速度要比内存读写速度快得多。1GHz的CPU一秒钟可以执行10亿个时钟周期，举个例子：</p>
+</li>
+<li><ul>
+<li>一次L1高速缓存的读写只需要1~2个时钟周期</li>
+<li>一次L2高速缓存的读写也只需要数十个时钟周期</li>
+<li>一次主内存的访问通常在几十到几百个时钟周期</li>
+</ul>
+</li>
+<li><p><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/1266758/1587041489862-46700600-56f9-4f18-9474-1ed905344819.jpeg" alt="image"></p>
+</li>
+</ul>
+<h1 id="使用CPU缓存带来的问题"><a href="#使用CPU缓存带来的问题" class="headerlink" title="使用CPU缓存带来的问题"></a>使用CPU缓存带来的问题</h1><ul>
+<li>缓存不一致问题：</li>
+</ul>
+<ol>
+<li><ol>
+<li>核0读取了一个字节，根据局部性原理，它相邻的字节同样被被读入核0的缓存</li>
+<li>核3做了上面同样的工作，这样核0与核3的缓存拥有同样的数据</li>
+<li>核0修改了那个字节，被修改后，那个字节被写回核0的缓存，但是该信息并没有写回主存</li>
+<li>核3访问该字节，由于核0并未将数据写回主存，数据不同步</li>
+</ol>
+</li>
+</ol>
+<h1 id="缓存一致性协议"><a href="#缓存一致性协议" class="headerlink" title="缓存一致性协议"></a>缓存一致性协议</h1><h2 id="MESI协议"><a href="#MESI协议" class="headerlink" title="MESI协议"></a>MESI协议</h2><ul>
+<li><p>要求每个缓存行(Cache Line，缓存的基本数据单位，64位CPU缓存行一般是64字节)处于一下四个状态之一，CAS/volatile和这些都有关：</p>
+</li>
+<li><ul>
+<li><strong>已修改**</strong>Modified (M)**</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>缓存行是脏的(dirty*)*，与主存的值不同。如果别的CPU内核要读主存这块数据，该缓存行必须回写到主存，状态变为共享(S).</li>
+<li>必须时刻监听所有试图读取该缓存行对应的主存地址的操作，如果监听到，则必须在此操作执行前把其缓存行中的数据写回CPU</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><strong>独占Exclusive (E)</strong></li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>缓存行只在当前缓存中，但是干净的(clean)–缓存数据同于主存数据。当别的缓存读取它时，状态变为共享；当前写数据时，变为已修改状态。</li>
+<li>必须时刻监听其他试图读取该缓存行对应的主存地址的操作，如果监听到，则必须把其缓存行状态设置为S</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><strong>共享Shared (S)</strong></li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>缓存行也存在于其它缓存中且是干净的。缓存行可以在任意时刻抛弃。</li>
+<li>必须时刻监听使该缓存行无效或者独享该缓存行的请求，如果监听到，则必须把其缓存行状态设置为I</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><strong>无效Invalid (I)</strong></li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>缓存行是无效的</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>当CPU需要读取数据时</p>
+</li>
+<li><ul>
+<li>如果其缓存行的状态是I的，则需要从内存中读取，并把自己状态变成S，如果不是I，则可以直接读取缓存中的值，但在此之前，必须要等待其他CPU的监听结果，如其他CPU也有该数据的缓存且状态是M，则需要等待其把缓存更新到内存之后，再读取。</li>
+</ul>
+</li>
+<li><p>当CPU需要写数据时</p>
+</li>
+<li><ul>
+<li>只有在其缓存行是M或者E的时候才能执行，否则需要发出特殊的RFO指令(Read Or Ownership，这是一种总线事务)，通知其他CPU置缓存无效(I)，这种情况下性能开销是相对较大的。在写入完成后，修改其缓存状态为M</li>
+</ul>
+</li>
+<li><p>Core1和Core2可能会同时把主存中某个位置的值Load到自己的L1 Cache中，当Core1在自己的L1 Cache中修改这个位置的值时，会通过总线，使Core2中L1 Cache对应的值“失效”，而Core2一旦发现自己L1 Cache中的值失效则会通过总线从内存中加载该地址最新的值</p>
+</li>
+</ul>
+<h1 id="硬件的效率与一致性"><a href="#硬件的效率与一致性" class="headerlink" title="硬件的效率与一致性"></a>硬件的效率与一致性</h1><ul>
+<li>由于计算机的存储设备与处理器的运算速度有几个数据级的，所以不得不加入高速缓存(Cache)作为内存和处理器之间的缓冲：将运算需要的数据赋值到缓存中，让运算能够快速进行，当运算结束后再从缓存同步回内存中</li>
+<li>但是会引入一个新的问题：缓存一致性</li>
+<li>每个处理器都有自己的高速缓存，而他们又共享同一主内存</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/1266758/1587020706438-9772d217-2d35-49db-9bbb-f7bacf748f23.jpeg" alt="image"></li>
+</ul>
+<h1 id="Java内存模型-JMM"><a href="#Java内存模型-JMM" class="headerlink" title="Java内存模型(JMM)"></a>Java内存模型(JMM)</h1><h2 id="JMM概述"><a href="#JMM概述" class="headerlink" title="JMM概述"></a>JMM概述</h2><ul>
+<li>JMM来屏蔽掉各种硬件和操作系统的内存访问差异，使得Java程序在各种平台下都能达到一致的内存访问效果</li>
+<li>主要目标是定义程序中各个变量的访问规则，即在虚拟机中将变量存储到内存和从内存中取出变量这样的底层细节</li>
+<li>这里的变量和Java编程中的变量不一样，不包括局部变量和方法参数，这个是线程私有的不会被共享不会存在竞争问题(局部变量引用的对象可以是线程共享的)</li>
+<li>JMM规定所有变量都存储在主内存中，每条线程都有自己的工作内存(高速缓存)</li>
+<li>线程堆变量的所有操作都必须在工作内存中而不能直接操作主内存的变量，不同的线程也无法直接访问对方内存中的变量，线程间变量值的传递均需要通过主内存完成</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/jpeg/1266758/1587031316596-c73f993f-3bf8-46f8-980c-af9194671336.jpeg?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"></li>
+</ul>
+<h2 id="内存间交互操作"><a href="#内存间交互操作" class="headerlink" title="内存间交互操作"></a>内存间交互操作</h2><ul>
+<li><p>主内存和工作内存之间操作有8种，每一种操作都是原子性的</p>
+</li>
+<li><p>这些操作和字节码不是一个概念，这里应该说是JVM和物理内存与CPU打交道的操作</p>
+</li>
+<li><p>具体操作如下：</p>
+</li>
+<li><ul>
+<li>lock：作用于主内存的变量，把一个变量标识为一个线程独占</li>
+<li>unlock：作用域主内存的变量，把锁定状态的变量释放出来，释放后的变量才能被其他线程锁定</li>
+<li>read：作用于主内存的变量，把一个变量的值从主内存传输到工作内存中</li>
+<li>load：作用于工作内存的变量，把read操作从主内存得到的变量值放入工作内存的变量副本中(不是拷贝对象)</li>
+<li>use：作用于工作内存的变量，把工作内存中的一个变量的值传递给执行引擎</li>
+<li>assign：作用于工作内存的变量，把从执行引擎接收到的值赋给工作内存中的变量</li>
+<li>store：作用于工作内存的变量，把工作内存中的一个变量的值传送到主内存</li>
+<li>write：作用于主内存的变量，把store操作从工作内存得到的变量的值放入主内存的变量中</li>
+</ul>
+</li>
+<li><p>如果要把一个变量从主内存复制到工作内存，就要顺序地执行read和load，反之为store和write</p>
+</li>
+<li><p>JMM规定这些操作必须遵守的规则：</p>
+</li>
+<li><ul>
+<li>lock操作可以被同一个线程执行多次，且执行相同次数的unlock后变量才会解锁</li>
+<li>对一个变量执行lock操作，那将会清空工作内存中此变量的值，在执行引擎使用这个变量前，需要重新执行load或assign操作初始化变量的值(保证加锁前后变量值都是最新状态)</li>
+<li>对一个变量执行unlock之前，必须把此变量同步回主内存中(执行store,write操作)(保证加锁前后变量值都是最新状态)</li>
+<li>lock/unlock操作并没有直接开放给用户使用，提供了更高层次的字节码指令 monitorenter/monitorexit来隐式地使用这两个操作，对应到Java代码就是synchronized，因此synchronized块之间的操作也具备原子性</li>
+</ul>
+</li>
+</ul>
+<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><ul>
+<li><p>volatile是JVM提供的最轻量级的同步机制</p>
+</li>
+<li><p>具备两种特性：可见性和禁止指令重排序优化(有序性)</p>
+</li>
+<li><p>volatile修饰的变量和非volatile修饰的变量相比：写操作更加消耗性能，但是读操作差不多</p>
+</li>
+<li><p><strong>volatile这两个特性的原理：</strong></p>
+</li>
+<li><ul>
+<li>以volatile修饰对象的赋值为例，如下面的 <code>instance=new Single()</code> 这句的部分汇编代码如下(不是字节码)：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><strong>mov %eax,0x150(%esi)</strong></li>
+<li>shr $0x9,%esi</li>
+<li>movb $0x0,0x1104800(%esi)</li>
+<li><strong>lock addl $0x0,(%esp)</strong> </li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>volatile起到了<strong>内存屏障</strong>的作用：lock会锁住总线/缓存，使其他线程的缓存无效，刷新缓存，刷新硬件的写缓存，以及间接作用：在指令重排序中无法进行跨越lock两边的重排序操作</li>
+<li>lock后面的操作意是是给ESP寄存器的值加0，显然是空操作(lock前缀的空操作不会被优化)</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>作用是将本CPU的Cache写入内存，同时该写入操作会引起别的CPU的Cache中该变量处于Invalid状态，即上文提到的MESI协议</li>
+<li>这种操作相当于对Cache变量做了一个JMM内存间交互操作中的<strong>store和write操作</strong></li>
+<li>汇编中lock的作用是：</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>早期的CPU中lock指令会锁住总线，在lock操作执行期间不允许其他占用总线的行为，且不允许线程切换，所以能保证lock修饰的操作的原子性</li>
+<li>锁住总线的开销大，锁住期间其他CPU没法访问内存。现在的CPU使用Ringbus + MESI协议优化，通过锁缓存(Cache Locking)的方式优化锁总线（只是优化，锁总线不能完全避免）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>两个线程同时操作volatile类型变量时：</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>Thread-A写了变量i，那么</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>Thread-A发出LOCK#指令锁总线(或锁缓存行)，同时让Thread-B高速缓存中的缓存行内容失效</li>
+<li>Thread-A向主存回写最新修改的i</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>Thread-B读取变量i，那么：</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>Thread-B发现对应地址的缓存行被锁了，等待锁的释放，缓存一致性协议会保证它读取到最新的值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>例子：双重检查锁定——单例设计模式</p>
+</li>
+<li><ul>
+<li>instance对象用volatile修饰的原因：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>synchronized可以保证代码块原子性和可见性，但是不能保证有序性</li>
+<li>new对象可以分为三个步骤</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>分配对象内存空间</li>
+<li>初始化对象</li>
+<li>设置instance指向该内存空间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>如果发生了重排序，变成</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>分配对象内存空间</li>
+<li>设置instance指向该内存空间</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>这一步完成后跳转到另一个线程，发现instance有指向对象，即!=null，那么会访问该对象，但是该对象还没初始化</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>初始化对象</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//双锁检测单例Demo</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Single</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="keyword">static</span> Single instance;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Single <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(instance==<span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (Single.class)&#123;</span><br><span class="line">                <span class="keyword">if</span>(instance==<span class="keyword">null</span>)&#123;</span><br><span class="line">                    instance=<span class="keyword">new</span> Single();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> instance;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        Single.getInstance();<span class="comment">//Single@677327b6</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="原子性、可见性与有序性"><a href="#原子性、可见性与有序性" class="headerlink" title="原子性、可见性与有序性"></a>原子性、可见性与有序性</h2><ul>
+<li><p>这时JMM中的重要特征，也是Java并发的三大核心问题</p>
+</li>
+<li><p>原子性：JMM直接保证原子性变量操作包括read,load,assign,user,store,write，大致可以认为基本数据类型的访问读写是具备原子性的，更大范围的原子性保证由lock/unlock操作实现，对应到Java代码就是synchronized</p>
+</li>
+<li><p>可见性：JMM通过在变量修改后将新值同步回主内存，在变量读取前从主内存刷新变量值的方式来实现可见性。synchronized也能实现可见性</p>
+</li>
+<li><ul>
+<li>final可以在某些情况下保证可见性</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>如果下面的代码中没有obj=this，则可以保证其他线程不会看到i=0(未初始化)的情况。JMM会保证final域初始化的安全性，即禁止把final域的写操作重排序到构造函数之外，所以其他线程在能看到FinalTest对象的时候final域的i变量已经初始化好了</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>解释：FinalTest ft=new FinalTest();可以分为两步：</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li><ul>
+<li><ul>
+<li>FinalTest ft=null</li>
+<li>FinalTest()类的实例化初始化</li>
+<li>ft=初始化结果</li>
+<li>所以ft要么==null，要么能看到i变量的时候就已经初始化好了</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>但是如果多了obj=this，即this逃逸，如果该语句被重排序到i初始化之前，其他线程就会看到没被初始化的final域的i变量</li>
+<li>结论：构造函数中不要出现this逃逸，可以使用工厂方法解决，即getInstance，不暴露构造函数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="symbol">FinalTest</span>&#123;</span><br><span class="line">   <span class="keyword">final</span> <span class="built_in">int</span> i;</span><br><span class="line">   static FinalTest obj;</span><br><span class="line">   <span class="keyword">public</span> FinalTest()&#123;</span><br><span class="line">       i=<span class="number">1</span>;</span><br><span class="line">       <span class="comment">//这里会使正在被构造的对象逸出</span></span><br><span class="line">       <span class="comment">//如果和上一句做了重排序，那么其他线程就可以通过obj访问到还为被初始化的变量i。</span></span><br><span class="line">       <span class="comment">//obj = this; </span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>有序性：volatile和synchronized两个关键字保证线程之间操作的有序性。volatile关键字本身就包含禁止指令重排序的语义，而synchronized是由“一个变量在同一时刻只允许一条线程对其进行lock操作”这条规则获得的</li>
+</ul>
+<h2 id="先行发生原则"><a href="#先行发生原则" class="headerlink" title="先行发生原则"></a>先行发生原则</h2><ul>
+<li>程序顺序原则： 一个线程内保证语义的串行性</li>
+<li>volatile 规则： volatile 变量的写先于读发生， 这保证了volatile 变量的可见性</li>
+<li>锁规则： 解锁(unlock)必然发生在随后的加锁(lock)前</li>
+<li>传递性： A 先于B, B 先于C ， 那么A 必然先于C </li>
+<li>线程的start()方法先于它的每一个动作</li>
+<li>线程的所有操作先于线程的终结( Thread.join() )</li>
+<li>线程的中断(interrupt())先于被中断线程的代码</li>
+<li>对象的构造函数的执行、结束先于finalize()方法</li>
+</ul>
+<h2 id="volatile-final实现线程安全"><a href="#volatile-final实现线程安全" class="headerlink" title="volatile+final实现线程安全"></a>volatile+final实现线程安全</h2><ul>
+<li>下面例子是根据输入进行质因数分解，并且保存上一次的质因数和分解结果，如果本次输入的质因数相同则使用缓存中的结果</li>
+<li>OneValueCache类用来缓存分解结果，有两个变量，如果希望OneValueCache类的操作是原子性的，必须使用某种手段使得两个变量的写操作具有原子性</li>
+<li>在某些情况下，不可变对象能提供一种弱形式的原子性，每当需要对一组相关数据以原子方式执行某个操作时，就可以考虑创建一个不可变的类来包含这些数据</li>
+<li>访问和更新多个相关变量时出现竞争条件问题，可以通过将这些变量全部保存在一个不可变对象中来消除</li>
+<li>如果是一个可变的对象，那么就必须使用锁来确保原子性</li>
+<li><strong>如果是一个不可变对象，那么当线程获得了对该对象的引用后，就不必担心另一个线程会修改对象的状态。**</strong>如果要更新这些变量，那么可以创建一个新的容器对象**，但其他使用原有对象的线程仍然会看到对象处于一致的状态</li>
+<li>VolatileCachedFactorizer使用了OneValueCache来保存缓存的数值及其因数。当一个线程将volatile类型的cache设置为引用一个新的OneValueCache时，其他线程就会立即看到新缓存的数据</li>
+<li><strong>通过使用包含多个状态变量的容器对象来维持不变性条件，并使用一个volatile类型的引用来确保可见性，使得VolatileCachedFactorizer在没有显式地使用锁的情况下仍然是线程安全的</strong></li>
+</ul>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">@Immutable  </span><br><span class="line"><span class="keyword">class</span> OneValueCache &#123;  </span><br><span class="line">   <span class="keyword">private</span> final BigInteger lastNumber;  </span><br><span class="line">   <span class="keyword">private</span> final BigInteger<span class="literal">[]</span> lastFactors;  </span><br><span class="line"> </span><br><span class="line">    <span class="comment">//在构造函数中进行初始化，并且使用了final，在没有this逃逸的情况下可以认为是原子性操作</span></span><br><span class="line">   public <span class="constructor">OneValueCache(BigInteger <span class="params">i</span>, BigInteger[] <span class="params">factors</span>)</span> &#123;  </span><br><span class="line">       lastNumber = i;  </span><br><span class="line">       <span class="comment">//这里必须是Arrays.copyOf(),不然就会引用外部对象，导致对象不是完全final</span></span><br><span class="line">       lastFactors = <span class="module-access"><span class="module"><span class="identifier">Arrays</span>.</span></span>copy<span class="constructor">Of(<span class="params">factors</span>, <span class="params">factors</span>.<span class="params">length</span>)</span>;  </span><br><span class="line">   &#125;  </span><br><span class="line"> </span><br><span class="line">   public BigInteger<span class="literal">[]</span> get<span class="constructor">Factors(BigInteger <span class="params">i</span>)</span> &#123;  </span><br><span class="line">       <span class="keyword">if</span> (lastNumber<span class="operator"> == </span>null<span class="operator"> || </span>!lastNumber.equals(i))  </span><br><span class="line">           return null;  </span><br><span class="line">       <span class="keyword">else</span>  </span><br><span class="line">           return <span class="module-access"><span class="module"><span class="identifier">Arrays</span>.</span></span>copy<span class="constructor">Of(<span class="params">lastFactors</span>, <span class="params">lastFactors</span>.<span class="params">length</span>)</span>;  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@ThreadSafe  </span><br><span class="line">public <span class="keyword">class</span> VolatileCachedFactorizer implements Servlet &#123;  </span><br><span class="line">   <span class="keyword">private</span> volatile OneValueCache cache = <span class="keyword">new</span> <span class="constructor">OneValueCache(<span class="params">null</span>, <span class="params">null</span>)</span>;  </span><br><span class="line"> </span><br><span class="line">   public void service(ServletRequest req, ServletResponse resp) &#123;  </span><br><span class="line">       BigInteger i = extract<span class="constructor">FromRequest(<span class="params">req</span>)</span>;  </span><br><span class="line">       BigInteger<span class="literal">[]</span> factors = cache.get<span class="constructor">Factors(<span class="params">i</span>)</span>;  </span><br><span class="line">       <span class="keyword">if</span> (factors<span class="operator"> == </span>null) &#123;  </span><br><span class="line">           factorfactors = factor(i);  </span><br><span class="line">           <span class="comment">//每次更新状态都是新建一个对象，并且使用volatile保证可见性，后一个调用进来可以立即使用内存中的cache</span></span><br><span class="line">           cache = <span class="keyword">new</span> <span class="constructor">OneValueCache(<span class="params">i</span>, <span class="params">factors</span>)</span>;</span><br><span class="line">       &#125;  </span><br><span class="line">       encode<span class="constructor">IntoResponse(<span class="params">resp</span>, <span class="params">factors</span>)</span>;  </span><br><span class="line">   &#125;  </span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<h1 id="Java与线程"><a href="#Java与线程" class="headerlink" title="Java与线程"></a>Java与线程</h1><h2 id="线程的实现"><a href="#线程的实现" class="headerlink" title="线程的实现"></a>线程的实现</h2><ul>
+<li><p>使用内核线程实现</p>
+</li>
+<li><ul>
+<li>内核线程(Kernel-Level Thread,KLT)直接由操作系统内核(Kernel)支持的线程，由内核通过操纵调度器完成线程切换，每个内核线程可以视为内核的一个分身</li>
+<li>程序一般不直接使用内核线程，而是使用内核线程的接口——轻量级进程(Light Weight Process,LWP)，轻量级进程就是我们通常意义上的线程，每一个轻量级进程都由一个内核线程支持，即1：1关系。</li>
+<li>由于内核线程的支持，每个轻量级进程都是一个独立的调度单元，即一个阻塞了也不会影响整个进程</li>
+<li>但是线程的创建、析构和同步需要在用户态和内核态来回切换，并且由于消耗内核资源，一个系统支持轻量级进程有限</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1587091981602-55973be2-2d15-424d-bc3c-81a7603c24bf.png" alt="image"></li>
+</ul>
+</li>
+<li><p>使用用户线程实现</p>
+</li>
+<li><ul>
+<li>用户线程(User Thread,UT)的创建、同步、销毁和调度都在用户态完成</li>
+<li>进程和用户线程之间的关系为1:N</li>
+<li>Java现在并不支持这玩意</li>
+</ul>
+</li>
+<li><p>使用用户线程加轻量级线程混合实现</p>
+</li>
+</ul>
+<h2 id="Java线程的调度"><a href="#Java线程的调度" class="headerlink" title="Java线程的调度"></a>Java线程的调度</h2><ul>
+<li><p>协同式调度</p>
+</li>
+<li><ul>
+<li>线程的执行时间由线程本身控制，线程自己执行完了就主动通知系统切换到另外一个线程上</li>
+<li>实现简单，没什么线程同步问题</li>
+</ul>
+</li>
+<li><p>抢占式调度</p>
+</li>
+<li><ul>
+<li>每个线程由系统分配执行时间(Java使用这种)</li>
+<li>可以设置线程优先级</li>
+</ul>
+</li>
+</ul>
+<h2 id="状态转换"><a href="#状态转换" class="headerlink" title="状态转换"></a>状态转换</h2><p><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1587092733266-cacc335c-d8c3-442c-b298-1ca052550ed2.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10/resize,w_643" alt="img"></p>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>JUC</tag>
       </tags>
   </entry>
 </search>
