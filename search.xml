@@ -7626,9 +7626,9 @@
     <title>数据库</title>
     <url>/2020/10/13/%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
     <content><![CDATA[<h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><p>（本笔记不能代替《高性能MySQL》，笔记中缺少了大量辅助理解的话和例子，缺少了很多信息量）</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1590590509208-c55e311d-4d15-4bd8-8b43-5bec5a1c2193.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590509208-c55e311d-4d15-4bd8-8b43-5bec5a1c2193.png" alt="image"></p>
 <h2 id="一、MySQL架构"><a href="#一、MySQL架构" class="headerlink" title="一、MySQL架构"></a>一、MySQL架构</h2><p>和其它数据库相比，MySQL有点与众不同，它的架构可以在多种不同场景中应用并发挥良好作用。主要体现在存储引擎的架构上，<strong>插件式的存储引擎架构将查询处理和其它的系统任务以及数据的存储提取相分离</strong>。这种架构可以根据业务的需求和实际需要选择合适的存储引擎。</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1590590539775-66b802ba-2c1c-4c50-9cd0-a41eb54578e5.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590539775-66b802ba-2c1c-4c50-9cd0-a41eb54578e5.png" alt="image"></p>
 <ul>
 <li><strong>连接层</strong>：最上层是一些客户端和连接服务。<strong>主要完成一些类似于连接处理、授权认证、及相关的安全方案</strong>。在该层上引入了线程池的概念，为通过认证安全接入的客户端提供线程。同样在该层上可以实现基于SSL的安全链接。服务器也会为安全接入的每个客户端验证它所具有的操作权限。</li>
 <li><strong>服务层</strong>：第二层服务层，主要完成大部分的核心服务功能， 包括<strong>查询解析、分析、优化、缓存**</strong>、以及所有的内置函数<strong>，所有跨存储引擎的功能也都在这一层实现，包括</strong>触发器、存储过程、视图**等</li>
@@ -7961,7 +7961,7 @@
 </ul>
 </li>
 </ul>
-<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1596524923163-af6a94ee-4b8d-4b02-b774-ef99c71f84a9.png" alt="image.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590539973-d4b0a609-44be-4018-b989-cc1e2967d8c9.png" alt="image.png"></p>
 <ul>
 <li><p>MySQL的事务使用两阶段提交(2PC)，事务提交前，将redo log的写入拆成了两个步骤，prepare和commit</p>
 </li>
@@ -7975,7 +7975,7 @@
 <h3 id="MySQL对分布式事务的支持"><a href="#MySQL对分布式事务的支持" class="headerlink" title="MySQL对分布式事务的支持"></a>MySQL对分布式事务的支持</h3><p>分布式事务的实现方式有很多，既可以采用 InnoDB 提供的原生的事务支持，也可以采用消息队列来实现分布式事务的最终一致性。这里我们主要聊一下 InnoDB 对分布式事务的支持。</p>
 <p>MySQL 从 5.0.3  InnoDB 存储引擎开始支持XA协议的分布式事务。一个分布式事务会涉及多个行动，这些行动本身是事务性的。所有行动都必须一起成功完成，或者一起被回滚。</p>
 <p>在MySQL中，使用分布式事务涉及一个或多个资源管理器和一个事务管理器。</p>
-<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1590590539973-d4b0a609-44be-4018-b989-cc1e2967d8c9.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590539973-d4b0a609-44be-4018-b989-cc1e2967d8c9.png" alt="image"></p>
 <p>如图，MySQL 的分布式事务模型。模型中分三块：应用程序（AP）、资源管理器（RM）、事务管理器（TM）:</p>
 <ul>
 <li>应用程序：定义了事务的边界，指定需要做哪些事务；</li>
@@ -8069,7 +8069,7 @@
 <li><p>“冲突—兼容”规则：</p>
 </li>
 <li><ul>
-<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1590745463390-4377c2d2-8ea7-4d04-8a13-a78ec84125eb.png" alt="image"></li>
+<li><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590745463390-4377c2d2-8ea7-4d04-8a13-a78ec84125eb.png" alt="image"></li>
 <li><strong>意向锁是怎么提高检测效率的？</strong></li>
 </ul>
 </li>
@@ -8568,7 +8568,7 @@
 <li>日期类型：Date、DateTime、TimeStamp、Time、Year</li>
 <li>其他数据类型：BINARY、VARBINARY、ENUM、SET、Geometry、Point、MultiPoint、LineString、MultiLineString、Polygon、GeometryCollection等</li>
 </ul>
-<p><img src="https://cdn.nlark.com/yuque/0/2020/webp/1266758/1590590539852-f07a129b-1bfb-4487-af9a-df13273354c2.webp?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"><img src="https://cdn.nlark.com/yuque/0/2020/webp/1266758/1590590539869-222256f7-421d-4ca2-b17c-ab93c141d6aa.webp" alt="image"><img src="https://cdn.nlark.com/yuque/0/2020/webp/1266758/1590590539903-c0a28251-0a32-486e-b3d6-4defbb7768ea.webp?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590539852-f07a129b-1bfb-4487-af9a-df13273354c2.webp" alt="image"><img src="https://cdn.nlark.com/yuque/0/2020/webp/1266758/1590590539869-222256f7-421d-4ca2-b17c-ab93c141d6aa.webp" alt="image"><img src="https://cdn.nlark.com/yuque/0/2020/webp/1266758/1590590539903-c0a28251-0a32-486e-b3d6-4defbb7768ea.webp?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"></p>
 <blockquote>
 <p>❝CHAR 和 VARCHAR 的区别？</p>
 </blockquote>
