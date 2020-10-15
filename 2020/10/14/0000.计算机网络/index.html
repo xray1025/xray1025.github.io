@@ -200,7 +200,137 @@
         </header>
 
         <div class="post-content">
-            <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><h1 id="0-中继设备"><a href="#0-中继设备" class="headerlink" title="0.中继设备"></a>0.中继设备</h1><p>* <strong>物理层</strong>中继系统：<strong>转发器</strong>(repeater)。</p>
+            <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><h2 id="OSI七层体系结构（从上到下）"><a href="#OSI七层体系结构（从上到下）" class="headerlink" title="OSI七层体系结构（从上到下）"></a>OSI七层体系结构（从上到下）</h2><ul>
+<li>应用层（数据）：确定<strong>进程之间通信的性质</strong>，以满足用户需要以及<strong>提供网络</strong>与<strong>用户应用</strong></li>
+<li>表示层（数据）：主要解决用户信息的<strong>语法表示</strong>问题，例如：加密、解密</li>
+<li>会话层（数据）：建立和维护应用之间<strong>通信的机制</strong>，例如：服务器验证用户登录</li>
+<li>传输层（数据段）：进程和进程之间，可靠传输、错误检测、流量控制（TCP、UDP）</li>
+<li>网络层（数据包）：主机和主机之间，提供逻辑地址（IP）、选路</li>
+<li>数据链路层（帧）：将上层数据封装成<strong>帧</strong>，用MAC地址访问媒介，错误检测与修正</li>
+<li>物理层（比特流）：设备之间<strong>比特流</strong>的传输</li>
+</ul>
+<h2 id="各层的数据交换设备"><a href="#各层的数据交换设备" class="headerlink" title="各层的数据交换设备"></a>各层的数据交换设备</h2><ul>
+<li>网关：应用层、传输层</li>
+<li>路由器：网络层</li>
+<li>交换机：数据链路层、网络层</li>
+<li>网桥：数据链路层</li>
+<li>集线器、中继器：物理层</li>
+</ul>
+<h2 id="IP地址与物理地址的区别"><a href="#IP地址与物理地址的区别" class="headerlink" title="IP地址与物理地址的区别"></a>IP地址与物理地址的区别</h2><p>物理地址：数据链路层和物理层使用的地址</p>
+<p>IP地址：网络层和以上各层使用的地址，逻辑地址</p>
+<p>ARP协议：用于IP地址和MAC地址的对应</p>
+<h2 id="ping-的原理"><a href="#ping-的原理" class="headerlink" title="ping 的原理"></a>ping 的原理</h2><p>使用 ICMP 协议</p>
+<h2 id="Traceroute"><a href="#Traceroute" class="headerlink" title="Traceroute"></a>Traceroute</h2><p>使用 ICMP 协议</p>
+<p>给目的主机发送一个 <strong>TTL=1</strong>的 <strong>UDP 数据包</strong>，经过的第一个路由器收到这个数据包后，将 TTL-1，TTL变为0后，路由器将这个包丢掉，同时发送一个主机不可达的ICMP数据报给主机；</p>
+<p>主机收到后再发一个TTL=2的UDP数据包给目的主机，然后第二个路由器给主机发送ICMP报文；</p>
+<p>如此往复直到达到目的主机。</p>
+<h2 id="TCP是什么"><a href="#TCP是什么" class="headerlink" title="TCP是什么"></a>TCP是什么</h2><p>TCP是传输控制协议，是一种面向连接的、可靠的、基于<strong>字节流</strong>的传输层通信协议。</p>
+<h2 id="TCP特点"><a href="#TCP特点" class="headerlink" title="TCP特点"></a>TCP特点</h2><p>面向连接的</p>
+<p>点对点，每一个 TCP 连接只能有两个端点</p>
+<p>可靠交付。通过 TCP 连接传送的数据，无差错、不丢失、不重复，并且按序到达</p>
+<p>全双工通信</p>
+<p>面向字节流</p>
+<h2 id="TCP对应的应用层协议"><a href="#TCP对应的应用层协议" class="headerlink" title="TCP对应的应用层协议"></a>TCP对应的应用层协议</h2><p>FTP</p>
+<p>HTTP</p>
+<h2 id="TCP三次握手过程"><a href="#TCP三次握手过程" class="headerlink" title="TCP三次握手过程"></a>TCP三次握手过程</h2><p><img src="https://cdn.nlark.com/yuque/0/2020/png/1200640/1585819858709-9cb88c52-1abd-40fe-8617-f0fa8631c860.png?x-oss-process=image/resize,w_1500" alt="image"></p>
+<h2 id="为什么要三次握手"><a href="#为什么要三次握手" class="headerlink" title="为什么要三次握手"></a>为什么要三次握手</h2><ol>
+<li>初始化双方序列号的初始值</li>
+<li>若服务器发送确认数据包和同步数据包，而客户端却迟迟不确认，服务端会一直等待，会浪费服务器的资源，容易受到 DOS/DDOS攻击</li>
+<li>若第二次握手数据丢失，服务器认为已经连接，而客户端认为并没有连接。服务器发送数据，C不会接收。C会继续进行握手操作，这会浪费S的连接资源（SYN Flood）</li>
+</ol>
+<h2 id="SYN-Flood"><a href="#SYN-Flood" class="headerlink" title="SYN Flood"></a>SYN Flood</h2><p>服务端发送确认数据包后，客户端迟迟不回应，服务端会一直等待客户端回应，浪费资源，影响正常服务</p>
+<p><strong>解决</strong></p>
+<p>1、缩短 SYN半连接的超时时间</p>
+<p>2、SYN Cookie 技术：SYN 队列满后，服务器回发SYN Cookie，若为正常连接，客户端会回发 SYN Cookie，建立正常连接</p>
+<h2 id="建立连接后，客户端出现故障怎么办"><a href="#建立连接后，客户端出现故障怎么办" class="headerlink" title="建立连接后，客户端出现故障怎么办"></a>建立连接后，客户端出现故障怎么办</h2><p>服务端会一直向客户端发送保活探测报文，到达一定次数后仍未得到响应就断开连接</p>
+<h2 id="TCP四次挥手过程"><a href="#TCP四次挥手过程" class="headerlink" title="TCP四次挥手过程"></a>TCP四次挥手过程</h2><p><img src="https://cdn.nlark.com/yuque/0/2020/png/1200640/1585819858671-82faa363-7411-4d14-8a99-1fb57ccd2e7c.png" alt="image"></p>
+<h2 id="为什么要有四次挥手"><a href="#为什么要有四次挥手" class="headerlink" title="为什么要有四次挥手"></a>为什么要有四次挥手</h2><p>TCP是全双工模式，客户端断开连接，不能向服务器发送数据，但服务器还能向客户端发送数据。服务器可能还有数据要发送给客户端，所以第二第三此挥手不能放一块。</p>
+<h2 id="Last-ack"><a href="#Last-ack" class="headerlink" title="Last_ack"></a>Last_ack</h2><p>等待对方的ack报文</p>
+<h2 id="为什么等-2MSL"><a href="#为什么等-2MSL" class="headerlink" title="为什么等 2MSL"></a>为什么等 2MSL</h2><ul>
+<li>C的第四次挥手可能会丢失；服务器会不断地发送FIN报文。所以C不能直接关闭，而是要等待S收到ACK。C进入TIMEWAIT状态后，等待2MSL，如果接收到了S的FIN报文，就会重新发送ACK包。</li>
+<li></li>
+<li></li>
+<li>释放的端口可能会重连服务器刚断开的端口，新的TCP连接报文和旧TCP报文可能会产生冲突。所以要等2MSL，等待网络中旧的TCP报文全部挂掉</li>
+</ul>
+<h2 id="服务器出现大量-CLOSE-WAIT状态"><a href="#服务器出现大量-CLOSE-WAIT状态" class="headerlink" title="服务器出现大量 CLOSE_WAIT状态"></a>服务器出现大量 CLOSE_WAIT状态</h2><p>对方关闭socket连接，我方忙于读或写，没有即使释放连接</p>
+<p>检查释放资源的代码</p>
+<h2 id="UDP是什么"><a href="#UDP是什么" class="headerlink" title="UDP是什么"></a>UDP是什么</h2><p>面向非连接的协议，不与对方建立连接，直接把数据包发过去</p>
+<h2 id="UDP特点"><a href="#UDP特点" class="headerlink" title="UDP特点"></a>UDP特点</h2><p>面向无连接</p>
+<p>支持一对一、一对多、多对一、多对多</p>
+<p>不保证可靠交付，尽最大努力交付</p>
+<p>面向<strong>报文</strong></p>
+<p>没有拥塞控制</p>
+<p>首部开销8字节</p>
+<h2 id="UDP对应的应用层协议"><a href="#UDP对应的应用层协议" class="headerlink" title="UDP对应的应用层协议"></a>UDP对应的应用层协议</h2><p>DNS：域名解析服务，将域名地址解析为IP</p>
+<h2 id="TCP与UDP的区别"><a href="#TCP与UDP的区别" class="headerlink" title="TCP与UDP的区别"></a>TCP与UDP的区别</h2><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>是否面向连接</th>
+<th>可靠性</th>
+<th>传输形式</th>
+<th>效率</th>
+<th>所需资源</th>
+<th>应用场景</th>
+<th>首部字节</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TCP</td>
+<td>是</td>
+<td>可靠</td>
+<td>字节流</td>
+<td>慢</td>
+<td>多</td>
+<td>通信数据可靠</td>
+<td>20-60</td>
+</tr>
+<tr>
+<td>UDP</td>
+<td>否</td>
+<td>不可靠</td>
+<td>数据报文段</td>
+<td>快</td>
+<td>少</td>
+<td>通信速度( 视频)</td>
+<td>8</td>
+</tr>
+</tbody></table>
+<h2 id="TCP的拆包、粘包概念、原因、解决方法"><a href="#TCP的拆包、粘包概念、原因、解决方法" class="headerlink" title="TCP的拆包、粘包概念、原因、解决方法"></a>TCP的拆包、粘包概念、原因、解决方法</h2><ul>
+<li>UDP时面向报文的，首部有两个字节指示UDP数据报文的长度，因此能够在应用层将不同的数据报问分开，避免了拆包和粘包</li>
+<li>TCP是面向字节流的，①虽然应用层和TCP传输层的交互是大小不等的数据块，但TCP把这些数据块看成无结构的字节流，没有边界，②首部没有表示数据长度的字段，所以会出现拆包和粘包现象</li>
+</ul>
+<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1200640/1586012924750-1f474292-da29-47a7-a820-7180c4d95b40.png" alt="image.png"></p>
+<p>粘包、拆包的原因</p>
+<ol>
+<li>要发送的数据大于 TCP <strong>发送缓冲区</strong>剩余空间大小，将会发生拆包</li>
+<li>要发送的数据大于<strong>最大报文长度</strong>，TCP 在传输前会对其进行拆包</li>
+<li>要发送的数据小于<strong>TCP 发送缓冲区的大小</strong>，TCP 将多次写入缓冲区的数据一次发送出去，发生粘包</li>
+<li><strong>接收端</strong>的应用层没有及时读取<strong>缓冲区</strong>中的数据，发生粘包</li>
+</ol>
+<p>粘包、拆包的解决</p>
+<ol>
+<li>发送端给每个数据包添加<strong>包首部</strong>，首部中应该包含数据包的<strong>长度字段</strong>，这样接收端在接收到数据后，通过读取包首部的长度字段，就可以知道每个数据包的实际长度了</li>
+<li>发送端将每个数据包封装为<strong>固定长度</strong>（不够可以用0填充），这样接收端从接收缓冲区中读取固定长度的数据就可以把数据包拆分开来</li>
+<li>在数据包之间<strong>设置边界</strong>，比如添加<strong>特殊符号</strong>，这样接收端通过边界就可以将不同的数据包拆分开来</li>
+</ol>
+<h2 id="TCP的可靠传输、流量控制、拥塞控制"><a href="#TCP的可靠传输、流量控制、拥塞控制" class="headerlink" title="TCP的可靠传输、流量控制、拥塞控制"></a>TCP的可靠传输、流量控制、拥塞控制</h2><p>作者：又戈月空</p>
+<p>链接：<a target="_blank" rel="noopener" href="https://www.nowcoder.com/discuss/402118">https://www.nowcoder.com/discuss/402118</a></p>
+<p>来源：牛客网</p>
+<p>TCP流量控制，简单来说就是让数据传输端传输的速率不要太快，让数据接收端来得及接收，利用滑动窗口机制可以很方便的在TCP连接上实现对数据传输端的流量控制。TCP的窗口单位是字节，不是报文段，数据传输端的发送窗口不能超过接收端给出的接收窗口的数值，流量控制的机制是控制丢包率，主要目的：让数据传输端了解数据接收端当前的接收能力，可灵活调整传输速率。</p>
+<p>滑动窗口：TCP采用大小可变的滑动窗口进行流量控制，窗口大小的单位是字节。数据传输窗口在连接建立时由双方商定。但在通信的过程中，数据接收端可根据自己的资源情况，随时动态地调整对方的传输窗口大小。</p>
+<p>滑动窗口引进原由：把窗口理解为缓冲区（但是有些窗口和缓冲区又不太一样）。如果没有这些“窗口”，那么TCP每发送一段数据后都必须等到数据接收端确认后才能发送下一段数据，这样做的话TCP传输的效率实在是太低了。解决的办法就是在发送端等待确认的时候继续发送数据，假设发送到第X个数据段是收到数据接收端的确认信息，如果X在可接受的范围内那么这样做也是可接受的。</p>
+<p>滑动窗口：</p>
+<p>A、数据接收端窗口 X</p>
+<p>接收端缓冲区大小。接收端将此窗口值放在 TCP 报文的首部中的窗口字段，传送给发送端。</p>
+<p>B、拥塞窗口 Y</p>
+<p>发送端缓冲区大小</p>
+<p>C、数据传输窗口 Z</p>
+<p>发送窗口的上限值 = Min [X, Y]</p>
+<p>① 当 X &lt; Y 时，是接收端的接收能力限制数据传输窗口的最大值。</p>
+<p>② 当 Y &lt; X 时，则是网络的拥塞限制数据传输窗口的最大值。</p>
+<p>(零窗口：发送方停止发送数据，只能发送探测数据包)</p>
+<h1 id="0-中继设备"><a href="#0-中继设备" class="headerlink" title="0.中继设备"></a>0.中继设备</h1><p>* <strong>物理层</strong>中继系统：<strong>转发器</strong>(repeater)。</p>
 <p>* <strong>数据链路层</strong>中继系统：<strong>网桥</strong>(bridge)。</p>
 <p>* <strong>网络层</strong>中继系统：<strong>路由器</strong>(router)，路由器连接了多个网络，所以至少有2个以上IP地址。</p>
 <p>* <strong>网络层以上</strong>的中继系统：**网关(**gateway)。</p>
@@ -211,10 +341,10 @@
 <p><strong>数据帧(frame)：</strong>数据链路层；</p>
 <h1 id="1-物理层："><a href="#1-物理层：" class="headerlink" title="1.物理层："></a>1.物理层：</h1><p>   无</p>
 <h1 id="2-数据链路层："><a href="#2-数据链路层：" class="headerlink" title="2.数据链路层："></a>2.数据链路层：</h1><h2 id="2-1-使用的主要是点对点信道和广播信道两种"><a href="#2-1-使用的主要是点对点信道和广播信道两种" class="headerlink" title="2.1 使用的主要是点对点信道和广播信道两种"></a>2.1 使用的主要是点对点信道和广播信道两种</h2><h2 id="2-2-传输的协议数据单元是帧"><a href="#2-2-传输的协议数据单元是帧" class="headerlink" title="2.2 传输的协议数据单元是帧"></a>2.2 传输的协议数据单元是帧</h2><h2 id="2-3-三个基本问题是：封装成帧，透明传输和差错检测"><a href="#2-3-三个基本问题是：封装成帧，透明传输和差错检测" class="headerlink" title="2.3 三个基本问题是：封装成帧，透明传输和差错检测"></a>2.3 三个基本问题是：封装成帧，透明传输和差错检测</h2><p>​     <strong>封装成帧：</strong>在一段数据的前后分别添加首部和尾部，这样就构成了一个帧。接收端在收到物理层上交的比特流后，就能<strong>根据首部和尾部的标记，从比特流中识别帧的开始和结束</strong>。MTU（Maximum Transfer Unit）：帧数据部分长度上限，<strong>链路层MTU是1500字节</strong></p>
-<p>​       <img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586510356365-acc2cab1-92a0-4645-91ed-d8a9903331e6.png" alt="image"></p>
+<p>​       <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015143240.png" alt="image"></p>
 <p>   <strong>透明传输：</strong>当数据部分是非ASCII码的文本文件时(如class文件)，如果数据中的某个字节的二进制代码恰好是帧尾部控制字符，那么就会把帧的后面部分丢弃，这种情况就不是透明传输。</p>
 <p>​     <strong>解决：</strong>字节填充法——<strong>发送端的数据链路层**</strong>在数据<strong>中出现控制字符”SOH”或”EOT”的前面插入一个转义字符”ESC”。而在</strong>接收端的数据链路层**在将数据送往网络层之前删除这个插入的转义字符。当然如果转义字符”ESC”也出现在数据当中，那么解决的方法仍然是在转义字符的前面插入一个转义字符，所以，当接收到连续的两个转义字符的时候，就去删除其中前面的一个。 </p>
-<p>​             <img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1595853089641-6835da27-4150-4862-8f1a-fc4e4ce7d51d.png" alt="image.png"></p>
+<p>​             <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015143258.png" alt="image.png"></p>
 <p>   <strong>差错检测：</strong>数据链路层广泛使用了循环冗余检验（CRC）的检错技术，在IP数据报后添加2字节的帧检验序列FCS。</p>
 <p>​     CRC的基本思想就是将传输的数据当作一个位数很长的数，将这个数除以另外的一个数，得到的余数作为校验数据附加到原数据后面。</p>
 <p>​     在数据链路层若仅仅使用CRC差错检验技术，则只能做到对帧的无差错接收，不会检查ip数据报是不是正确的（只能保证数据链路层传输数据时不发生错误）。</p>
@@ -223,7 +353,7 @@
 <p>​       （1）数据链路层协议：IP数据报封装到串行链路的方法</p>
 <p>​       （2）链路控制协议LCP（Link Control Protocol）：用来建立并维护<strong>数据链路连接</strong>，身份验证(运行商使用)</p>
 <p>​       （3）网络控制协议NCP：支持不同的网络层协议，如IP</p>
-<p>​         <img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586510356423-e3dab796-3419-4343-a5b8-499ae4fadfc5.png" alt="image"></p>
+<p>​         <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015143411.png" alt="image"></p>
 <p>​     <strong>PPP协议帧格式：</strong>数据链路层的三个基本问题是：封装成帧，透明传输和差错检测都支持</p>
 <p>​       <img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586510356478-29ca549d-195c-4ebd-a4c4-6d6c86822219.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"></p>
 <h2 id="2-5-CSMA-CD（Carrier-Sense-Multiple-Access-Collision-Detect，属于数据链路层的广播信道）：载波监听多路访问-冲突检测方法"><a href="#2-5-CSMA-CD（Carrier-Sense-Multiple-Access-Collision-Detect，属于数据链路层的广播信道）：载波监听多路访问-冲突检测方法" class="headerlink" title="2.5 CSMA/CD（Carrier Sense Multiple Access/Collision Detect，属于数据链路层的广播信道）：载波监听多路访问/冲突检测方法"></a>2.5 CSMA/CD（Carrier Sense Multiple Access/Collision Detect，属于数据链路层的广播信道）：载波监听多路访问/冲突检测方法</h2><p>​       特点是：发送前先监听，边发送边监听，一旦发现总线上出现了碰撞，就立即停止发送。然后按照退避算法等待一段随机时间后再次发送，推迟的平均时间随着重传次数而增大，退避时间的单位是一个争用期的时间长度(信号的双程传播所需要的时间)</p>
@@ -246,7 +376,7 @@
 <li>网络层不提供服务质量的承诺。即所传送的分组<strong>可能出错、丢失、重复和失序</strong>（不按序到达终点），当然也不保证分组传送的时限。</li>
 <li>优点：路由器可以做的简单便宜，<strong>网络造价降低</strong>。可靠的进程通信由主机的运输层负责(包括差错处理、流量控制等)</li>
 </ul>
-<h2 id="3-2-数据在互联网中的传送"><a href="#3-2-数据在互联网中的传送" class="headerlink" title="3.2 数据在互联网中的传送"></a>3.2 数据在互联网中的传送</h2><p>​     <img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586510356570-2638216f-1171-4e64-886b-3a7d0a421671.png" alt="image"></p>
+<h2 id="3-2-数据在互联网中的传送"><a href="#3-2-数据在互联网中的传送" class="headerlink" title="3.2 数据在互联网中的传送"></a>3.2 数据在互联网中的传送</h2><p>​     <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015143349.png" alt="image"></p>
 <p>​     1.<strong>应用层</strong>要发送的数据在<strong>传输层</strong>被分成段1,2,3并编号</p>
 <p>​     2.<strong>网络层</strong>将数据段增加<strong>发送端IP地址</strong>和<strong>接收端IP地址</strong>封装成包(IP数据报)</p>
 <p>​     3.<strong>数据链路层</strong>将数据报增加<strong>发送端MAC地址</strong>和<strong>路由器MAC地址</strong></p>
@@ -269,7 +399,7 @@
 </ul>
 </li>
 </ul>
-<p>​         <img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1586510356624-b55b8382-ba2b-4246-8eed-cf57f9bdb1fe.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image"></p>
+<p>​         <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015143454.png" alt="image"></p>
 <ul>
 <li>IP数据报首部格式</li>
 </ul>
@@ -1030,10 +1160,10 @@
         </section>
         <section class="post-nav">
             
-                <a class="prev" rel="prev" href="/2020/10/14/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
+                <a class="prev" rel="prev" href="/2020/10/14/0000.%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/">操作系统</a>
             
             
-            <a class="next" rel="next" href="/2020/10/14/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B8%8E%E7%BA%BF%E7%A8%8B/">Java内存模型与线程</a>
+            <a class="next" rel="next" href="/2020/10/13/0000.%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
             
         </section>
 
