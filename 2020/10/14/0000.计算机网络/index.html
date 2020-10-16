@@ -200,7 +200,120 @@
         </header>
 
         <div class="post-content">
-            <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><h2 id="OSI七层体系结构（从上到下）"><a href="#OSI七层体系结构（从上到下）" class="headerlink" title="OSI七层体系结构（从上到下）"></a>OSI七层体系结构（从上到下）</h2><ul>
+            <h1 id="计算机网络"><a href="#计算机网络" class="headerlink" title="计算机网络"></a>计算机网络</h1><h3 id="HTTP流程？"><a href="#HTTP流程？" class="headerlink" title="HTTP流程？"></a>HTTP流程？</h3><p>1、域名解析</p>
+<p>2、发起TCP的三次握手</p>
+<p>3、建立TCP连接后发起http请求</p>
+<p>4、服务器响应http请求，浏览器得到HTML代码</p>
+<p>5、浏览器解析HTML代码，并请求HTML代码中的资源</p>
+<p>6、浏览器对页面进行渲染呈现给用户</p>
+<p>7、连接结束</p>
+<h3 id="GET和POST的区别？"><a href="#GET和POST的区别？" class="headerlink" title="GET和POST的区别？"></a>GET和POST的区别？</h3><h4 id="GET"><a href="#GET" class="headerlink" title="GET"></a>GET</h4><ul>
+<li>get重点是从服务器上获取资源</li>
+<li>get传输数据是通过URL请求，以field（字段） = value的形式，置于URL后，并用“？”连接，多个请求数据间用“&amp;”连接</li>
+<li>get传输数据量小，因为受URL长度限制，但是效率高</li>
+<li>get是不安全的，因为URL是可见的，可能会泄漏私密信息</li>
+<li>get方式只能支持ASCII字符，向服务器传的中文字符可能会乱码</li>
+</ul>
+<h4 id="POST"><a href="#POST" class="headerlink" title="POST"></a>POST</h4><ul>
+<li>post重点是向服务器发送数据。</li>
+<li>post传输数据是通过HTTP的post机制。将字段和对应值封存在请求实体中发送给服务器。这个过程用户是不可见的</li>
+<li>post可以传输大量数据，所以上传文件时只能用post</li>
+<li>post支持标准字符集，可以正确传递中文字符</li>
+<li>post 较get安全性高</li>
+</ul>
+<h3 id="HTTP常见的状态码有哪些？"><a href="#HTTP常见的状态码有哪些？" class="headerlink" title="HTTP常见的状态码有哪些？"></a>HTTP常见的状态码有哪些？</h3><ul>
+<li>1xx：指示信息–表示请求已接收，继续处理</li>
+<li>2xx：成功–表示请求已被成功接收、理解、接受</li>
+<li>3xx：重定向–要完成请求必须进行更进一步的操作</li>
+<li>4xx：客户端错误–请求有语法错误或请求无法实现</li>
+<li>5xx：服务器端错误–服务器未能实现合法的请求</li>
+</ul>
+<h4 id="常见的状态码："><a href="#常见的状态码：" class="headerlink" title="常见的状态码："></a>常见的状态码：</h4><ul>
+<li>200：请求被正常处理</li>
+<li>204：请求被受理但没有资源可以返回</li>
+<li>206：客户端只是请求资源的一部分，服务器只对请求的部分资源执行GET方法，相应报文中通过Content-Range指定范围的资源。</li>
+<li>301：永久性重定向</li>
+<li>302：临时重定向</li>
+<li>303：与302状态码有相似功能，只是它希望客户端在请求一个URI的时候，能通过GET方法重定向到另一个URI上</li>
+<li>304：发送附带条件的请求时，条件不满足时返回，与重定向无关</li>
+<li>307：临时重定向，与302类似，只是强制要求使用POST方法</li>
+<li>400：请求报文语法有误，服务器无法识别</li>
+<li>401：请求需要认证</li>
+<li>403：请求的对应资源禁止被访问</li>
+<li>404：服务器无法找到对应资源</li>
+<li>500：服务器内部错误</li>
+<li>503：服务器正忙</li>
+</ul>
+<h3 id="HTTP中重定向和请求转发的区别？"><a href="#HTTP中重定向和请求转发的区别？" class="headerlink" title="HTTP中重定向和请求转发的区别？"></a>HTTP中重定向和请求转发的区别？</h3><p>本质区别：</p>
+<ul>
+<li>转发是服务器行为</li>
+<li>重定向是客户端行为</li>
+</ul>
+<p>重定向特点：两次请求，浏览器地址发生变化，可以访问自己 web 之外的资源，传输的数据会丢失。请求转发特点：一次强求，浏览器地址不变，访问的是自己本身的 web 资源，传输的数据不会丢失。</p>
+<h3 id="HTTP和HTTPS的区别？"><a href="#HTTP和HTTPS的区别？" class="headerlink" title="HTTP和HTTPS的区别？"></a>HTTP和HTTPS的区别？</h3><p>HTTPS = HTTP + SSL</p>
+<ul>
+<li>https有ca证书，http一般没有</li>
+<li>http是超文本传输协议，信息是明文传输。https则是具有安全性的ssl加密传输协议</li>
+<li>http默认80端口，https默认443端口</li>
+</ul>
+<h3 id="HTTP-2-与-HTTP-1-x-的主要区别？"><a href="#HTTP-2-与-HTTP-1-x-的主要区别？" class="headerlink" title="HTTP/2 与 HTTP/1.x 的主要区别？"></a>HTTP/2 与 HTTP/1.x 的主要区别？</h3><ul>
+<li>二进制协议代替文本协议，更加简洁高效</li>
+<li>针对每个域只使用一个多路复用的连接</li>
+<li>压缩头部信息减小开销</li>
+<li>允许服务器主动推送应答到客户端的缓存中</li>
+</ul>
+<h3 id="HTTP请求报文与响应报文格式？"><a href="#HTTP请求报文与响应报文格式？" class="headerlink" title="HTTP请求报文与响应报文格式？"></a>HTTP请求报文与响应报文格式？</h3><p>请求报文：</p>
+<p>a、请求行：包含请求方法、URI、HTTP版本信息<br>b、请求首部字段<br>c、请求内容实体</p>
+<p>响应报文：</p>
+<p>a、状态行：包含HTTP版本、状态码、状态码的原因短语<br>b、响应首部字段<br>c、响应内容实体</p>
+<h3 id="什么是HTTP协议无状态协议？怎么解决http协议无状态协议？"><a href="#什么是HTTP协议无状态协议？怎么解决http协议无状态协议？" class="headerlink" title="什么是HTTP协议无状态协议？怎么解决http协议无状态协议？"></a>什么是HTTP协议无状态协议？怎么解决http协议无状态协议？</h3><p>无状态协议对于事物处理没有记忆能力。缺少状态意味着后续的处理需要前面的信息。</p>
+<p>通过cookie和session解决</p>
+<h3 id="HTTPS方式与web服务器通信的步骤？"><a href="#HTTPS方式与web服务器通信的步骤？" class="headerlink" title="HTTPS方式与web服务器通信的步骤？"></a>HTTPS方式与web服务器通信的步骤？</h3><p>1、客户使用HTTPS的URL访问web服务器，要求与web服务器建立SSL连接<br>2、web服务器收到客户端请求后，将网站的证书信息（证书中包含公钥）传送一份给客户端<br>3、客户端的浏览器与web服务器开始协商SSL连接的安全等级，也就是信息的加密等级<br>4、客户端的浏览器根据双方同意的安全等级，建立会话秘钥，然后利用网站的公钥将会话秘钥加密，并传送给网站<br>5、web服务器利用自己的私钥解密出会话秘钥<br>6、web服务器利用会话秘钥加密与客户端之间的通信</p>
+<h3 id="说说常见的常见HTTP首部字段？"><a href="#说说常见的常见HTTP首部字段？" class="headerlink" title="说说常见的常见HTTP首部字段？"></a>说说常见的常见HTTP首部字段？</h3><p>通用首部字段（请求报文与响应报文都会使用的首部字段）</p>
+<p>Date：创建报文时间Connection：连接的管理Cache-Control：缓存的控制Transfer-Encoding：报文主体的传输编码方式</p>
+<p>请求首部字段（请求报文会使用的首部字段）</p>
+<p>Host：请求资源所在服务器Accept：可处理的媒体类型Accept-Charset：可接收的字符集Accept-Encoding：可接受的内容编码Accept-Language：可接受的自然语言</p>
+<p>响应首部字段（响应报文会使用的首部字段）</p>
+<p>Accept-Ranges：可接受的字节范围Location：令客户端重新定向到的URIServer：HTTP服务器的安装信息</p>
+<p>实体首部字段（请求报文与响应报文的的实体部分使用的首部字段）</p>
+<p>Allow：资源可支持的HTTP方法Content-Type：实体主类的类型Content-Encoding：实体主体适用的编码方式Content-Language：实体主体的自然语言Content-Length：实体主体的的字节数Content-Range：实体主体的位置范围，一般用于发出部分请求时使用</p>
+<h3 id="TCP和UDP的区别？"><a href="#TCP和UDP的区别？" class="headerlink" title="TCP和UDP的区别？"></a>TCP和UDP的区别？</h3><ul>
+<li>TCP（Transmission Control Protocol，传输控制协议）是基于连接的协议，也就是说，在正式收发数据前，必须和对方建立可靠的连接。一个TCP连接必须要经过三次“对话”才能建立起来</li>
+<li>UDP（User Data Protocol，用户数据报协议）是与TCP相对应的协议。它是面向非连接的协议，它不与对方建立连接，而是直接就把数据包发送过去！UDP适用于一次只传送少量数据、对可靠性要求不高的应用环境</li>
+</ul>
+<h3 id="说说TCP传输的三次握手四次挥手策略"><a href="#说说TCP传输的三次握手四次挥手策略" class="headerlink" title="说说TCP传输的三次握手四次挥手策略"></a>说说TCP传输的三次握手四次挥手策略</h3><h4 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h4><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201016094553.png" alt="image"></p>
+<p>握手之前主动打开连接的客户端结束CLOSED阶段，被动打开的服务器端也结束CLOSED阶段，并进入LISTEN阶段。随后开始“三次握手”：</p>
+<p>（1）首先客户端向服务器端发送一段TCP报文，其中：</p>
+<ul>
+<li>标记位为SYN，表示“请求建立新连接”;</li>
+<li>序号为Seq=X（X一般为1）；</li>
+<li>随后客户端进入SYN-SENT阶段。</li>
+</ul>
+<p>（2）服务器端接收到来自客户端的TCP报文之后，结束LISTEN阶段。并返回一段TCP报文，其中：</p>
+<ul>
+<li>标志位为SYN和ACK，表示“确认客户端的报文Seq序号有效，服务器能正常接收客户端发送的数据，并同意创建新连接”（即告诉客户端，服务器收到了你的数据）；</li>
+<li>序号为Seq=y；确认号为Ack=x+1，表示收到客户端的序号Seq并将其值加1作为自己确认号Ack的值；</li>
+<li>随后服务器端进入SYN-RCVD阶段。</li>
+</ul>
+<p>（3）客户端接收到来自服务器端的确认收到数据的TCP报文之后，明确了从客户端到服务器的数据传输是正常的，结束SYN-SENT阶段。并返回最后一段TCP报文。其中：</p>
+<ul>
+<li>标志位为ACK，表示“确认收到服务器端同意连接的信号”（即告诉服务器，我知道你收到我发的数据了）；</li>
+<li>序号为Seq=x+1，表示收到服务器端的确认号Ack，并将其值作为自己的序号值；</li>
+<li>确认号为Ack=y+1，表示收到服务器端序号Seq，并将其值加1作为自己的确认号Ack的值；</li>
+<li>随后客户端进入ESTABLISHED阶段。</li>
+</ul>
+<blockquote>
+<p>注意：若在握手过程中某个阶段莫名中断，TCP协议会再次以相同的顺序发送相同的数据包</p>
+</blockquote>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201016094655.png" alt="image"></p>
+<h4 id="四次挥手"><a href="#四次挥手" class="headerlink" title="四次挥手"></a>四次挥手</h4><p>断开一个TCP连接则需要四次挥手</p>
+<ul>
+<li>第一次挥手：主动关闭方发送一个FIN，用来关闭主动方到被动关闭方的数据传送，也就是主动关闭方告诉被动关闭方：我已经不会再给你发数据了(当然，在fin包之前发送出去的数据，如果没有收到对应的ack确认报文，主动关闭方依然会重发这些数据)，但是，此时主动关闭方还可以接受数据</li>
+<li>第二次挥手：被动关闭方收到FIN包后，发送一个ACK给对方，确认序号为收到序号+1（与SYN相同，一个FIN占用一个序号）</li>
+<li>第三次挥手：被动关闭方发送一个FIN，用来关闭被动关闭方到主动关闭方的数据传送，也就是告诉主动关闭方，我的数据也发送完了，不会再给你发数据了</li>
+<li>第四次挥手：主动关闭方收到FIN后，发送一个ACK给被动关闭方，确认序号为收到序号+1，至此，完成四次挥手</li>
+</ul>
+<h2 id="OSI七层体系结构（从上到下）"><a href="#OSI七层体系结构（从上到下）" class="headerlink" title="OSI七层体系结构（从上到下）"></a>OSI七层体系结构（从上到下）</h2><ul>
 <li>应用层（数据）：确定<strong>进程之间通信的性质</strong>，以满足用户需要以及<strong>提供网络</strong>与<strong>用户应用</strong></li>
 <li>表示层（数据）：主要解决用户信息的<strong>语法表示</strong>问题，例如：加密、解密</li>
 <li>会话层（数据）：建立和维护应用之间<strong>通信的机制</strong>，例如：服务器验证用户登录</li>
@@ -232,7 +345,7 @@
 <p>面向字节流</p>
 <h2 id="TCP对应的应用层协议"><a href="#TCP对应的应用层协议" class="headerlink" title="TCP对应的应用层协议"></a>TCP对应的应用层协议</h2><p>FTP</p>
 <p>HTTP</p>
-<h2 id="TCP三次握手过程"><a href="#TCP三次握手过程" class="headerlink" title="TCP三次握手过程"></a>TCP三次握手过程</h2><p><img src="https://cdn.nlark.com/yuque/0/2020/png/1200640/1585819858709-9cb88c52-1abd-40fe-8617-f0fa8631c860.png?x-oss-process=image/resize,w_1500" alt="image"></p>
+<h2 id="TCP三次握手过程"><a href="#TCP三次握手过程" class="headerlink" title="TCP三次握手过程"></a>TCP三次握手过程</h2><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201016094553.png" alt="image"></p>
 <h2 id="为什么要三次握手"><a href="#为什么要三次握手" class="headerlink" title="为什么要三次握手"></a>为什么要三次握手</h2><ol>
 <li>初始化双方序列号的初始值</li>
 <li>若服务器发送确认数据包和同步数据包，而客户端却迟迟不确认，服务端会一直等待，会浪费服务器的资源，容易受到 DOS/DDOS攻击</li>
@@ -243,7 +356,7 @@
 <p>1、缩短 SYN半连接的超时时间</p>
 <p>2、SYN Cookie 技术：SYN 队列满后，服务器回发SYN Cookie，若为正常连接，客户端会回发 SYN Cookie，建立正常连接</p>
 <h2 id="建立连接后，客户端出现故障怎么办"><a href="#建立连接后，客户端出现故障怎么办" class="headerlink" title="建立连接后，客户端出现故障怎么办"></a>建立连接后，客户端出现故障怎么办</h2><p>服务端会一直向客户端发送保活探测报文，到达一定次数后仍未得到响应就断开连接</p>
-<h2 id="TCP四次挥手过程"><a href="#TCP四次挥手过程" class="headerlink" title="TCP四次挥手过程"></a>TCP四次挥手过程</h2><p><img src="https://cdn.nlark.com/yuque/0/2020/png/1200640/1585819858671-82faa363-7411-4d14-8a99-1fb57ccd2e7c.png" alt="image"></p>
+<h2 id="TCP四次挥手过程"><a href="#TCP四次挥手过程" class="headerlink" title="TCP四次挥手过程"></a>TCP四次挥手过程</h2><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201016094655.png" alt="image"></p>
 <h2 id="为什么要有四次挥手"><a href="#为什么要有四次挥手" class="headerlink" title="为什么要有四次挥手"></a>为什么要有四次挥手</h2><p>TCP是全双工模式，客户端断开连接，不能向服务器发送数据，但服务器还能向客户端发送数据。服务器可能还有数据要发送给客户端，所以第二第三此挥手不能放一块。</p>
 <h2 id="Last-ack"><a href="#Last-ack" class="headerlink" title="Last_ack"></a>Last_ack</h2><p>等待对方的ack报文</p>
 <h2 id="为什么等-2MSL"><a href="#为什么等-2MSL" class="headerlink" title="为什么等 2MSL"></a>为什么等 2MSL</h2><ul>
@@ -300,7 +413,7 @@
 <li>UDP时面向报文的，首部有两个字节指示UDP数据报文的长度，因此能够在应用层将不同的数据报问分开，避免了拆包和粘包</li>
 <li>TCP是面向字节流的，①虽然应用层和TCP传输层的交互是大小不等的数据块，但TCP把这些数据块看成无结构的字节流，没有边界，②首部没有表示数据长度的字段，所以会出现拆包和粘包现象</li>
 </ul>
-<p><img src="https://cdn.nlark.com/yuque/0/2020/png/1200640/1586012924750-1f474292-da29-47a7-a820-7180c4d95b40.png" alt="image.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201016095058.png" alt="image.png"></p>
 <p>粘包、拆包的原因</p>
 <ol>
 <li>要发送的数据大于 TCP <strong>发送缓冲区</strong>剩余空间大小，将会发生拆包</li>
@@ -341,7 +454,7 @@
 <p><strong>数据帧(frame)：</strong>数据链路层；</p>
 <h1 id="1-物理层："><a href="#1-物理层：" class="headerlink" title="1.物理层："></a>1.物理层：</h1><p>   无</p>
 <h1 id="2-数据链路层："><a href="#2-数据链路层：" class="headerlink" title="2.数据链路层："></a>2.数据链路层：</h1><h2 id="2-1-使用的主要是点对点信道和广播信道两种"><a href="#2-1-使用的主要是点对点信道和广播信道两种" class="headerlink" title="2.1 使用的主要是点对点信道和广播信道两种"></a>2.1 使用的主要是点对点信道和广播信道两种</h2><h2 id="2-2-传输的协议数据单元是帧"><a href="#2-2-传输的协议数据单元是帧" class="headerlink" title="2.2 传输的协议数据单元是帧"></a>2.2 传输的协议数据单元是帧</h2><h2 id="2-3-三个基本问题是：封装成帧，透明传输和差错检测"><a href="#2-3-三个基本问题是：封装成帧，透明传输和差错检测" class="headerlink" title="2.3 三个基本问题是：封装成帧，透明传输和差错检测"></a>2.3 三个基本问题是：封装成帧，透明传输和差错检测</h2><p>​     <strong>封装成帧：</strong>在一段数据的前后分别添加首部和尾部，这样就构成了一个帧。接收端在收到物理层上交的比特流后，就能<strong>根据首部和尾部的标记，从比特流中识别帧的开始和结束</strong>。MTU（Maximum Transfer Unit）：帧数据部分长度上限，<strong>链路层MTU是1500字节</strong></p>
-<p>​       <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015143240.png" alt="image"></p>
+<p>​       <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201016095112.png" alt="image"></p>
 <p>   <strong>透明传输：</strong>当数据部分是非ASCII码的文本文件时(如class文件)，如果数据中的某个字节的二进制代码恰好是帧尾部控制字符，那么就会把帧的后面部分丢弃，这种情况就不是透明传输。</p>
 <p>​     <strong>解决：</strong>字节填充法——<strong>发送端的数据链路层**</strong>在数据<strong>中出现控制字符”SOH”或”EOT”的前面插入一个转义字符”ESC”。而在</strong>接收端的数据链路层**在将数据送往网络层之前删除这个插入的转义字符。当然如果转义字符”ESC”也出现在数据当中，那么解决的方法仍然是在转义字符的前面插入一个转义字符，所以，当接收到连续的两个转义字符的时候，就去删除其中前面的一个。 </p>
 <p>​             <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015143258.png" alt="image.png"></p>
