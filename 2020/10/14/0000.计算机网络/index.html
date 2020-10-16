@@ -427,9 +427,6 @@
 <li>C的第四次挥手可能会丢失；服务器会不断地发送FIN报文。所以C不能直接关闭，而是要等待S收到ACK。C进入TIMEWAIT状态后，等待2MSL，如果接收到了S的FIN报文，就会重新发送ACK包。</li>
 <li>释放的端口可能会重连服务器刚断开的端口，新的TCP连接报文和旧TCP报文可能会产生冲突。所以要等2MSL，等待网络中旧的TCP报文全部挂掉</li>
 </ul>
-<h2 id="服务器出现大量-CLOSE-WAIT状态"><a href="#服务器出现大量-CLOSE-WAIT状态" class="headerlink" title="服务器出现大量 CLOSE_WAIT状态"></a>服务器出现大量 CLOSE_WAIT状态</h2><p>对方关闭socket连接，我方忙于读或写，没有即使释放连接</p>
-<p>检查释放资源的代码</p>
-<h2 id="UDP是什么"><a href="#UDP是什么" class="headerlink" title="UDP是什么"></a>UDP是什么</h2><p>面向非连接的协议，不与对方建立连接，直接把数据包发过去</p>
 <h2 id="UDP特点"><a href="#UDP特点" class="headerlink" title="UDP特点"></a>UDP特点</h2><ul>
 <li>面向无连接</li>
 <li>支持一对一、一对多、多对一、多对多</li>
@@ -473,40 +470,41 @@
 <td>8</td>
 </tr>
 </tbody></table>
-<h2 id="TCP的拆包、粘包概念、原因、解决方法"><a href="#TCP的拆包、粘包概念、原因、解决方法" class="headerlink" title="TCP的拆包、粘包概念、原因、解决方法"></a>TCP的拆包、粘包概念、原因、解决方法</h2><ul>
-<li>UDP时面向报文的，首部有两个字节指示UDP数据报文的长度，因此能够在应用层将不同的数据报问分开，避免了拆包和粘包</li>
-<li>TCP是面向字节流的，①虽然应用层和TCP传输层的交互是大小不等的数据块，但TCP把这些数据块看成无结构的字节流，没有边界，②首部没有表示数据长度的字段，所以会出现拆包和粘包现象</li>
+<h2 id="TCP流量控制"><a href="#TCP流量控制" class="headerlink" title="TCP流量控制"></a>TCP流量控制</h2><p>TCP流量控制，简单来说就是让数据传输端传输的速率不要太快，让数据接收端来得及接收，利用滑动窗口机制可以很方便的在TCP连接上实现对数据传输端的流量控制。TCP的窗口单位是字节，不是报文段，数据传输端的发送窗口不能超过接收端给出的接收窗口的数值，流量控制的机制是控制丢包率，主要目的：让数据传输端了解数据接收端当前的接收能力，可灵活调整传输速率。</p>
+<h2 id="拥塞控制"><a href="#拥塞控制" class="headerlink" title="拥塞控制"></a>拥塞控制</h2><blockquote>
+<p>ACK 确认，确认方收到包后的确认报文</p>
+<p>拥塞窗口值 cwnd，</p>
+<p>ssthresh （slow start threshold）慢启动阈值</p>
+<p>MSS (Maximum segment size) 最大分段大小</p>
+<p>RTT (round-trip time) 往返时间，来回通信延迟</p>
+<p>RTO (retransmission timeout) 重传超时</p>
+</blockquote>
+<h3 id="慢启动"><a href="#慢启动" class="headerlink" title="慢启动"></a>慢启动</h3><ul>
+<li>TCP 刚建立连接，逐渐提速试探网络承受能力<br>  1 慢启动初始启动时设置拥塞窗口值（cwnd）为1、2、4或10个MSS<br>  2 cwnd 大小每当收到一个ACK增加，每个 RTT 内成倍增加, 呈指数上升<br>  3 当达到慢启动阈值 ssthresh 时 cwnd &gt;= ssthresh，进入拥塞避免算法-线性增长阶段</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201016095058.png" alt="image.png"></p>
-<p>粘包、拆包的原因</p>
-<ol>
-<li>要发送的数据大于 TCP <strong>发送缓冲区</strong>剩余空间大小，将会发生拆包</li>
-<li>要发送的数据大于<strong>最大报文长度</strong>，TCP 在传输前会对其进行拆包</li>
-<li>要发送的数据小于<strong>TCP 发送缓冲区的大小</strong>，TCP 将多次写入缓冲区的数据一次发送出去，发生粘包</li>
-<li><strong>接收端</strong>的应用层没有及时读取<strong>缓冲区</strong>中的数据，发生粘包</li>
-</ol>
-<p>粘包、拆包的解决</p>
-<ol>
-<li>发送端给每个数据包添加<strong>包首部</strong>，首部中应该包含数据包的<strong>长度字段</strong>，这样接收端在接收到数据后，通过读取包首部的长度字段，就可以知道每个数据包的实际长度了</li>
-<li>发送端将每个数据包封装为<strong>固定长度</strong>（不够可以用0填充），这样接收端从接收缓冲区中读取固定长度的数据就可以把数据包拆分开来</li>
-<li>在数据包之间<strong>设置边界</strong>，比如添加<strong>特殊符号</strong>，这样接收端通过边界就可以将不同的数据包拆分开来</li>
-</ol>
-<h2 id="TCP的可靠传输、流量控制、拥塞控制"><a href="#TCP的可靠传输、流量控制、拥塞控制" class="headerlink" title="TCP的可靠传输、流量控制、拥塞控制"></a>TCP的可靠传输、流量控制、拥塞控制</h2><p>作者：又戈月空</p>
-<p>链接：<a target="_blank" rel="noopener" href="https://www.nowcoder.com/discuss/402118">https://www.nowcoder.com/discuss/402118</a></p>
-<p>来源：牛客网</p>
-<p>TCP流量控制，简单来说就是让数据传输端传输的速率不要太快，让数据接收端来得及接收，利用滑动窗口机制可以很方便的在TCP连接上实现对数据传输端的流量控制。TCP的窗口单位是字节，不是报文段，数据传输端的发送窗口不能超过接收端给出的接收窗口的数值，流量控制的机制是控制丢包率，主要目的：让数据传输端了解数据接收端当前的接收能力，可灵活调整传输速率。</p>
-<p>滑动窗口：TCP采用大小可变的滑动窗口进行流量控制，窗口大小的单位是字节。数据传输窗口在连接建立时由双方商定。但在通信的过程中，数据接收端可根据自己的资源情况，随时动态地调整对方的传输窗口大小。</p>
-<p>滑动窗口引进原由：把窗口理解为缓冲区（但是有些窗口和缓冲区又不太一样）。如果没有这些“窗口”，那么TCP每发送一段数据后都必须等到数据接收端确认后才能发送下一段数据，这样做的话TCP传输的效率实在是太低了。解决的办法就是在发送端等待确认的时候继续发送数据，假设发送到第X个数据段是收到数据接收端的确认信息，如果X在可接受的范围内那么这样做也是可接受的。</p>
-<p>滑动窗口：</p>
-<p>A、数据接收端窗口 X</p>
-<p>接收端缓冲区大小。接收端将此窗口值放在 TCP 报文的首部中的窗口字段，传送给发送端。</p>
-<p>B、拥塞窗口 Y</p>
-<p>发送端缓冲区大小</p>
-<p>C、数据传输窗口 Z</p>
-<p>发送窗口的上限值 = Min [X, Y]</p>
-<p>① 当 X &lt; Y 时，是接收端的接收能力限制数据传输窗口的最大值。</p>
-<p>② 当 Y &lt; X 时，则是网络的拥塞限制数据传输窗口的最大值。</p>
-<p>(零窗口：发送方停止发送数据，只能发送探测数据包)</p>
+<h3 id="拥塞避免"><a href="#拥塞避免" class="headerlink" title="拥塞避免"></a>拥塞避免</h3><ul>
+<li>拥塞窗口值 cwnd &gt;= ssthresh 慢启动阈值时，cwnd 进入线性增长阶段</li>
+<li>cwnd 大小每当收到一个ACK增加，每个 RTT 只增加 1, 呈线性上升</li>
+</ul>
+<h3 id="快速重传"><a href="#快速重传" class="headerlink" title="快速重传"></a>快速重传</h3><blockquote>
+<p>Tahoe：如果收到三次重复确认——即第四次收到相同确认号的分段确认，并且分段对应包无负载分段和无改变接收窗口——的话，Tahoe算法则进入快速重传，将慢启动阈值改为当前拥塞窗口的一半，将拥塞窗口降为1个MSS，并重新进入慢启动阶段。</p>
+</blockquote>
+<ul>
+<li>设置 ssthresh 为当前 cwnd 的一半</li>
+<li>cwnd 变为 1MSS，</li>
+<li>重新进入慢启动 - 指数上升再线性上升</li>
+<li>对于RTO，将拥塞窗口降为1个MSS，然后进入慢启动阶段</li>
+</ul>
+<h3 id="快速恢复"><a href="#快速恢复" class="headerlink" title="快速恢复"></a>快速恢复</h3><blockquote>
+<p>Reno：如果收到三次重复确认，Reno算法则进入快速重传，只将拥塞窗口减半来跳过慢启动阶段，将慢启动阈值设为当前新的拥塞窗口值，进入一个称为“快速恢复”的新设计阶段。</p>
+</blockquote>
+<ul>
+<li>设置 ssthresh 为当前 cwnd 的一半</li>
+<li>cwnd 也设置为 ssthresh 大小</li>
+<li>进入拥塞避免阶段 - 线性上升</li>
+<li>对于RTO，将拥塞窗口降为1个MSS，然后进入慢启动阶段</li>
+</ul>
+<p><img src="https://pic3.zhimg.com/80/v2-de79bf2c38bddb0c1caf5768577648e2_720w.jpg" alt="img"></p>
 <h1 id="0-中继设备"><a href="#0-中继设备" class="headerlink" title="0.中继设备"></a>0.中继设备</h1><p>* <strong>物理层</strong>中继系统：<strong>转发器</strong>(repeater)。</p>
 <p>* <strong>数据链路层</strong>中继系统：<strong>网桥</strong>(bridge)。</p>
 <p>* <strong>网络层</strong>中继系统：<strong>路由器</strong>(router)，路由器连接了多个网络，所以至少有2个以上IP地址。</p>
@@ -516,8 +514,7 @@
 <p><strong>段(segment)：</strong>传输层;</p>
 <p><strong>IP数据报(datagram)：</strong>网络层，也有人称IP数据包</p>
 <p><strong>数据帧(frame)：</strong>数据链路层；</p>
-<h1 id="1-物理层："><a href="#1-物理层：" class="headerlink" title="1.物理层："></a>1.物理层：</h1><p>   无</p>
-<h1 id="2-数据链路层："><a href="#2-数据链路层：" class="headerlink" title="2.数据链路层："></a>2.数据链路层：</h1><h2 id="2-1-使用的主要是点对点信道和广播信道两种"><a href="#2-1-使用的主要是点对点信道和广播信道两种" class="headerlink" title="2.1 使用的主要是点对点信道和广播信道两种"></a>2.1 使用的主要是点对点信道和广播信道两种</h2><h2 id="2-2-传输的协议数据单元是帧"><a href="#2-2-传输的协议数据单元是帧" class="headerlink" title="2.2 传输的协议数据单元是帧"></a>2.2 传输的协议数据单元是帧</h2><h2 id="2-3-三个基本问题是：封装成帧，透明传输和差错检测"><a href="#2-3-三个基本问题是：封装成帧，透明传输和差错检测" class="headerlink" title="2.3 三个基本问题是：封装成帧，透明传输和差错检测"></a>2.3 三个基本问题是：封装成帧，透明传输和差错检测</h2><p>​     <strong>封装成帧：</strong>在一段数据的前后分别添加首部和尾部，这样就构成了一个帧。接收端在收到物理层上交的比特流后，就能<strong>根据首部和尾部的标记，从比特流中识别帧的开始和结束</strong>。MTU（Maximum Transfer Unit）：帧数据部分长度上限，<strong>链路层MTU是1500字节</strong></p>
+<h1 id="1-物理层："><a href="#1-物理层：" class="headerlink" title="1.物理层："></a>1.物理层：</h1><h1 id="2-数据链路层："><a href="#2-数据链路层：" class="headerlink" title="2.数据链路层："></a>2.数据链路层：</h1><h2 id="2-1-使用的主要是点对点信道和广播信道两种"><a href="#2-1-使用的主要是点对点信道和广播信道两种" class="headerlink" title="2.1 使用的主要是点对点信道和广播信道两种"></a>2.1 使用的主要是点对点信道和广播信道两种</h2><h2 id="2-2-传输的协议数据单元是帧"><a href="#2-2-传输的协议数据单元是帧" class="headerlink" title="2.2 传输的协议数据单元是帧"></a>2.2 传输的协议数据单元是帧</h2><h2 id="2-3-三个基本问题是：封装成帧，透明传输和差错检测"><a href="#2-3-三个基本问题是：封装成帧，透明传输和差错检测" class="headerlink" title="2.3 三个基本问题是：封装成帧，透明传输和差错检测"></a>2.3 三个基本问题是：封装成帧，透明传输和差错检测</h2><p>​     <strong>封装成帧：</strong>在一段数据的前后分别添加首部和尾部，这样就构成了一个帧。接收端在收到物理层上交的比特流后，就能<strong>根据首部和尾部的标记，从比特流中识别帧的开始和结束</strong>。MTU（Maximum Transfer Unit）：帧数据部分长度上限，<strong>链路层MTU是1500字节</strong></p>
 <p>​       <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201016095112.png" alt="image"></p>
 <p>   <strong>透明传输：</strong>当数据部分是非ASCII码的文本文件时(如class文件)，如果数据中的某个字节的二进制代码恰好是帧尾部控制字符，那么就会把帧的后面部分丢弃，这种情况就不是透明传输。</p>
 <p>​     <strong>解决：</strong>字节填充法——<strong>发送端的数据链路层**</strong>在数据<strong>中出现控制字符”SOH”或”EOT”的前面插入一个转义字符”ESC”。而在</strong>接收端的数据链路层**在将数据送往网络层之前删除这个插入的转义字符。当然如果转义字符”ESC”也出现在数据当中，那么解决的方法仍然是在转义字符的前面插入一个转义字符，所以，当接收到连续的两个转义字符的时候，就去删除其中前面的一个。 </p>
