@@ -498,7 +498,7 @@
 <li><strong>效率：</strong>HashTable的效率低，已被淘汰；</li>
 <li><strong>Null值：</strong>HashMap的Key和Value可以为null，HashTab的Key如果为null，则会跑出NullPointerException。</li>
 <li><strong>初始容量和扩容：</strong>HashMap的初始大小为16，扩容因子为0.75，每次扩容变为2倍，HashTable的初始大小为11，每次扩容变为原来的2n+1;</li>
-<li><strong>底层实现不同</strong>，HashSet以HashMap的key作为value，并将HashSet的value默认为present。</li>
+<li><strong>底层实现不同</strong>，HashSet以HashMap的key作为value，并将HashMap的value默认为present。</li>
 </ul>
 <h2 id="HashMap的底层实现"><a href="#HashMap的底层实现" class="headerlink" title="HashMap的底层实现"></a>HashMap的底层实现</h2><ul>
 <li>JDK1.8以前，HashMap的底层是数组和链表组合在一起。HashMap计算key的hashCode经过扰动函数处理后得到hash值，然后通过 (n-1) &amp; hash判断当前元素存放的位置，如果当前位置存在元素，则判断该元素与要存入的元素的hash值和key是否相等，如果相等则覆盖，否则通过<strong>拉链法</strong>解决冲突。</li>
@@ -524,7 +524,7 @@
 <ul>
 <li>JDK1.7的ConcurrentHashMap使用分段锁对整个数组进行分段加锁（Segment，16个，0–15），多线程访问不同数据段的数据就不会发生锁竞争，提高并发效率；</li>
 </ul>
-<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018131216.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018131121.webp"></p>
 <ul>
 <li><p>JDK1.8的ConcurrentHashMap使用node、synchronized和CAS进行并发控制；</p>
 <p>  <img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018131216.png" alt="img"></p>
