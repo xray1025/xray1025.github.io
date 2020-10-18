@@ -249,7 +249,7 @@
 <li>jdk1.6对锁的实现引入了大量的优化，如自旋锁、适应性自旋锁、锁消除、锁粗化、偏向锁、轻量级锁等技术来减少锁操作的开销。</li>
 <li>锁主要存在四中状态，依次是：无锁状态、偏向锁状态、轻量级锁状态、重量级锁状态，他们会随着竞争的激烈而逐渐升级。注意锁可以升级不可降级，这种策略是为了提高获得锁和释放锁的效率。</li>
 </ul>
-<h4 id="10。自旋锁"><a href="#10。自旋锁" class="headerlink" title="10。自旋锁"></a>10。自旋锁</h4><ul>
+<h4 id="10-自旋锁"><a href="#10-自旋锁" class="headerlink" title="10.自旋锁"></a>10.自旋锁</h4><ul>
 <li>自旋锁:所谓自就是让线程执行一段无意义的循环，防止不会被立即挂起。看持有锁的线程是否会很快释放锁。优点是避免线程切换带来的开销，缺点是：占用了处理器的时间。在JDK1.6中默认开启。同时自旋的默认次数为10次，可以通过参数-XX:PreBlockSpin来调整；</li>
 </ul>
 <h4 id="11-适应自旋锁"><a href="#11-适应自旋锁" class="headerlink" title="11.适应自旋锁"></a>11.适应自旋锁</h4><ul>
@@ -264,7 +264,7 @@
 <li>如果测试失败，则需要在测试下Mark-Word中偏向锁的表示是否设置为1（表示当前是偏向锁）；如果没有设置，则使用CAS竞争；如果设置了，则尝试使用CAS将对象头的偏向锁指向当前线程。</li>
 <li>偏向锁使用了一种等到竞争出现才释放锁的机制，当其他线程尝试竞争偏向锁时，持有偏向锁的线程才会释放锁</li>
 <li>偏向锁的撤销，需要等待全局安全点（在这个时间点上没有正在执行的字节码）</li>
-<li>它会首先暂停拥有偏向锁的线程，然后检查持有偏向锁的线程是否存活，如果线程处于不活动状态，则会将对象头设置成无所状态</li>
+<li>它会首先暂停拥有偏向锁的线程，然后检查持有偏向锁的线程是否存活，如果线程处于不活动状态，则会将对象头设置成无锁状态</li>
 <li>如果线程仍然活着，拥有偏向锁的线程会被执行，遍历偏向对象的锁记录，栈中的锁记录和对象头的Mark Word要么重新偏向于其他线程，要么恢复到无锁或者标记对象不适合作为偏向锁，最后唤醒暂停的线程</li>
 </ul>
 <h4 id="14-synchronized的锁升级流程之轻量级锁"><a href="#14-synchronized的锁升级流程之轻量级锁" class="headerlink" title="14.synchronized的锁升级流程之轻量级锁"></a>14.synchronized的锁升级流程之轻量级锁</h4><ul>
@@ -349,31 +349,30 @@
 <li>tidying：当线程池在SHUTDOWN状态下，阻塞队列为空并且线程池中执行的任务也为空时，就会由 SHUTDOWN -&gt; TIDYING。 当线程池在STOP状态下，线程池中执行的任务为空时，就会由STOP -&gt; TIDYING。</li>
 <li>terminated(终止)：线程池彻底终止，就变成terminated状态。 线程池处在tidying状态时，执行完terminated()之后，就会由 tidying -&gt; terminated。</li>
 </ul>
-<h4 id="24-线程池中-submit-和-execute-方法有什么区别？"><a href="#24-线程池中-submit-和-execute-方法有什么区别？" class="headerlink" title="24.线程池中 submit()和 execute()方法有什么区别？"></a>24.线程池中 submit()和 execute()方法有什么区别？</h4><ul>
-<li>两个方法都可以向线程池提交任务，execute()方法的返回类型是void，它定义在Executor接口中, 而submit()方法可以返回持有计算结果的Future对象，它定义在ExecutorService接口中</li>
+<h4 id="24-线程池中-execute-和-submit-方法有什么区别？"><a href="#24-线程池中-execute-和-submit-方法有什么区别？" class="headerlink" title="24.线程池中 execute() 和 submit() 方法有什么区别？"></a>24.线程池中 execute() 和 submit() 方法有什么区别？</h4><ul>
+<li>两个方法都可以向线程池提交任务</li>
+<li>execute()方法的返回类型是void，它定义在Executor接口中</li>
+<li>submit()方法可以返回持有计算结果的Future对象，它定义在ExecutorService接口中</li>
 </ul>
 <h4 id="25-在java-程序中怎么保证多线程的运行安全？"><a href="#25-在java-程序中怎么保证多线程的运行安全？" class="headerlink" title="25.在java 程序中怎么保证多线程的运行安全？"></a>25.在java 程序中怎么保证多线程的运行安全？</h4><ul>
-<li>线程安全在三个方面体现.如果可以保证以下三个方面，那马多线程的运行安全就得到了保证。一般是通过加锁的方式实现，分布式环境下。则要使用分布式锁</li>
 <li>原子性：提供互斥访问，同一时刻只能有一个线程对数据进行操作</li>
 <li>可见性：一个线程对主内存的修改可以及时地被其他线程看到</li>
 <li>有序性：一个线程观察其他线程中的指令执行顺序，由于指令重排序，该观察结果一般杂乱无序</li>
 </ul>
 <h4 id="26-什么是死锁？如何避免死锁？"><a href="#26-什么是死锁？如何避免死锁？" class="headerlink" title="26.什么是死锁？如何避免死锁？"></a>26.什么是死锁？如何避免死锁？</h4><ul>
-<li>线程死锁是指由于两个或者多个线程互相持有对方所需要的资源，导致这些线程处于等待状态，无法前往执行,就是死锁</li>
+<li>线程死锁是指由于两个或者多个线程互相持有对方所需要的资源，导致这些线程处于等待状态，无法前往执行，就是死锁</li>
 <li>按顺序加锁,每个获取锁的时候加上个时限,按线程间获取锁的关系检测线程间是否发生死锁，如果发生死锁就执行一定的策略，如终断线程或回滚操作等。</li>
 </ul>
 <h4 id="27-说一下-atomic-的原理？"><a href="#27-说一下-atomic-的原理？" class="headerlink" title="27.说一下 atomic 的原理？"></a>27.说一下 atomic 的原理？</h4><ul>
-<li>在Atomic包里一共有12个类，四种原子更新方式，分别是原子更新基本类型，原子更新数组，原子更新引用和原子更新字段。Atomic包里的类基本都是使用Unsafe实现的包装类。</li>
+<li>在Atomic包里一共有12个类，四种原子更新方式，分别是原子更新基本类型，原子更新数组，原子更新引用和原子更新字段。</li>
+<li>Atomic包里的类基本都是使用Unsafe实现的包装类。</li>
 <li>Atomic包下的类是通过CAS操作来实现原子性的。jdk8直接使用了Unsafe的getAndAddInt方法</li>
 </ul>
 <h4 id="28-说一下-volatile的实现原理？"><a href="#28-说一下-volatile的实现原理？" class="headerlink" title="28.说一下 volatile的实现原理？"></a>28.说一下 volatile的实现原理？</h4><ul>
 <li><code>volatile</code>修饰的变量可以禁止指令重排序和保证了内存可见性和单一操作的原子性，类似<code>i++</code>这样的复合操作的原子性保证不了</li>
-<li>有<code>volatile</code>关键字修饰的共享变量进行写操作的一瞬间，底层执行汇编指令会多出一个<code>lock</code>前缀指令进行加锁。<code>lock</code>前缀指令其实就相当于一个内存屏障。在多处理器下，会将当前处理器工作内存的数据回写到主内存中，并且这个回写操作会其它线程中缓存该内存地址的数据无效。相当于会在写操作后，发出一个信号给缓存了这个数的线程，告诉它们值更新了，需要从主内存中从新获取</li>
+<li>有<code>volatile</code>关键字修饰的共享变量进行写操作的一瞬间，底层执行汇编指令会多出一个<code>lock</code>前缀指令进行加锁。<code>lock</code>前缀指令其实就相当于一个内存屏障。在多处理器下，会将当前处理器工作内存的数据回写到主内存中，并且这个回写操作会使其它线程中缓存该内存地址的数据无效。相当于会在写操作后，发出一个信号给缓存了这个数的线程，告诉它们值更新了，需要从主内存中从新获取</li>
 <li>在<code>JVM</code>底层<code>volatile</code>是采用“<code>内存屏障</code>”来实现</li>
-<li><code>volatile</code>经常用于两个两个场景：状态标记两、单列模式中的<code>DCL</code>。</li>
-<li>当第一个操作为普通变量的读/写时，如果第二个操作是<code>volatile</code>写，则编译器不能重排序这个两个操作。</li>
-<li>当第一个操作是<code>volatile</code>读时,第二个操作不管是什么都不能重排序，这个规则确保volatile读之后的操作不会排序的它之前。</li>
-<li>当一个操作是volatile写时，第二个操作时volatile读时，不能重排序</li>
+<li><code>volatile</code>经常用于两个两个场景：状态标记、单列模式中的<code>DCL</code>。</li>
 </ul>
 <h4 id="29-volataile的内存语义及其实现？"><a href="#29-volataile的内存语义及其实现？" class="headerlink" title="29.volataile的内存语义及其实现？"></a>29.volataile的内存语义及其实现？</h4><ul>
 <li>如果第一个操作为volatile读，则不管第二个操作是啥，都不能重排序。这个操作确保volatile读之后的操作不会被编译器重排序到volatile读之前；</li>
@@ -388,7 +387,7 @@
 </ul>
 <h4 id="30-说一下happens-before八种规则？"><a href="#30-说一下happens-before八种规则？" class="headerlink" title="30.说一下happens-before八种规则？"></a>30.说一下happens-before八种规则？</h4><ul>
 <li>程序次序规则：一个线程内，按照代码顺序，书写在前面的操作先行发生于书写在后面的操作；</li>
-<li>锁定规则：一个unLock操作先行发生于后面对同一个锁额lock操作</li>
+<li>锁定规则：一个unLock操作先行发生于后面对同一个锁的lock操作</li>
 <li>volatile变量规则：如果一个线程先去写一个volatile变量，然后一个线程去读这个变量，那么这个写操作一定是happens-before读操作的。</li>
 <li>传递规则：如果操作A先行发生于操作B，而操作B又先行发生于操作C，则可以得出操作A先行发生于操作C；</li>
 <li>线程启动规则：Thread对象的start()方法先行发生于此线程的每个一个动作；</li>
@@ -397,23 +396,28 @@
 <li>对象终结规则：一个对象的初始化完成先行发生于他的finalize()方法的开始；</li>
 </ul>
 <h4 id="31-什么是AQS？"><a href="#31-什么是AQS？" class="headerlink" title="31.什么是AQS？"></a>31.什么是AQS？</h4><ul>
-<li>AQS抽象的队列式同步器。是实现JUC核心基础组件。</li>
-<li>AQS是将每一条请求共享资源的线程封装成一个CLH锁队列的一个结点（Node），来实现锁的分配。</li>
+<li>AQS抽象的队列式同步器，是实现JUC核心基础组件。</li>
+<li>AQS是将每一条请求共享资源的线程封装成一个同步队列（CLH）的一个结点（Node），来实现锁的分配。</li>
 <li>AQS就是基于CLH队列，用volatile修饰共享变量state，线程通过CAS去改变状态符，成功则获取锁成功，失败则进入等待队列，等待被唤醒。</li>
 <li>实现了AQS的锁有：自旋锁、互斥锁、读锁写锁、条件产量、信号量、栅栏都是AQS的衍生物</li>
 <li>AQS提供两种同步状态的获取与释放：独占式（该方法对中断不敏感，获取同步状态失败加入到CLH同步队列中，后续对线程进行中断操作时，线程不会从同步队列中移除）和共享式（在同一时刻可以有多个线程获取同步状态）</li>
-<li>总结：在AQS中维护着一个FIFO的同步队列，当线程获取同步状态失败后，则会加入到这个CLH同步队列的对尾并一直保持着自旋。在CLH同步队列中的线程在自旋时会判断其前驱节点是否为首节点，如果为首节点则不断尝试获取同步状态，获取成功则退出CLH同步队列。当线程执行完逻辑后，会释放同步状态，释放后会唤醒其后继节点。</li>
+<li>总结：在AQS中维护着一个FIFO的同步队列，当线程获取同步状态失败后，则会加入到这个CLH同步队列的队尾并一直保持着自旋。在CLH同步队列中的线程在自旋时会判断其前驱节点是否为首节点，如果为首节点则不断尝试获取同步状态，获取成功则退出CLH同步队列。当线程执行完逻辑后，会释放同步状态，释放后会唤醒其后继节点。</li>
 </ul>
 <h4 id="32-ReentrantLock与synchronized的区别"><a href="#32-ReentrantLock与synchronized的区别" class="headerlink" title="32.ReentrantLock与synchronized的区别"></a>32.ReentrantLock与synchronized的区别</h4><ul>
 <li>两者实现方式不同一个基于JVM层面，一个基于JDK源码实现</li>
 <li>synchronized是隐式的获取锁和释放，ReentrantLock是显示的获取或释放锁，并且有锁超时，锁中断等功能</li>
-<li>ReentrantLock提供了可轮询的锁请求。它会尝试着去获取锁，如果成功则继续，否则可以等到下次运行时处理，而synchronized则一旦进入锁请求要么成功要么阻塞，所以相比synchronized而言，ReentrantLock会不容易产生死锁些。</li>
+<li>ReentrantLock提供了可轮询的锁请求。它会尝试着去获取锁，如果成功则继续，否则可以等到下次运行时处理，而synchronized则一旦进入锁请求要么成功要么阻塞，所以相比synchronized而言，ReentrantLock不容易产生死锁。</li>
 </ul>
 <h4 id="33-如何确保N个线程可以访问N个资源同时又不导致死锁"><a href="#33-如何确保N个线程可以访问N个资源同时又不导致死锁" class="headerlink" title="33.如何确保N个线程可以访问N个资源同时又不导致死锁"></a>33.如何确保N个线程可以访问N个资源同时又不导致死锁</h4><ul>
-<li>使用多线程的时候，一种非常简单的避免死锁的方式就是：指定获取锁的顺序，并强制线程按照指定的顺序获取锁。因此，如果所有的线程都是以同样的顺序加锁和释放锁，就不会出 现死锁了。  </li>
+<li>指定获取锁的顺序，并强制线程按照指定的顺序获取锁。</li>
 </ul>
 <h4 id="34-yield-方法有什么用？"><a href="#34-yield-方法有什么用？" class="headerlink" title="34.yield()方法有什么用？"></a>34.yield()方法有什么用？</h4><ul>
-<li>Yield方法可以暂停当前正在执行的线程对象，让其它有相同优先级的线程执行。它是一个静态方法而且只保证当前线程放弃CPU占用而不能保证使其它线程一定能占用CPU，执行yield()的线程有可能在进入到暂停状态后马上又被执行</li>
+<li><p>yield() 是一个静态方法.</p>
+</li>
+<li><p>yield() 方法可以暂停当前正在执行的线程对象，让其它有相同优先级的线程执行。</p>
+</li>
+<li><p>只保证当前线程放弃CPU占用而不能保证使其它线程一定能占用CPU，执行yield()的线程有可能在进入到暂停状态后马上又被执行</p>
+</li>
 </ul>
 <h4 id="35-CyclicBarrier和CountDownLatch的区别？"><a href="#35-CyclicBarrier和CountDownLatch的区别？" class="headerlink" title="35.CyclicBarrier和CountDownLatch的区别？"></a>35.CyclicBarrier和CountDownLatch的区别？</h4><ul>
 <li>CyclicBarrier的某个线程运行到某个点上之后，该线程即停止运行，直到所有的线程都到达了这个点，所有线程才重新运行；是通过调用await()方法计数加1，若加1后的值不等于构造方法的值，则线程阻塞。通俗的将；让一组线程到达一个屏障时被阻塞，直到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续干活</li>
@@ -688,7 +692,7 @@
                 <a class="prev" rel="prev" href="/2020/10/14/0000.%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3JVM/">深入理解JVM</a>
             
             
-            <a class="next" rel="next" href="/2020/10/14/0000.MySQL%E5%AE%9E%E6%88%9845%E8%AE%B2%E7%AC%94%E8%AE%B0/">MySQL实战45讲</a>
+            <a class="next" rel="next" href="/2020/10/14/0000.JAVA%E6%A0%B8%E5%BF%83%E6%8A%80%E6%9C%AF36%E8%AE%B2/">Java核心技术36讲</a>
             
         </section>
 
