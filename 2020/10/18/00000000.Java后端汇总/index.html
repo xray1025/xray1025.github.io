@@ -819,6 +819,81 @@
 <h2 id="join-方法有什么用？"><a href="#join-方法有什么用？" class="headerlink" title="join()方法有什么用？"></a>join()方法有什么用？</h2><ul>
 <li><strong>join方法的主要作用就是同步，它可以使得线程之间的并行执行变为串行执行。</strong> </li>
 </ul>
+<h2 id="使用线程池的好处？"><a href="#使用线程池的好处？" class="headerlink" title="使用线程池的好处？"></a>使用线程池的好处？</h2><ol>
+<li><strong>降低资源消耗</strong>。通过<strong>重复利用已创建的线程，降低线程创建和销毁造成的消耗</strong>。</li>
+<li><strong>提高响应速度</strong>。<strong>当任务到达时，任务可以不需要等到线程创建就能立即执行</strong>。</li>
+<li><strong>提高线程的可管理性</strong>。<strong>线程是稀缺资源，如果无限制地创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一分配、调优和监控</strong>。</li>
+</ol>
+<h2 id="创建线程的几种方式？（重要）"><a href="#创建线程的几种方式？（重要）" class="headerlink" title="创建线程的几种方式？（重要）"></a>创建线程的几种方式？（重要）</h2><ul>
+<li><strong>继承Thread类</strong></li>
+<li><strong>实现Runnable接口</strong></li>
+<li><strong>实现Callable接口</strong></li>
+<li><strong>使用线程池创建线程</strong></li>
+</ul>
+<h2 id="常见的线程池及适用场景？（重要）"><a href="#常见的线程池及适用场景？（重要）" class="headerlink" title="常见的线程池及适用场景？（重要）"></a>常见的线程池及适用场景？（重要）</h2><ul>
+<li><p>FixedThreadPool：可重用固定线程数的线程池。（适用于负载比较重的服务器）</p>
+<ul>
+<li><strong>FixedThreadPool使用无界队列LinkedBlockingQueue作为线程池的工作队列</strong></li>
+<li>该线程池中的线程数量始终不变。当有一个新的任务提交时，线程池中若有空闲线程，则立即执行。若没有，则新的任务会被暂存在一个任务队列中，待有线程空闲时，便处理在任务队列中的任务。</li>
+</ul>
+</li>
+<li><p>SingleThreadExecutor：只会创建一个线程执行任务。（适用于需要保证顺序执行各个任务；并且在任意时间点，没有多线程活动的场景。）</p>
+<ul>
+<li><strong>SingleThreadExecutorl也使用无界队列LinkedBlockingQueue作为工作队列</strong></li>
+<li>若多余一个任务被提交到该线程池，任务会被保存在一个任务队列中，待线程空闲，按先入先出的顺序执行队列中的任务。</li>
+</ul>
+</li>
+<li><p>CachedThreadPool：是一个会根据需要调整线程数量的线程池。</p>
+<p>  （大小无界，适用于执行很多的短期异步任务的小程序，或负载较轻的服务器）</p>
+<ul>
+<li><strong>CachedThreadPool使用没有容量的SynchronousQueue作为线程池的工作队列，但CachedThreadPool的maximumPool是无界的。</strong></li>
+<li>线程池的线程数量不确定，但若有空闲线程可以复用，则会优先使用可复用的线程。若所有线程均在工作，又有新的任务提交，则会创建新的线程处理任务。所有线程在当前任务执行完毕后，将返回线程池进行复用。</li>
+</ul>
+</li>
+<li><p><strong>ScheduledThreadPool</strong>：继承自ThreadPoolExecutor。它主要用来<strong>在给定的延迟之后运行任务，或者定期执行任务</strong>。使用DelayQueue作为任务队列。</p>
+</li>
+</ul>
+<h2 id="说一下-runnable-和-callable-有什么区别？"><a href="#说一下-runnable-和-callable-有什么区别？" class="headerlink" title="说一下 runnable 和 callable 有什么区别？"></a>说一下 runnable 和 callable 有什么区别？</h2><ul>
+<li>相同点：两者都是接口。都可以用来创建多线程。都需要调用Thread.start()启动线程</li>
+<li>不同点：实现Callable接口的任务线程能返回执行结果；而实现Runnable接口的任务线程不能返回结果。</li>
+<li>Callable接口的call()方法允许抛出异常；而Runnable接口的run()方法的异常只能在内部消化，不能继续上抛；</li>
+<li>Callable接口支持返回执行结果，此时需要调用FutureTask.get()方法实现，此方法会阻塞主线程直到获取‘将来’结果；当不调用此方法时，主线程不会阻塞</li>
+</ul>
+<h2 id="start-方法和run-方法简介和区别？"><a href="#start-方法和run-方法简介和区别？" class="headerlink" title="start() 方法和run() 方法简介和区别？"></a><strong>start() 方法和run() 方法简介和区别？</strong></h2><p>start() 方法：</p>
+<p>1）用start方法来启动线程，真正实现了多线程运行，这时无需等待run方法体代码执行完毕而直接继续执行下面的代码。</p>
+<p>2）通过调用Thread类的start()方法来启动一个线程，这时此线程处于就绪（可运行）状态，并没有运行，一旦得到CPU时间片，就开始执行run()方法。</p>
+<p>run() 方法：</p>
+<p>1）run()方法只是类的一个普通方法而已，如果直接调用Run方法，程序中依然只有主线程这一个线程，其程序执行路径还是只有一条。</p>
+<h2 id="线程池都有哪几种工作队列？（重要）"><a href="#线程池都有哪几种工作队列？（重要）" class="headerlink" title="线程池都有哪几种工作队列？（重要）"></a>线程池都有哪几种工作队列？（重要）</h2><ul>
+<li><strong>ArrayBlockingQueue</strong>：是一个<strong>基于数组结构的有界阻塞队列</strong>，此队列按FIFO（先进先出）原则对元素进行排序。</li>
+<li><strong>LinkedBlockingQueue</strong>：是一个<strong>基于链表结构的阻塞队列</strong>，此队列按FIFO排序元素，吞吐量通常要高于ArrayBlockingQueue。静态工厂方法Executors.newFixedThreadPool()使用了这个队列。</li>
+<li><strong>SynchronousQueue</strong>：是一个<strong>不存储元素的阻塞队列</strong>。每个插入操作必须等到另一个线程调用移除操作，否则插入操作一直处于阻塞状态，吞吐量通常要高于Linked-BlockingQueue，静态工厂方法Executors.newCachedThreadPool使用了这个队列。</li>
+<li><strong>PriorityBlockingQueue</strong>：一个<strong>具有优先级的无限阻塞队列</strong>。</li>
+</ul>
+<h2 id="线程池参数？"><a href="#线程池参数？" class="headerlink" title="线程池参数？"></a><strong>线程池参数？</strong></h2><p>①<strong>corePoolSize：线程池的基本大小</strong>，当提交一个任务到线程池时，线程池会创建一个线程来执行任务，即使其他空闲的基本线程能够执行新任务也会创建线程，等到需要执行的任务数大于线程池基本大小时就不再创建。说白了就是，即便是线程池里没有任何任务，也会有corePoolSize个线程在候着等任务。</p>
+<p>②<strong>maximumPoolSize:最大线程数</strong>，不管你提交多少任务，线程池里最多工作线程数就是maximumPoolSize。</p>
+<p>③<strong>keepAliveTime:线程的存活时间</strong>。当线程池里的线程数大于corePoolSize时，如果等了keepAliveTime时长还没有任务可执行，则线程退出。</p>
+<p>⑤<strong>unit</strong>：这个用来指定keepAliveTime的单位，比如秒:TimeUnit.SECONDS。</p>
+<p>⑥<strong>workQueu</strong>e：用于保存等待执行任务的<strong>阻塞队列</strong>，提交的任务将会被放到这个队列里。</p>
+<p>⑦<strong>threadFactory：线程工厂，用来创建线程</strong>。主要是为了给线程起名字，默认工厂的线程名字：pool-1-thread-3。</p>
+<p>⑧<strong>handler：拒绝策略</strong>，即当线程和队列都已经满了的时候，应该采取什么样的策略来处理新提交的任务。</p>
+<ul>
+<li>默认策略是AbortPolicy（抛出异常）</li>
+<li>CallerRunsPolicy(只用调用者所在线程来运行任务)</li>
+<li>DiscardOldestPolicy(丢弃队列里最老的一个任务，并执行当前任务)</li>
+<li>DiscardPolicy(不处理，丢弃掉)</li>
+</ul>
+<h2 id="线程池ThreadPoolExecutor的工作流程？"><a href="#线程池ThreadPoolExecutor的工作流程？" class="headerlink" title="线程池ThreadPoolExecutor的工作流程？"></a>线程池ThreadPoolExecutor的工作流程？</h2><ul>
+<li>当提交一个新任务到线程池后，线程池首先会判断核心线程池(corePoolSize）里的线程是否都在执行任务。</li>
+<li>如果核心线程池corePoolSize的线程都被占用在执行任务，线程池判断工作队列是否已满，如果工作队列没有满：则将新提交的任务存储到工作队列中，</li>
+<li>如果工作队列已满：判断线程池（maximumPoolSize）的线程是否处于工作状态，如果没有，则创建一个新的工作线程来执行任务。</li>
+<li>如果线程池已满，则交给饱和策略处理这个任务</li>
+</ul>
+<h2 id="线程池中-execute-和-submit-方法有什么区别？"><a href="#线程池中-execute-和-submit-方法有什么区别？" class="headerlink" title="线程池中 execute() 和 submit() 方法有什么区别？"></a>线程池中 execute() 和 submit() 方法有什么区别？</h2><ul>
+<li>两个方法都可以向线程池提交任务</li>
+<li>execute()方法的返回类型是void，它定义在Executor接口中</li>
+<li>submit()方法可以返回持有计算结果的Future对象，它定义在ExecutorService接口中</li>
+</ul>
 <h2 id="synchronized-关键字"><a href="#synchronized-关键字" class="headerlink" title="synchronized 关键字"></a>synchronized 关键字</h2><p>synchronized关键字可以保证被它修饰的方法或者代码块在任意时刻只能有一个线程执行。</p>
 <p>synchronized关键字最主要的三种使用方式：</p>
 <ul>
@@ -914,70 +989,6 @@
 <li>ABA问题。 CAS操作更新的基础是如果值没有变化则更新，若有变化则不更新。但如若有一值刚开始是A，然后变为B，最后又变为A。那么CAS检查时发现它没有变化就更新了，但实际上却是已经发生了变化。</li>
 <li>CAS自旋。自旋CAS如果长时间不成功，会给CPU带来非常大的执行开销。 </li>
 <li>只能保证一个共享变量的原子操作。当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是对多个共享变量操作时，循环CAS就无法保证操作的原子性。</li>
-</ul>
-<h2 id="使用线程池的好处？"><a href="#使用线程池的好处？" class="headerlink" title="使用线程池的好处？"></a>使用线程池的好处？</h2><ol>
-<li><strong>降低资源消耗</strong>。通过<strong>重复利用已创建的线程，降低线程创建和销毁造成的消耗</strong>。</li>
-<li><strong>提高响应速度</strong>。<strong>当任务到达时，任务可以不需要等到线程创建就能立即执行</strong>。</li>
-<li><strong>提高线程的可管理性</strong>。<strong>线程是稀缺资源，如果无限制地创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一分配、调优和监控</strong>。</li>
-</ol>
-<h2 id="创建线程的几种方式？（重要）"><a href="#创建线程的几种方式？（重要）" class="headerlink" title="创建线程的几种方式？（重要）"></a>创建线程的几种方式？（重要）</h2><ul>
-<li><strong>继承Thread类</strong></li>
-<li><strong>实现Runnable接口</strong></li>
-<li><strong>实现Callable接口</strong></li>
-<li><strong>使用Executor框架来创建线程池</strong></li>
-</ul>
-<h2 id="常见的线程池及适用场景？（重要）"><a href="#常见的线程池及适用场景？（重要）" class="headerlink" title="常见的线程池及适用场景？（重要）"></a>常见的线程池及适用场景？（重要）</h2><ul>
-<li>FixedThreadPool：可重用固定线程数的线程池。（适用于负载比较重的服务器）<ul>
-<li><strong>FixedThreadPool使用无界队列LinkedBlockingQueue作为线程池的工作队列</strong></li>
-<li>该线程池中的线程数量始终不变。当有一个新的任务提交时，线程池中若有空闲线程，则立即执行。若没有，则新的任务会被暂存在一个任务队列中，待有线程空闲时，便处理在任务队列中的任务。</li>
-</ul>
-</li>
-<li>SingleThreadExecutor：只会创建一个线程执行任务。（适用于需要保证顺序执行各个任务；并且在任意时间点，没有多线程活动的场景。）<ul>
-<li><strong>SingleThreadExecutorl也使用无界队列LinkedBlockingQueue作为工作队列</strong></li>
-<li>若多余一个任务被提交到该线程池，任务会被保存在一个任务队列中，待线程空闲，按先入先出的顺序执行队列中的任务。</li>
-</ul>
-</li>
-<li><strong>CachedThreadPool：是一个会根据需要调整线程数量的线程池。</strong>（大小无界，适用于执行很多的短期异步任务的小程序，或负载较轻的服务器）<ul>
-<li><strong>CachedThreadPool使用没有容量的SynchronousQueue作为线程池的工作队列，但CachedThreadPool的maximumPool是无界的。</strong></li>
-<li>线程池的线程数量不确定，但若有空闲线程可以复用，则会优先使用可复用的线程。若所有线程均在工作，又有新的任务提交，则会创建新的线程处理任务。所有线程在当前任务执行完毕后，将返回线程池进行复用。</li>
-</ul>
-</li>
-<li><strong>ScheduledThreadPool</strong>：继承自ThreadPoolExecutor。它主要用来<strong>在给定的延迟之后运行任务，或者定期执行任务</strong>。使用DelayQueue作为任务队列。</li>
-</ul>
-<h2 id="说一下-runnable-和-callable-有什么区别？"><a href="#说一下-runnable-和-callable-有什么区别？" class="headerlink" title="说一下 runnable 和 callable 有什么区别？"></a>说一下 runnable 和 callable 有什么区别？</h2><ul>
-<li>相同点：两者都是接口。都可以用来创建多线程。都需要调用Thread.start()启动线程</li>
-<li>不同点：实现Callable接口的任务线程能返回执行结果；而实现Runnable接口的任务线程不能返回结果。</li>
-<li>Callable接口的call()方法允许抛出异常；而Runnable接口的run()方法的异常只能在内部消化，不能继续上抛；</li>
-<li>Callable接口支持返回执行结果，此时需要调用FutureTask.get()方法实现，此方法会阻塞主线程直到获取‘将来’结果；当不调用此方法时，主线程不会阻塞</li>
-</ul>
-<h2 id="start-方法和run-方法简介和区别？"><a href="#start-方法和run-方法简介和区别？" class="headerlink" title="start() 方法和run() 方法简介和区别？"></a><strong>start() 方法和run() 方法简介和区别？</strong></h2><p>start() 方法：</p>
-<p>1）用start方法来启动线程，真正实现了多线程运行，这时无需等待run方法体代码执行完毕而直接继续执行下面的代码。</p>
-<p>2）通过调用Thread类的start()方法来启动一个线程，这时此线程处于就绪（可运行）状态，并没有运行，一旦得到CPU时间片，就开始执行run()方法。</p>
-<p>run() 方法：</p>
-<p>1）run()方法只是类的一个普通方法而已，如果直接调用Run方法，程序中依然只有主线程这一个线程，其程序执行路径还是只有一条。</p>
-<h2 id="线程池都有哪几种工作队列？（重要）"><a href="#线程池都有哪几种工作队列？（重要）" class="headerlink" title="线程池都有哪几种工作队列？（重要）"></a>线程池都有哪几种工作队列？（重要）</h2><ul>
-<li><strong>ArrayBlockingQueue</strong>：是一个<strong>基于数组结构的有界阻塞队列</strong>，此队列按FIFO（先进先出）原则对元素进行排序。</li>
-<li><strong>LinkedBlockingQueue</strong>：是一个<strong>基于链表结构的阻塞队列</strong>，此队列按FIFO排序元素，吞吐量通常要高于ArrayBlockingQueue。静态工厂方法Executors.newFixedThreadPool()使用了这个队列。</li>
-<li><strong>SynchronousQueue</strong>：是一个<strong>不存储元素的阻塞队列</strong>。每个插入操作必须等到另一个线程调用移除操作，否则插入操作一直处于阻塞状态，吞吐量通常要高于Linked-BlockingQueue，静态工厂方法Executors.newCachedThreadPool使用了这个队列。</li>
-<li><strong>PriorityBlockingQueue</strong>：一个<strong>具有优先级的无限阻塞队列</strong>。</li>
-</ul>
-<h2 id="线程池参数？"><a href="#线程池参数？" class="headerlink" title="线程池参数？"></a><strong>线程池参数？</strong></h2><p>①<strong>corePoolSize：线程池的基本大小</strong>，当提交一个任务到线程池时，线程池会创建一个线程来执行任务，即使其他空闲的基本线程能够执行新任务也会创建线程，等到需要执行的任务数大于线程池基本大小时就不再创建。说白了就是，即便是线程池里没有任何任务，也会有corePoolSize个线程在候着等任务。</p>
-<p>②<strong>maximumPoolSize:最大线程数</strong>，不管你提交多少任务，线程池里最多工作线程数就是maximumPoolSize。</p>
-<p>③<strong>keepAliveTime:线程的存活时间</strong>。当线程池里的线程数大于corePoolSize时，如果等了keepAliveTime时长还没有任务可执行，则线程退出。</p>
-<p>⑤<strong>unit</strong>：这个用来指定keepAliveTime的单位，比如秒:TimeUnit.SECONDS。</p>
-<p>⑥<strong>workQueu</strong>e：用于保存等待执行任务的<strong>阻塞队列</strong>，提交的任务将会被放到这个队列里。</p>
-<p>⑦<strong>threadFactory：线程工厂，用来创建线程</strong>。主要是为了给线程起名字，默认工厂的线程名字：pool-1-thread-3。</p>
-<p>⑧<strong>handler：拒绝策略</strong>，即当线程和队列都已经满了的时候，应该采取什么样的策略来处理新提交的任务。默认策略是AbortPolicy（抛出异常），其他的策略还有：CallerRunsPolicy(只用调用者所在线程来运行任务)、DiscardOldestPolicy(丢弃队列里最近的一个任务，并执行当前任务)、DiscardPolicy(不处理，丢弃掉)</p>
-<h2 id="线程池ThreadPoolExecutor的工作流程？"><a href="#线程池ThreadPoolExecutor的工作流程？" class="headerlink" title="线程池ThreadPoolExecutor的工作流程？"></a>线程池ThreadPoolExecutor的工作流程？</h2><ul>
-<li>当提交一个新任务到线程池后，线程池首先会判断核心线程池(corePoolSize）里的线程是否都在执行任务，如果不是则创建一个新的工作线程来执行任务。</li>
-<li>如果核心线程池corePoolSize的线程都被占用在执行任务，线程池判断工作队列是否已满，如果工作队列没有满：则将新提交的任务存储到工作队列中，</li>
-<li>如果工作队列已满：判断线程池（maximumPoolSize）的线程是否处于工作状态，如果没有，则创建一个新的工作线程来执行任务。</li>
-<li>如果线程池已满，则交给饱和策略处理这个任务</li>
-</ul>
-<h2 id="线程池中-execute-和-submit-方法有什么区别？"><a href="#线程池中-execute-和-submit-方法有什么区别？" class="headerlink" title="线程池中 execute() 和 submit() 方法有什么区别？"></a>线程池中 execute() 和 submit() 方法有什么区别？</h2><ul>
-<li>两个方法都可以向线程池提交任务</li>
-<li>execute()方法的返回类型是void，它定义在Executor接口中</li>
-<li>submit()方法可以返回持有计算结果的Future对象，它定义在ExecutorService接口中</li>
 </ul>
 <h2 id="什么是ThreadLocal变量？"><a href="#什么是ThreadLocal变量？" class="headerlink" title="什么是ThreadLocal变量？"></a>什么是ThreadLocal变量？</h2><p>ThreadLocal是Java里一种特殊的变量。每个线程都有一个ThreadLocal就是每个线程都拥有了自己独立的一个变量，竞争条件被彻底消除了。它是为创建代价高昂的对象获取线程安全的好方法，因为那个类创建代价高昂且每次调用都需要创建不同的实例所以不值得在局部范围使用它，如果为每个线程提供一个自己独有的变量拷贝，将大大提高效率。首先，通过复用减少了代价高昂的对象的创建个数。其次，你在没有使用高代价的同步或者不变性的情况下获得了线程安全。</p>
 <h2 id="Semaphore有什么作用？"><a href="#Semaphore有什么作用？" class="headerlink" title="Semaphore有什么作用？"></a>Semaphore有什么作用？</h2><ol>
@@ -4149,6 +4160,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/10/22/Mybatis%E7%9A%84%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98%E5%92%8C%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98/">Mybatis的一级缓存和二级缓存</a>
             
             
             <a class="next" rel="next" href="/2020/10/18/JAVA%E9%9B%86%E5%90%88/">Java集合</a>
