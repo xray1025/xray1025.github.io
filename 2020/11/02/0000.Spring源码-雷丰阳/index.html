@@ -14,7 +14,7 @@
 
 
 
-<title>Spring | X_ray&#39;s blog</title>
+<title>Spring源码导读 | X_ray&#39;s blog</title>
 
 
 
@@ -175,7 +175,7 @@
     
     <article class="post-wrap">
         <header class="post-header">
-            <h1 class="post-title">Spring</h1>
+            <h1 class="post-title">Spring源码导读</h1>
             
                 <div class="post-meta">
                     
@@ -200,7 +200,7 @@
         </header>
 
         <div class="post-content">
-            <h1 id="Spring源码导读"><a href="#Spring源码导读" class="headerlink" title="Spring源码导读"></a>Spring源码导读</h1><h2 id="spring注解"><a href="#spring注解" class="headerlink" title="spring注解"></a>spring注解</h2><ul>
+            <h2 id="Spring-源码导读"><a href="#Spring-源码导读" class="headerlink" title="Spring 源码导读"></a>Spring 源码导读</h2><h2 id="spring注解"><a href="#spring注解" class="headerlink" title="spring注解"></a>spring注解</h2><ul>
 <li>@Configuration 用于标注配置类</li>
 <li>@Bean 结合@Configuration（full mode）使用或结合@Component（light mode）使用。可以导入第三方组件,入方法有参数默认从IOC容器中获取，可以指定initMethod和destroyMethod 指定初始化和销毁方法,多实例对象不会调用销毁方法.</li>
 <li>包扫描@ComponentScan (@ComponentScans可以配置多个扫描,@TypeFilter:指定过滤规则,自己实现TypeFilter类)<br>  组件(@Service、@Controller、@Repository):包扫描+组件注解导入注解。</li>
