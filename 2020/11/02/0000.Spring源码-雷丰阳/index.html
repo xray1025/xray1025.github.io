@@ -200,43 +200,118 @@
         </header>
 
         <div class="post-content">
-            <h2 id="Spring-源码导读"><a href="#Spring-源码导读" class="headerlink" title="Spring 源码导读"></a>Spring 源码导读</h2><h2 id="spring注解"><a href="#spring注解" class="headerlink" title="spring注解"></a>spring注解</h2><ul>
-<li>@Configuration 用于标注配置类</li>
-<li>@Bean 结合@Configuration（full mode）使用或结合@Component（light mode）使用。可以导入第三方组件,入方法有参数默认从IOC容器中获取，可以指定initMethod和destroyMethod 指定初始化和销毁方法,多实例对象不会调用销毁方法.</li>
-<li>包扫描@ComponentScan (@ComponentScans可以配置多个扫描,@TypeFilter:指定过滤规则,自己实现TypeFilter类)<br>  组件(@Service、@Controller、@Repository):包扫描+组件注解导入注解。</li>
-<li>@Scope:设置组件作用域 1.prototype:多例的2.singleton:单例的（默认值）</li>
+            <h1 id="Spring-源码导读"><a href="#Spring-源码导读" class="headerlink" title="Spring 源码导读"></a>Spring 源码导读</h1><h2 id="Spring注解"><a href="#Spring注解" class="headerlink" title="Spring注解"></a>Spring注解</h2><h3 id="组件添加"><a href="#组件添加" class="headerlink" title="组件添加"></a>组件添加</h3><ul>
+<li><strong>@Configuration</strong>：用于标注配置类</li>
+<li><strong>@Bean</strong> <ul>
+<li>结合@Configuration（full mode）使用或结合@Component（light mode）使用。可以导入第三方组件,入方法有参数默认从IOC容器中获取，可以指定initMethod和destroyMethod 指定初始化和销毁方法,多实例对象不会调用销毁方法.</li>
+</ul>
+</li>
+<li><strong>@ComponentScan</strong> ，包扫描<ul>
+<li>@ComponentScans可以配置多个扫描</li>
+<li>@TypeFilter:指定过滤规则：ANNOTATION（注解），ASSIGNABLE_TYPE（指定类型）， ASPECTJ（使用ASPECTJ表达式），cCUSTOM（自定义）<ul>
+<li>includeFilters()：想要包含的注解</li>
+<li>excludeFilters()：想要排除的注解</li>
+</ul>
+</li>
+<li>组件(<strong>@Controller、@Service、@Repository、@Component</strong>)：包扫描+组件注解导入注解</li>
+</ul>
+</li>
+<li><strong>@Scope</strong>：设置组件作用域<ul>
+<li>singleton：单例的（默认值），饿汉式</li>
+<li>prototype：多例的，懒汉式</li>
+<li>request</li>
+<li>session</li>
+</ul>
+</li>
 <li>@Lazy 懒加载</li>
-<li>@Conditional({Condition}):按照一定的条件进行判断,满足条件给容器中注册Bean,传入Condition数组,，使用时需自己创建类继承Condition然后重写match方法。</li>
-<li>@Import[快速给容器中导入一个组件]<ol>
+<li><strong><em>@Conditional({Condition})</em></strong><ul>
+<li>按照一定的条件进行判断,满足条件给容器中注册Bean,传入Condition数组,，使用时需自己创建类继承Condition然后重写match方法。</li>
+<li>Condition：<ul>
+<li>ConditionContext：判断条件能使用的上下文（环境）</li>
+<li>AnnotatedTypeMetadata：注释信息</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>@Primary</strong>：Spring自动装配的时候，默认首选的 bean，配合 @Bean 使用</li>
+<li><em>@<strong>Import</strong></em>[快速给容器中导入一个组件]<ol>
 <li>Import(类名),容器中就会自动注册这个组件，id默认是组件的全名</li>
 <li>ImportSelector：返回需要导入的组件的全类名的数组</li>
 <li>ImportBeanDefinitionRegistrar：手动注册bean</li>
 </ol>
 </li>
-<li>FactoryBean:工厂Bean,交给spring用来生产Bean到spring容器中.可以通过前缀&amp;来获取工厂Bean本身.</li>
-<li>@Value:给属性赋值,也可以使用SpEL和外部文件的值</li>
-<li>@PropertySource:读取外部配置文件中的k/v保存到运行环境中,结合@value使用,或使用ConfigurableEnvironment获取</li>
-<li>@Profile:结合@Bean使用,默认为default环境,可以通过命令行参数来切换环境</li>
-<li>自定义组件使用Spring容器底层的组件:需要让自定义组件实现xxxAware，(例如:ApplicationContextAware),spring在创建对象的时候,会帮我们自动注入。spring通过BeanPostProcessor机制来实现XXXXAware的自动注入。</li>
+<li><strong>FactoryBean</strong>：<ul>
+<li>工厂Bean，交给 Spring 用来生产 Bean 到 Spring 容器中</li>
+<li>默认获取 FactoryBean 调用 getObject() 创建的对象</li>
+<li>可以通过前缀 &amp; 来获取 FactoryBean 本身。</li>
 </ul>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="module-access"><span class="module"><span class="identifier">ApplicationContextProcessor</span>.</span></span>java</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> void invoke<span class="constructor">AwareInterfaces(Object <span class="params">bean</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (bean instanceof Aware) &#123;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> (bean instanceof ResourceLoaderAware) &#123;</span><br><span class="line">                ((ResourceLoaderAware)bean).set<span class="constructor">ResourceLoader(<span class="params">this</span>.<span class="params">applicationContext</span>)</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (bean instanceof ApplicationContextAware) &#123;</span><br><span class="line">                ((ApplicationContextAware)bean).set<span class="constructor">ApplicationContext(<span class="params">this</span>.<span class="params">applicationContext</span>)</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
+</li>
+</ul>
+<h3 id="组件赋值"><a href="#组件赋值" class="headerlink" title="组件赋值"></a>组件赋值</h3><ul>
+<li><p><strong>@Value</strong>：给属性赋值</p>
 <ul>
-<li>@Autowried 装配优先级如下:<ol>
-<li>使用按照类型去容器中找对应的组件</li>
-<li>按照属性名称去作为组件id去找对应的组件</li>
+<li>基本数值</li>
+<li>#{}：SpEL</li>
+<li>${}：取配置文件properties中的值（运行环境变量的值）</li>
+</ul>
+</li>
+<li><p><strong>@Autowried</strong></p>
+<ul>
+<li><p>自动装配：Spring利用依赖注入（DI），完成对IOC容器中各个组件的依赖关系赋值。 </p>
+</li>
+<li><p>装配优先级如下：</p>
+<ul>
+<li><p>优先按照类型去容器中找对应的组件</p>
+</li>
+<li><p>其次按照属性名称去作为组件id去找对应的组件</p>
+</li>
+</ul>
+</li>
+<li><p>可以注解于构造器、参数、方法、属性，都是从IOC容器中获取参数组件的值</p>
+<ul>
+<li>标注在构造器上：Spring创建对象时调用构造器创建对象，只有一个有参构造器时，@Autowired可以省略</li>
+<li>标注在方法上：Spring创建对象时调用方法创建对象，搭配 @Bean使用， 默认不写 </li>
+</ul>
+</li>
+<li><p><strong>@Qualifier</strong></p>
+<ul>
+<li>指定默认的组件的id，而不是使用属性名称，结合 @Autowried 使用</li>
+</ul>
+</li>
+<li><p>@Resource(JSR250)：jsr 规范，按照组件名称进行装配，不支持 require=false，属于Java注解</p>
+</li>
+<li><p>@Inject(JSR330)：jsr 规范和 @Autowired 功能一致，不支持 require=false，属于Java注解</p>
+</li>
+</ul>
+</li>
+<li><p>@PropertySource：读取外部配置文件中的k/v保存到运行环境中，结合@value使用，或使用ConfigurableEnvironment获取</p>
+</li>
+<li><p>@Profile：结合@Bean使用，默认为default环境</p>
+<ul>
+<li>可以通过命令行参数（-Dspring.profiles.active=test）来切换环境</li>
+<li>也可通过代码激活环境：<code>applicationContext.getEnvironment().setActiveProfiles(&quot;dev&quot;);</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="组件注入"><a href="#组件注入" class="headerlink" title="组件注入"></a>组件注入</h3><ul>
+<li>自定义组件使用Spring容器底层的组件：需要让自定义组件实现<strong>xxxAware</strong>接口，（例如:ApplicationContextAware），spring在创建对象的时候，会帮我们自动注入。spring通过BeanPostProcessor机制，（例如:ApplicationContextAwareProcesser），来实现XXXXAware的自动注入。</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">ApplicationContextProcessor.java</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">invokeAwareInterfaces</span><span class="params">(Object bean)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> Aware) &#123; </span><br><span class="line">            <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> ResourceLoaderAware) &#123;</span><br><span class="line">                ((ResourceLoaderAware)bean).setResourceLoader(<span class="keyword">this</span>.applicationContext);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (bean <span class="keyword">instanceof</span> ApplicationContextAware) &#123;</span><br><span class="line">                ((ApplicationContextAware)bean).setApplicationContext(<span class="keyword">this</span>.applicationContext);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; </span><br></pre></td></tr></table></figure>
+
+<h2 id="Bean生命周期"><a href="#Bean生命周期" class="headerlink" title="Bean生命周期:"></a>Bean生命周期:</h2><p><strong>指定初始化和销毁方法</strong></p>
+<ol>
+<li><p>通过@Bean 指定 init-method 和 destroy-method：<code>@Bean(initMethod=&quot;init&quot;,destroyMethod=&quot;destroy&quot;)</code></p>
+</li>
+<li><p>让 Bean 实现 InitializingBean 接口的 afterPropertiesSet() 方法定义初始化逻辑，实现 DisposableBean 接口的 destroy 方法定义销毁方法</p>
+</li>
+<li><p>JSR250：@PostComstruct：初始化，@PreDestroy：销毁</p>
+</li>
+<li><p>实现BeanPostProcessor接口的后置拦截器放入容器中，可以拦截bean初始化.</p>
+<ol>
+<li>postProcessBeforeInitialization() 可以在被拦截的Bean的初始化前进行处理工作。 </li>
+<li>postProcessAfterInitialization() 可以在被拦截的Bean的初始化后进行一些处理工作。</li>
 </ol>
 </li>
-<li>@Qualifier:指定默认的组件,结合@Autowried使用<br>  –标注在构造器:spring创建对象调用构造器创建对象<br>  –标注在方法上:</li>
-<li>@Primary:spring自动装配的时候,默认首先bean,配合@Bean使用</li>
-<li>@Resource(JSR250):jsr规范:按照组件名称进行装配</li>
-<li>@Inject(JSR330):jsr规范和@Autowired功能一致,不支持require=false;</li>
-</ul>
-<h2 id="Bean生命周期"><a href="#Bean生命周期" class="headerlink" title="Bean生命周期:"></a>Bean生命周期:</h2><p><strong>初始化和销毁</strong></p>
-<ol>
-<li>通过@Bean 指定init-method和destroy-method</li>
-<li>实现InitializingBean定义初始化逻辑,实现DisposableBean定义销毁方法</li>
-<li>实现BeanPostProcessor接口的后置拦截器放入容器中，可以拦截bean初始化，并可以在被拦截的Bean的初始化前后进行一些处理工作。</li>
 </ol>
 <p>spring底层常用的BeanPostProcessor：</p>
 <figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">* </span>BeanValidationPostProcessor用来实现数据校验</span><br><span class="line"><span class="bullet">* </span>AutowireAnnotationBeanPostProcessor,@Autowire实现</span><br><span class="line"><span class="bullet">* </span>ApplicationContextProcessor实现XXXAware的自动注入。</span><br></pre></td></tr></table></figure>
@@ -244,21 +319,46 @@
 <p><strong>执行时机</strong></p>
 <figure class="highlight haml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">doCreateBean</span><br><span class="line">-<span class="ruby">populateBean（）：给bean的各种属性赋值</span></span><br><span class="line"><span class="ruby">-initializeBean（）：初始化bean</span></span><br><span class="line"><span class="ruby">-处理Aware方法</span></span><br><span class="line"><span class="ruby">-applyBeanPostProcessorsBeforeInitialization：后置处理器的实例化前拦截</span></span><br><span class="line"><span class="ruby">-<span class="symbol">invokeInitMethods:</span>执行@Bean指定的initMethod</span></span><br><span class="line"><span class="ruby">-applyBeanPostProcessorsAfterInitialization：后置处理器的实例化后拦截</span></span><br></pre></td></tr></table></figure>
 
-<h2 id="SpringAOP实现原理"><a href="#SpringAOP实现原理" class="headerlink" title="SpringAOP实现原理"></a>SpringAOP实现原理</h2><p><strong>使用步骤</strong></p>
-<ol>
-<li>@EnableAspectJAutoProxy 开启基于注解的aop模式</li>
-<li>@Aspect：定义切面类，切面类里定义通知</li>
-<li>@PointCut 切入点，可以写切入点表达式，指定在哪个方法切入</li>
-<li>通知方法<ul>
-<li>@Before(前置通知)</li>
-<li>@After(后置通知)</li>
-<li>@AfterReturning(返回通知)</li>
-<li>@AfterTrowing(异常通知)@Around(环绕通知)</li>
+<h2 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring AOP"></a>Spring AOP</h2><h3 id="使用步骤"><a href="#使用步骤" class="headerlink" title="使用步骤"></a>使用步骤</h3><ol>
+<li>导入AOP模块：spring-aspects</li>
+<li>定义一个业务逻辑类</li>
+<li>定义一个日志切面类</li>
+<li>给切面类的目标方法标注何时何地运行<ul>
+<li>@Before（前置通知）</li>
+<li>@After（后置通知）</li>
+<li>@AfterReturning（返回通知）</li>
+<li>@AfterTrowing（异常通知）</li>
+<li>@Around（环绕通知）：动态代理，手动推进目标方法运行（joinPoint.procced()）</li>
+<li>顺序：前置、业务逻辑、后置、返回/异常</li>
+<li>5.2.7 以及之后的 spring 版本AOP的后置通知会在AfterReturning和AfterThrowing通知之后执行。</li>
 </ul>
 </li>
-<li>JoinPoint：连接点,是一个类，配合通知使用，用于获取切入的点的信息</li>
+<li>将切面类和业务逻辑类加入到容器中</li>
+<li>在切面类上添加注解：@Aspect</li>
+<li>在配置类上添加注解：@EnableAspectJAutoProxy</li>
 </ol>
-<p><strong>SpringAop原理</strong></p>
+<h3 id="AOP-原理"><a href="#AOP-原理" class="headerlink" title="AOP 原理"></a>AOP 原理</h3><ol>
+<li><strong>@EnableAspectJAutoProxy</strong> 开启AOP功能</li>
+<li>@EnableAspectJAutoProxy 回给容器注册一个组件 AnnotationAwareAspectJAutoProxyCreator；</li>
+<li><strong>AnnotationAwareAspectJAutoProxyCreator</strong> 是一个后置处理器</li>
+<li>容器的创建流程：<ol>
+<li>registerBeanPostProcessors() 注册后置处理器，创建 AnnotationAwareAspectJAutoProxyCreator</li>
+<li>finishBeanFactoryInitialization() 初始化剩下的单实例 bean</li>
+<li>组件创建完成后，判断组件是否需要增强【切面的通知方法，包装成增强器（Advisor）；给业务逻辑组件创建一个代理对象（cglib）】</li>
+</ol>
+</li>
+<li>执行目标方法<ol>
+<li>代理对象执行目标方法</li>
+<li>CglibAopProxy.intercept()<ol>
+<li>得到目标方法的拦截器链（增强器包装成拦截器 MethodInterceptor）</li>
+<li>得到拦截器的链式机制，依次进入每一个拦截器进行执行</li>
+<li>顺序：前置通知、目标方法、后置通知、返回通知/异常通知</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<blockquote>
 <ol>
 <li>@EnableAspectJAutoProxy<ul>
 <li>@EnableAspectJAutoProxy 通过@Import(AspectJAutoProxyRegistrar.class)给spring容器中导入了一个AnnotationAwareAspectJAutoProxyCreator。</li>
@@ -280,37 +380,38 @@
 </ol>
 </li>
 </ol>
-<h2 id="spring-声明式事务"><a href="#spring-声明式事务" class="headerlink" title="spring 声明式事务"></a>spring 声明式事务</h2><p><strong>基本步骤</strong></p>
+</blockquote>
+<h2 id="Spring-声明式事务"><a href="#Spring-声明式事务" class="headerlink" title="Spring 声明式事务"></a>Spring 声明式事务</h2><p><strong>基本步骤</strong></p>
 <ol>
 <li>配置数据源：DataSource</li>
 <li>配置事务管理器来控制事务：PlatformTransactionManager</li>
-<li>@EnableTransactionManagement开启基于注解的事务管理功能</li>
-<li>给方法上面标注@Transactional标识当前方法是一个事务方法</li>
+<li><strong>@EnableTransactionManagement</strong>开启基于注解的事务管理功能</li>
+<li>给方法上面标注**@Transactional**标识当前方法是一个事务方法</li>
 </ol>
 <p><strong>声明式事务实现原理</strong></p>
 <ol>
-<li>@EnableTransactionManagement利用TransactionManagementConfigurationSelector给spring容器中导入两个组件：AutoProxyRegistrar和ProxyTransactionManagementConfiguration</li>
-<li>AutoProxyRegistrar给spring容器中注册一个InfrastructureAdvisorAutoProxyCreator，InfrastructureAdvisorAutoProxyCreator实现了InstantiationAwareBeanPostProcessor,InstantiationAwareBeanPostProcessor是一个BeanPostProcessor。它可以拦截spring的Bean初始化(Initialization)前后和实例化(Initialization)前后。利用后置处理器机制在被拦截的bean创建以后包装该bean并返回一个代理对象代理对象执行方法利用拦截器链进行调用（同<strong>springAop</strong>的原理）</li>
-<li>ProxyTransactionManagementConfiguration：是一个spring的配置类,它为spring容器注册了一个BeanFactoryTransactionAttributeSourceAdvisor,是一个事务事务增强器。它有两个重要的字段：AnnotationTransactionAttributeSource和TransactionInterceptor。<ol>
+<li><strong>@EnableTransactionManagement</strong> 利用 TransactionManagementConfigurationSelector 给spring容器中导入两个组件：AutoProxyRegistrar和ProxyTransactionManagementConfiguration</li>
+<li><strong>AutoProxyRegistrar **给spring容器中注册一个 InfrastructureAdvisorAutoProxyCreator 组件，InfrastructureAdvisorAutoProxyCreator 实现了InstantiationAwareBeanPostProcessor，InstantiationAwareBeanPostProcessor是一个BeanPostProcessor。它可以拦截spring的Bean初始化(Initialization)前后和实例化(Initialization)前后。</strong>利用后置处理器机制，在被拦截的bean创建以后，包装该bean并返回一个代理对象，代理对象执行方法，利用拦截器链进行调用（同 SpringAOP 的原理）**</li>
+<li><strong>ProxyTransactionManagementConfiguration</strong>：是一个spring的配置类，它为spring容器注册了一个事务增强器 BeanFactoryTransactionAttributeSourceAdvisor。它有两个重要的字段：AnnotationTransactionAttributeSource 和 TransactionInterceptor。<ol>
 <li>AnnotationTransactionAttributeSource：用于解析事务注解的相关信息</li>
-<li>TransactionInterceptor：事务拦截器，在事务方法执行时，都会调用TransactionInterceptor的invoke-&gt;invokeWithinTransaction方法，这里面通过配置的PlatformTransactionManager控制着事务的提交和回滚。</li>
+<li>TransactionInterceptor：事务拦截器，在事务方法执行时，首先获取事务相关的属性，都会调用 TransactionInterceptor 的 invoke-&gt;invokeWithinTransaction 方法，通过配置的 PlatformTransactionManager （是否抛出异常）控制着事务的提交和回滚。</li>
 </ol>
 </li>
 </ol>
-<h2 id="Spring-扩展-钩子"><a href="#Spring-扩展-钩子" class="headerlink" title="Spring 扩展(钩子)"></a>Spring 扩展(钩子)</h2><ol>
-<li>BeanFactoryPostProcessor：beanFactory后置处理器，的拦截时机：所有Bean的定义信息已经加载到容器，但还没有被实例化。可以对beanFactory进行一些操作。</li>
-<li>BeanPostProcessor：bean后置处理器，拦截时机：bean创建对象初始化前后进行拦截工作。可以对每一个Bean进行一些操作。</li>
-<li>BeanDefinitionRegistryPostProcessor：是BeanFactoryPostProcessor的子接口，拦截时机：所有Bean的定义信息已经加载到容器，但还没有被实例化，可以对每一个Bean的BeanDefinition进行一些操作。</li>
-<li>ApplicationListener,自定义ApplicationListener实现类并加入到容器中,可以监听spring容器中发布的事件。spring在创建容器的时候（finishRefresh（）方法）会发布ContextRefreshedEvent事件，关闭的时候（doClose()）会发布ContextClosedEvent事件。也可以通过spring容器的publishEvent发布自己的事件。<ol>
+<h2 id="Spring-扩展"><a href="#Spring-扩展" class="headerlink" title="Spring 扩展"></a>Spring 扩展</h2><ol start="2">
+<li><strong>BeanPostProcessor：</strong>bean后置处理器，拦截时机：bean创建对象初始化前后进行拦截工作。可以对每一个Bean进行一些操作。</li>
+<li><strong>BeanFactoryPostProcessor：</strong>beanFactory后置处理器，拦截时机：在 BeanFactory 标准初始化之后调用，所有Bean的定义信息已经加载到容器，但还没有被实例化。可以对beanFactory进行一些操作。</li>
+<li><strong>BeanDefinitionRegistryPostProcessor：</strong>是 BeanFactoryPostProcessor 的子接口，拦截时机：所有Bean的定义信息将要加载到容器，但还没有被实例化，可以对每一个Bean的 BeanDefinition 进行一些操作。</li>
+<li><strong>ApplicationListener</strong>：自定义 ApplicationListener 实现类并加入到容器中，可以监听 Spring 容器中发布的事件。Spring在创建容器的时候（finishRefresh() 方法）会发布 <strong>ContextRefreshedEvent</strong> 事件，关闭的时候（doClose()）会发布 <strong>ContextClosedEvent</strong> 事件。也可以通过 Spring 容器的 publishEvent 发布自己的事件。<ol>
 <li>事件发布流程：publishEvent方法<ol>
-<li>获取事件的多播器，getApplicationEventMulticaster()。</li>
-<li>调用multicastEvent(applicationEvent, eventType)派发事件。获取到所有的ApplicationListener,即getApplicationListeners()，然后同步或者异步的方式执行监听器的onApplicationEvent。</li>
+<li>获取事件的多播器：getApplicationEventMulticaster()。</li>
+<li>调用 multicastEvent(applicationEvent, eventType) 派发事件。获取到所有的 ApplicationListener，即 getApplicationListeners()，然后同步或者异步的方式执行监听器的 onApplicationEvent。</li>
 </ol>
 </li>
-<li>事件的多播器的初始化中（initApplicationEventMulticaster（）），如果容器中没有配置applicationEventMulticaster，就使用SimpleApplicationEventMulticaster。然后获取所有的监听器，并把它们注册到SimpleApplicationEventMulticaster中。</li>
+<li>事件的多播器的初始化中（initApplicationEventMulticaster()），如果容器中没有配置applicationEventMulticaster，就使用SimpleApplicationEventMulticaster。然后获取所有的监听器，并把它们注册到SimpleApplicationEventMulticaster中。</li>
 </ol>
 </li>
-<li>@EventListener(class={})：在普通的业务逻辑的方法上监听事件特定的事件。原理：EventListenerMethodProcessor是一个SmartInitializingSingleton，当所有的单例bean都初始化完以后， 容器会回调该接口的方法afterSingletonsInstantiated(),该方法里会遍历容器中所有的bean，并判断每一个bean里是否带有@EventListener注解的Method，然后创建ApplicationListenerMethodAdapter存储并包装该Method，最后将ApplicationListenerMethodAdapter添加到spring容器中。</li>
+<li>**@EventListener(class={})**：在普通的业务逻辑的方法上监听事件特定的事件。原理：EventListenerMethodProcessor是一个SmartInitializingSingleton，当所有的单例bean都初始化完以后， 容器会回调该接口的方法afterSingletonsInstantiated(),该方法里会遍历容器中所有的bean，并判断每一个bean里是否带有@EventListener注解的Method，然后创建ApplicationListenerMethodAdapter存储并包装该Method，最后将ApplicationListenerMethodAdapter添加到spring容器中。</li>
 </ol>
 <h2 id="Spring源代码分析"><a href="#Spring源代码分析" class="headerlink" title="Spring源代码分析"></a>Spring源代码分析</h2><p>spring核心逻辑AbstractApplicationContext的refresh()方法如下</p>
 <figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">public void refresh<span class="literal">()</span> &#123;</span><br><span class="line">    synchronized (this.startupShutdownMonitor) &#123;</span><br><span class="line">        <span class="comment">// 刷新前的预准备工作</span></span><br><span class="line">        prepare<span class="constructor">Refresh()</span>;</span><br><span class="line">        <span class="comment">// 提取bean的配置信息并封装成BeanDefinition实例，然后将其添加到注册中心。注册中心是一个ConcurrentHashMap&lt;String,BeanDefinition&gt;类型，key为Bean的名字，value为BeanDefinition实例。</span></span><br><span class="line">        ConfigurableListableBeanFactory beanFactory = obtain<span class="constructor">FreshBeanFactory()</span>;</span><br><span class="line">       <span class="comment">//对beanFactory进行一些配置，注册一些BeanPostProcessor和一些特殊的Bean。</span></span><br><span class="line">        prepare<span class="constructor">BeanFactory(<span class="params">beanFactory</span>)</span>;</span><br><span class="line">        </span><br><span class="line">            <span class="comment">//留给子类在BeanFactory准备工作完成后处理一些工作。</span></span><br><span class="line">            post<span class="constructor">ProcessBeanFactory(<span class="params">beanFactory</span>)</span>;</span><br><span class="line">           <span class="comment">//调用 BeanFactory的后置处理器。</span></span><br><span class="line">           invoke<span class="constructor">BeanFactoryPostProcessors(<span class="params">beanFactory</span>)</span>;</span><br><span class="line">           <span class="comment">//注册Bean的后置处理器。</span></span><br><span class="line">            register<span class="constructor">BeanPostProcessors(<span class="params">beanFactory</span>)</span>;</span><br><span class="line">            <span class="comment">//国际化相关功能</span></span><br><span class="line">            init<span class="constructor">MessageSource()</span>;</span><br><span class="line">            <span class="comment">//初始化事件派发器；</span></span><br><span class="line">            init<span class="constructor">ApplicationEventMulticaster()</span>;</span><br><span class="line">            <span class="comment">// 提供给子容器类，供子容器去实例化其他的特殊的Bean</span></span><br><span class="line">            on<span class="constructor">Refresh()</span>;</span><br><span class="line">            <span class="comment">// 处理容器中已有的ApplicationListener</span></span><br><span class="line">            register<span class="constructor">Listeners()</span>;</span><br><span class="line">            <span class="comment">//初始化容器中剩余的单实例bean</span></span><br><span class="line">            finish<span class="constructor">BeanFactoryInitialization(<span class="params">beanFactory</span>)</span>;</span><br><span class="line">            <span class="comment">//最后一步</span></span><br><span class="line">            finish<span class="constructor">Refresh()</span>;</span><br><span class="line">        </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
@@ -436,6 +537,8 @@
             </div>
         </section>
         <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/11/03/0124.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E6%9C%80%E5%A4%A7%E8%B7%AF%E5%BE%84%E5%92%8C/">0124.二叉树的最大路径和</a>
             
             
             <a class="next" rel="next" href="/2020/11/02/0563.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9D%A1%E5%BA%A6/">0563.二叉树的坡度</a>
