@@ -209,7 +209,7 @@
 </ul>
 <p>​         我们的项目需要连接多个数据库，而且不同的客户在每次访问中根据需要会去访问不同的数据库。这种模式让我们可以根据客户的需求能够动态切换不同的数据源。</p>
 <ul>
-<li>适配器模式 :Spring AOP 的增强或通知(Advice)使用到了适配器模式，与之相关的接口是<code>AdvisorAdapter</code>，Spring预定义的通知要通过对应的适配器，适配成 MethodInterceptor接口(方法拦截器)类型的对象。 <code>spring MVC </code>DispatcherServlet<code>根据请求信息调用</code>HandlerMapping<code>，解析请求对应的 </code>Handler<code>。解析到对应的 </code>Handler<code>（也就是我们平常说的 </code>Controller<code> 控制器）后，开始由</code>HandlerAdapter<code> 适配器处理。</code>HandlerAdapter<code> 作为期望接口，具体的适配器实现类用于对目标类进行适配，</code>Controller` 作为需要适配的类。</li>
+<li>适配器模式 :Spring AOP 的增强或通知(Advice)使用到了适配器模式，与之相关的接口是<code>AdvisorAdapter</code>，Spring预定义的通知要通过对应的适配器，适配成 MethodInterceptor接口(方法拦截器)类型的对象。 spring MVC <code>DispatcherServlet</code> 根据请求信息调用 <code>HandlerMapping</code>，解析请求对应的 <code>Handler</code>。解析到对应的 <code>Handler</code>（也就是我们平常说的 <code>Controller</code> 控制器）后，开始由<code>HandlerAdapter</code> 适配器处理。<code>HandlerAdapter</code> 作为期望接口，具体的适配器实现类用于对目标类进行适配，<code>Controller</code> 作为需要适配的类。</li>
 <li>观察者模式: Spring 事件驱动模型就是观察者模式很经典的一个应用。</li>
 </ul>
 <p>观察者模式：</p>
