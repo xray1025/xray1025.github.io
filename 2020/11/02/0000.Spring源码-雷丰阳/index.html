@@ -18,7 +18,7 @@
 
 
 
-    <link rel="icon" href="/image/mamba_favicon.ico">
+    <link rel="icon" href="/image/favicon.ico">
 
 
 
@@ -445,8 +445,8 @@
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 初始化和生命周期有关的后置处理器；LifecycleProcessor，如果容器中没有指定处理就创建一个DefaultLifecycleProcessor加入到容器。</span><br><span class="line"><span class="number">2.</span> 获取容器中所有的LifecycleProcessor回调onRefresh()方法。</span><br><span class="line"><span class="number">3.</span> 发布容器刷新完成事件ContextRefreshedEvent。</span><br></pre></td></tr></table></figure>
 
 <h3 id="ConfigurationClassPostProcessor处理-Configuration的过程："><a href="#ConfigurationClassPostProcessor处理-Configuration的过程：" class="headerlink" title="ConfigurationClassPostProcessor处理@Configuration的过程："></a>ConfigurationClassPostProcessor处理@Configuration的过程：</h3><ol>
-<li>先从主从中心取出所有的BeanDefinition。依次判断，若一个BeanDefinition是被@Configuration标注的，spring将其标记为FullMode，否则若一个BeanDefinition没有被@Configuration标注，但有被@Bean标注的方法，spring将其标记为LightMode。筛选出所有候选配置BeanDefinition（FullMode和LightMode）</li>
-<li>创建一个ConfigurationClassParser，调用parse方法解析每一个配置类。<ol>
+<li>先从主从中心取出所有的 BeanDefinition。依次判断，若一个 BeanDefinition 是被 @Configuration 标注的，spring 将其标记为 FullMode，否则若一个 BeanDefinition 没有被 @Configuration 标注，但有被 @Bean 标注的方法，spring 将其标记为 LightMode。筛选出所有候选配置BeanDefinition（FullMode和LightMode）</li>
+<li>创建一个 ConfigurationClassParser，调用 parse 方法解析每一个配置类。<ol>
 <li>解析@PropertySources,将解析结果设置到Environment</li>
 <li>利用ComponentScanAnnotationParser，将@ComponentScans标签解析成BeanDefinitionHolder。再迭代解析BeanDefinitionHolder</li>
 <li>解析@Import，@ImportResource</li>

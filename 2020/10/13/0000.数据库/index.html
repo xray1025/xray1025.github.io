@@ -18,7 +18,7 @@
 
 
 
-    <link rel="icon" href="/image/mamba_favicon.ico">
+    <link rel="icon" href="/image/favicon.ico">
 
 
 
@@ -200,8 +200,7 @@
         </header>
 
         <div class="post-content">
-            <h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><p>（本笔记不能代替《高性能MySQL》，笔记中缺少了大量辅助理解的话和例子，缺少了很多信息量）</p>
-<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590509208-c55e311d-4d15-4bd8-8b43-5bec5a1c2193.png" alt="image"></p>
+            <h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590509208-c55e311d-4d15-4bd8-8b43-5bec5a1c2193.png" alt="image"></p>
 <h2 id="一、MySQL架构"><a href="#一、MySQL架构" class="headerlink" title="一、MySQL架构"></a>一、MySQL架构</h2><p>和其它数据库相比，MySQL有点与众不同，它的架构可以在多种不同场景中应用并发挥良好作用。主要体现在存储引擎的架构上，<strong>插件式的存储引擎架构将查询处理和其它的系统任务以及数据的存储提取相分离</strong>。这种架构可以根据业务的需求和实际需要选择合适的存储引擎。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590539775-66b802ba-2c1c-4c50-9cd0-a41eb54578e5.png" alt="image"></p>
 <ul>
@@ -2040,7 +2039,7 @@
 <figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Mysql&gt; <span class="keyword">show</span> status ——显示状态信息（扩展<span class="keyword">show</span> status <span class="keyword">like</span> ‘XXX’）</span><br><span class="line">Mysql&gt; <span class="keyword">show</span> variables ——显示系统变量（扩展<span class="keyword">show</span> variables <span class="keyword">like</span> ‘XXX’）</span><br><span class="line">Mysql&gt; <span class="keyword">show</span> innodb status ——显示InnoDB存储引擎的状态</span><br><span class="line">Mysql&gt; <span class="keyword">show</span> processlist ——查看当前<span class="keyword">SQL</span>执行，包括执行状态、是否锁表等</span><br><span class="line">Shell&gt; mysqladmin variables -u username -p <span class="keyword">password</span>——显示系统变量</span><br><span class="line">Shell&gt; mysqladmin extended-status -u username -p <span class="keyword">password</span>——显示状态信息</span><br></pre></td></tr></table></figure>
 
 <h5 id="Explain-执行计划"><a href="#Explain-执行计划" class="headerlink" title="Explain(执行计划)"></a>Explain(执行计划)</h5><p>是什么：使用 <strong>Explain</strong> 关键字可以模拟优化器执行SQL查询语句，从而知道 MySQL 是如何处理你的 SQL 语句的。分析你的查询语句或是表结构的性能瓶颈</p>
-<p>能干吗：</p>
+<p>能干什么：</p>
 <ul>
 <li>表的读取顺序</li>
 <li>数据读取操作的操作类型</li>

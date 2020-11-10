@@ -18,7 +18,7 @@
 
 
 
-    <link rel="icon" href="/image/mamba_favicon.ico">
+    <link rel="icon" href="/image/favicon.ico">
 
 
 
@@ -235,7 +235,7 @@
 <li>事务管理：Spring 提供一个持续的事务管理接口，可以扩展到上至本地事务下至全局事务（JTA）。</li>
 <li>异常处理：Spring 提供方便的API把具体技术相关的异常（比如由JDBC，Hibernate or JDO抛出的）转化为一致的unchecked 异常。</li>
 </ul>
-<h1 id="3、Spring-IOC-amp-AOP"><a href="#3、Spring-IOC-amp-AOP" class="headerlink" title="3、Spring IOC &amp; AOP"></a>3、Spring IOC &amp; AOP</h1><h2 id="IoC"><a href="#IoC" class="headerlink" title="IoC"></a>IoC</h2><p>IoC（Inverse of Control:控制反转）是一种<strong>设计思想</strong>，就是 <strong>将原本在程序中手动创建对象的控制权，交由Spring框架来管理。</strong> IoC 在其他语言中也有应用，并非 Spring 特有。 <strong>IoC 容器是 Spring 用来实现 IoC 的载体， IoC 容器实际上就是个Map（key，value）,Map 中存放的是各种对象。</strong></p>
+<h1 id="3、Spring-IOC-amp-AOP"><a href="#3、Spring-IOC-amp-AOP" class="headerlink" title="3、Spring IOC &amp; AOP"></a>3、Spring IOC &amp; AOP</h1><h2 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h2><p>IoC（Inverse of Control:控制反转）是一种<strong>设计思想</strong>，就是 <strong>将原本在程序中手动创建对象的控制权，交由Spring框架来管理。</strong> IoC 在其他语言中也有应用，并非 Spring 特有。 <strong>IoC 容器是 Spring 用来实现 IoC 的载体， IoC 容器实际上就是个Map（key，value）,Map 中存放的是各种对象。</strong></p>
 <p>将对象之间的相互依赖关系交给 IoC 容器来管理，并由 IoC 容器完成对象的注入。这样可以很大程度上简化应用的开发，把应用从复杂的依赖关系中解放出来。 <strong>IoC 容器就像是一个工厂一样，当需要创建一个对象的时候，只需要配置好配置文件/注解即可，完全不用考虑对象是如何被创建出来的。</strong> 在实际项目中一个 Service 类可能有几百甚至上千个类作为它的底层，假如需要实例化这个 Service，可能要每次都要搞清这个 Service 所有底层类的构造函数。如果利用 IoC 的话，只需要配置好，然后在需要的地方引用就行了，这大大增加了项目的可维护性且降低了开发难度。</p>
 <p><strong>Spring IoC的初始化过程：</strong></p>
 <p><strong><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015160750.png" alt="image.png"></strong></p>

@@ -1313,7 +1313,7 @@
 
 <ul>
 <li>时间复杂度：O(n)。</li>
-<li>空间复杂度：O(<em>n</em>)。</li>
+<li>空间复杂度：O(n)。</li>
 </ul>
 ]]></content>
       <categories>
@@ -2108,13 +2108,11 @@
 <p>能不能生产一次消费多次呢？</p>
 <p>使用pub/sub主题订阅者模式，可以实现1:N的消息队列。</p>
 <h1 id="6、什么是缓存穿透？如何避免？什么是缓存雪崩？何如避免？"><a href="#6、什么是缓存穿透？如何避免？什么是缓存雪崩？何如避免？" class="headerlink" title="6、什么是缓存穿透？如何避免？什么是缓存雪崩？何如避免？"></a>6、什么是缓存穿透？如何避免？什么是缓存雪崩？何如避免？</h1><ul>
-<li><h2 id="穿透、雪崩、击穿的思维导图"><a href="#穿透、雪崩、击穿的思维导图" class="headerlink" title="穿透、雪崩、击穿的思维导图"></a>穿透、雪崩、击穿的思维导图</h2></li>
+<li><h2 id="穿透、雪崩、击穿的思维导图"><a href="#穿透、雪崩、击穿的思维导图" class="headerlink" title="穿透、雪崩、击穿的思维导图"></a>穿透、雪崩、击穿的思维导图</h2><p>​    </p>
+<p>  <img src="https://cdn.nlark.com/yuque/0/2020/svg/1200640/1587200664360-7c300f02-d01c-4559-899a-9cb66430a32a.svg" alt="img"></p>
+</li>
 </ul>
-<pre><code>![img](https://cdn.nlark.com/yuque/0/2020/svg/1200640/1587200664360-7c300f02-d01c-4559-899a-9cb66430a32a.svg)
-
-
-
-## 缓存“穿透”是什么
+<pre><code>## 缓存“穿透”是什么
 
 穿透：指查询一个**不存在**的数据，由于缓存中没有，就会被动写，从数据库中查询数据，数据库中也不存在这个数据，就无法写入缓存。这导致每次查询这个不存在的数据时，都要去DB中去查询，缓存失去了它的意义。
 
@@ -2229,24 +2227,22 @@
 
 <h2 id="工具命令"><a href="#工具命令" class="headerlink" title="工具命令"></a>工具命令</h2><figure class="highlight vala"><table><tr><td class="code"><pre><span class="line"><span class="meta">#redis-server：Redis 服务器的 daemon 启动程序</span></span><br><span class="line"><span class="meta">#redis-cli：Redis 命令行操作工具。当然，你也可以用 telnet 根据其纯文本协议来操作</span></span><br><span class="line"><span class="meta">#redis-benchmark：Redis 性能测试工具，测试 Redis 在你的系统及你的配置下的读写性能</span></span><br><span class="line">$redis-benchmark -n <span class="number">100000</span> –c <span class="number">50</span></span><br><span class="line"><span class="meta">#模拟同时由 50 个客户端发送 100000 个 SETs/GETs 查询</span></span><br><span class="line"><span class="meta">#redis-check-aof：更新日志检查</span></span><br><span class="line"><span class="meta">#redis-check-dump：本地数据库检查</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="8、Redis单例、主从模式、sentinel以及集群的配置方式及优缺点对比"><a href="#8、Redis单例、主从模式、sentinel以及集群的配置方式及优缺点对比" class="headerlink" title="8、Redis单例、主从模式、sentinel以及集群的配置方式及优缺点对比"></a>8、Redis单例、主从模式、sentinel以及集群的配置方式及优缺点对比</h1><h1 id="9、为什么Redis-单线程却能支撑高并发？"><a href="#9、为什么Redis-单线程却能支撑高并发？" class="headerlink" title="9、为什么Redis 单线程却能支撑高并发？"></a>9、为什么Redis 单线程却能支撑高并发？</h1><p>1.redis是基于内存的，内存的读写速度非常快（纯内存）。</p>
+<h1 id="8、为什么Redis-单线程却能支撑高并发？"><a href="#8、为什么Redis-单线程却能支撑高并发？" class="headerlink" title="8、为什么Redis 单线程却能支撑高并发？"></a>8、为什么Redis 单线程却能支撑高并发？</h1><p>1.redis是基于内存的，内存的读写速度非常快（纯内存）。</p>
 <p>2.redis是单线程的，省去了很多上下文切换线程的时间（避免线程切换和竞态消耗）。</p>
 <p>3.Redis全程使用hash结构，读取速度快，还有一些特殊的数据结构，对数据存储进行了优化，如压缩表，对短数据进行压缩存储，再如，跳表，使用有序的数据结构加快读取的速度。</p>
 <p>4.redis使用多路复用技术，可以处理并发的连接（非阻塞IO）。</p>
 <p>多路I/O复用模型是利用select、poll、epoll可以同时监察多个流的IO事件的能力，在空闲的时候，会把当前线程阻塞掉，当有一个或者多个流的IO事件时，就从阻塞状态中唤醒，于是程序就会轮训一遍所有的流（epoll是只轮训发出了事件的流），并且只一次按顺序的处理就绪的流，这种做法就避免了大量的无用操作，这里的“多路”是指多个网络连接，“复用”是指复用同一个线程，采用多路IO复用技术可以让单个线程高效的处理多个连接请求</p>
-<h1 id="10、Redis常见性能问题和解决方案："><a href="#10、Redis常见性能问题和解决方案：" class="headerlink" title="10、Redis常见性能问题和解决方案："></a>10、Redis常见性能问题和解决方案：</h1><p>1).Master写内存快照，save命令调度rdbSave函数，会阻塞主线程的工作，当快照比较大时对性能影响是非常大的，会间断性暂停服务，所以Master最好不要写内存快照。</p>
+<h1 id="9、Redis常见性能问题和解决方案："><a href="#9、Redis常见性能问题和解决方案：" class="headerlink" title="9、Redis常见性能问题和解决方案："></a>9、Redis常见性能问题和解决方案：</h1><p>1).Master写内存快照，save命令调度rdbSave函数，会阻塞主线程的工作，当快照比较大时对性能影响是非常大的，会间断性暂停服务，所以Master最好不要写内存快照。</p>
 <p>2).Master AOF持久化，如果不重写AOF文件，这个持久化方式对性能的影响是最小的，但是AOF文件会不断增大，AOF文件过大会影响Master重启的恢复速度。Master最好不要做任何持久化工作，包括内存快照和AOF日志文件，特别是不要启用内存快照做持久化，如果数据比较关键，某个Slave开启AOF备份数据，策略为每秒同步一次。</p>
 <p>3).Master调用BGREWRITEAOF重写AOF文件，AOF在重写的时候会占大量的CPU和内存资源，导致服务load过高，出现短暂服务暂停现象。</p>
 <p>4).Redis主从复制的性能问题，为了主从复制的速度和连接的稳定性，Slave和Master最好在同一个局域网内</p>
-<p>Redis性能分析相关问题，限于篇幅，给出文章链接：</p>
-<p><a href="http://mp.weixin.qq.com/s?__biz=MzI4Njc5NjM1NQ==&mid=2247491923&idx=1&sn=09526c6ee214ee4179500d13282ed5f0&chksm=ebd5de7fdca25769d0c6b7af5b51b13c7238c72cbf35a35a01173344b6ae5d69985334bbb86d&scene=21#wechat_redirect">Redis 性能问题分析（好文推荐）</a></p>
-<h3 id="11、Redis的并发竞争问题如何解决"><a href="#11、Redis的并发竞争问题如何解决" class="headerlink" title="11、Redis的并发竞争问题如何解决?"></a>11、Redis的并发竞争问题如何解决?</h3><p>Redis为单进程单线程模式，采用队列模式将并发访问变为串行访问。Redis本身没有锁的概念，Redis对于多个客户端连接并不存在竞争，但是在Jedis客户端对Redis进行并发访问时会发生连接超时、数据转换错误、阻塞、客户端关闭连接等问题，这些问题均是由于客户端连接混乱造成。对此有2种解决方法：</p>
+<h1 id="10、Redis的并发竞争问题如何解决"><a href="#10、Redis的并发竞争问题如何解决" class="headerlink" title="10、Redis的并发竞争问题如何解决?"></a>10、Redis的并发竞争问题如何解决?</h1><p>Redis为单进程单线程模式，采用队列模式将并发访问变为串行访问。Redis本身没有锁的概念，Redis对于多个客户端连接并不存在竞争，但是在Jedis客户端对Redis进行并发访问时会发生连接超时、数据转换错误、阻塞、客户端关闭连接等问题，这些问题均是由于客户端连接混乱造成。对此有2种解决方法：</p>
 <ul>
 <li>客户端角度，为保证每个客户端间正常有序与Redis进行通信，对连接进行池化，同时对客户端读写Redis操作采用内部锁synchronized。</li>
 <li>服务器角度，利用setnx实现锁。</li>
 </ul>
 <p>注：对于第一种，需要应用程序自己处理资源的同步，可以使用的方法比较通俗，可以使用synchronized也可以使用lock；第二种需要用到Redis的setnx命令，但是需要注意一些问题。</p>
-<h1 id="12、说说Redis的内存淘汰策略"><a href="#12、说说Redis的内存淘汰策略" class="headerlink" title="12、说说Redis的内存淘汰策略"></a>12、说说Redis的内存淘汰策略</h1><p><strong>redis 提供 6种数据淘汰策略：</strong></p>
+<h1 id="11、说说Redis的内存淘汰策略"><a href="#11、说说Redis的内存淘汰策略" class="headerlink" title="11、说说Redis的内存淘汰策略"></a>11、说说Redis的内存淘汰策略</h1><p><strong>redis 提供 6种数据淘汰策略：</strong></p>
 <ol>
 <li><strong>volatile-lru</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选最近最少使用的数据淘汰</li>
 <li><strong>volatile-ttl</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选将要过期的数据淘汰</li>
@@ -2260,32 +2256,14 @@
 <li><strong>volatile-lfu</strong>：从已设置过期时间的数据集(server.db[i].expires)中挑选最不经常使用的数据淘汰</li>
 <li><strong>allkeys-lfu</strong>：当内存不足以容纳新写入数据时，在键空间中，移除最不经常使用的key</li>
 </ol>
-<h1 id="13、Redis最适合的场景"><a href="#13、Redis最适合的场景" class="headerlink" title="13、Redis最适合的场景"></a>13、Redis最适合的场景</h1><p>Redis最适合所有数据in-momory的场景，虽然Redis也提供持久化功能，但实际更多的是一个disk-backed的功能，跟传统意义上的持久化有比较大的差别，那么可能大家就会有疑问，似乎Redis更像一个加强版的Memcached，那么何时使用Memcached，何时使用Redis呢?</p>
-<p>如果简单地比较Redis与Memcached的区别，大多数都会得到以下观点：</p>
-<ul>
-<li>Redis不仅仅支持简单的k/v类型的数据，同时还提供list，set，zset，hash等数据结构的存储。</li>
-<li>Redis支持数据的备份，即master-slave模式的数据备份。</li>
-<li>Redis支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用。</li>
-</ul>
-<h2 id="会话缓存（Session-Cache）"><a href="#会话缓存（Session-Cache）" class="headerlink" title="会话缓存（Session Cache）"></a>会话缓存（Session Cache）</h2><p>最常用的一种使用Redis的情景是会话缓存（session cache）。用Redis缓存会话比其他存储（如Memcached）的优势在于：Redis提供持久化。当维护一个不是严格要求一致性的缓存时，如果用户的购物车信息全部丢失，大部分人都会不高兴的，现在，他们还会这样吗？</p>
-<p>幸运的是，随着 Redis 这些年的改进，很容易找到怎么恰当的使用Redis来缓存会话的文档。甚至广为人知的商业平台Magento也提供Redis的插件。</p>
-<h2 id="全页缓存（FPC）"><a href="#全页缓存（FPC）" class="headerlink" title="全页缓存（FPC）"></a>全页缓存（FPC）</h2><p>除基本的会话token之外，Redis还提供很简便的FPC平台。回到一致性问题，即使重启了Redis实例，因为有磁盘的持久化，用户也不会看到页面加载速度的下降，这是一个极大改进，类似PHP本地FPC。</p>
-<p>再次以Magento为例，Magento提供一个插件来使用Redis作为全页缓存后端。</p>
-<p>此外，对WordPress的用户来说，Pantheon有一个非常好的插件 wp-redis，这个插件能帮助以最快速度加载曾浏览过的页面。</p>
-<h2 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h2><p>Reids在内存存储引擎领域的一大优点是提供 list 和 set 操作，这使得Redis能作为一个很好的消息队列平台来使用。Redis作为队列使用的操作，就类似于本地程序语言（如Python）对 list 的 push/pop 操作。</p>
-<p>如果快速的在Google中搜索“Redis queues”，马上就能找到大量的开源项目，这些项目的目的就是利用Redis创建非常好的后端工具，以满足各种队列需求。例如，Celery有一个后台就是使用Redis作为broker，可以从这里去查看。</p>
-<h2 id="排行榜-计数器"><a href="#排行榜-计数器" class="headerlink" title="排行榜/计数器"></a>排行榜/计数器</h2><p>Redis在内存中对数字进行递增或递减的操作实现的非常好。集合（Set）和有序集合（Sorted Set）也使得在执行这些操作的时候变的非常简单，Redis只是正好提供了这两种数据结构。所以，要从排序集合中获取到排名最靠前的10个用户–称之为“user_scores”。</p>
-<p>当然，这是假定是根据用户的分数做递增的排序。如果想返回用户及用户的分数，需要这样执行：ZRANGE user_scores 0 10 WITHSCORES</p>
-<p>Agora Games就是一个很好的例子，用Ruby实现的，它的排行榜就是使用Redis来存储数据的。</p>
-<h2 id="发布-订阅"><a href="#发布-订阅" class="headerlink" title="发布/订阅"></a>发布/订阅</h2><p>最后（但肯定不是最不重要的）是Redis的发布/订阅功能。发布/订阅的使用场景确实非常多。人们在社交网络连接中使用，还可作为基于发布/订阅的脚本触发器，甚至用Redis的发布/订阅功能来建立聊天系统！</p>
-<h1 id="1、为什么要用-redis-为什么要用缓存？"><a href="#1、为什么要用-redis-为什么要用缓存？" class="headerlink" title="1、为什么要用 redis/为什么要用缓存？"></a>1、为什么要用 redis/为什么要用缓存？</h1><p>主要从“高性能”和“高并发”这两点来看待这个问题</p>
+<h1 id="12、为什么要用-redis-为什么要用缓存？"><a href="#12、为什么要用-redis-为什么要用缓存？" class="headerlink" title="12、为什么要用 redis/为什么要用缓存？"></a>12、为什么要用 redis/为什么要用缓存？</h1><p>主要从“高性能”和“高并发”这两点来看待这个问题</p>
 <p><strong>高性能：</strong></p>
 <p>假如用户第一次访问数据库中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据存在缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。如果数据库中的对应数据改变的之后，同步改变缓存中相应的数据即可！</p>
 <p><strong>高并发：</strong></p>
 <p>直接操作缓存能够承受的请求是远远大于直接访问数据库的，可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。</p>
-<h1 id="2、为什么要用-redis-而不用-map-guava-做缓存"><a href="#2、为什么要用-redis-而不用-map-guava-做缓存" class="headerlink" title="2、为什么要用 redis 而不用 map/guava 做缓存?"></a>2、为什么要用 redis 而不用 map/guava 做缓存?</h1><p>缓存分为本地缓存和分布式缓存。以 Java 为例，使用自带的 map 或者 guava 实现的是本地缓存，最主要的特点是轻量以及快速，生命周期随着 jvm 的销毁而结束，并且在多实例的情况下，每个实例都需要各自保存一份缓存，缓存不具有一致性。</p>
+<h1 id="13、为什么要用-redis-而不用-map-guava-做缓存"><a href="#13、为什么要用-redis-而不用-map-guava-做缓存" class="headerlink" title="13、为什么要用 redis 而不用 map/guava 做缓存?"></a>13、为什么要用 redis 而不用 map/guava 做缓存?</h1><p>缓存分为本地缓存和分布式缓存。以 Java 为例，使用自带的 map 或者 guava 实现的是本地缓存，最主要的特点是轻量以及快速，生命周期随着 jvm 的销毁而结束，并且在多实例的情况下，每个实例都需要各自保存一份缓存，缓存不具有一致性。</p>
 <p>使用 redis 或 memcached 之类的称为分布式缓存，在多实例的情况下，各实例共用一份缓存数据，缓存具有一致性。缺点是需要保持 redis 或 memcached服务的高可用，整个程序架构上较为复杂。</p>
-<h1 id="3、redis-的线程模型"><a href="#3、redis-的线程模型" class="headerlink" title="3、redis 的线程模型"></a>3、redis 的线程模型</h1><p>redis 内部使用文件事件处理器 <code>file event handler</code>，这个文件事件处理器是单线程的，所以 redis 才叫做单线程的模型。它采用 IO 多路复用机制同时监听多个 socket，根据 socket 上的事件来选择对应的事件处理器进行处理。</p>
+<h1 id="14、redis-的线程模型"><a href="#14、redis-的线程模型" class="headerlink" title="14、redis 的线程模型"></a>14、redis 的线程模型</h1><p>redis 内部使用文件事件处理器 <code>file event handler</code>，这个文件事件处理器是单线程的，所以 redis 才叫做单线程的模型。它采用 IO 多路复用机制同时监听多个 socket，根据 socket 上的事件来选择对应的事件处理器进行处理。</p>
 <p>文件事件处理器的结构包含 4 个部分：</p>
 <ul>
 <li>多个 socket</li>
@@ -2294,7 +2272,7 @@
 <li>事件处理器（连接应答处理器、命令请求处理器、命令回复处理器）</li>
 </ul>
 <p>多个 socket 可能会并发产生不同的操作，每个操作对应不同的文件事件，但是 IO 多路复用程序会监听多个 socket，会将 socket 产生的事件放入队列中排队，事件分派器每次从队列中取出一个事件，把该事件交给对应的事件处理器进行处理。</p>
-<h1 id="4、redis-和-memcached-的区别"><a href="#4、redis-和-memcached-的区别" class="headerlink" title="4、redis 和 memcached 的区别"></a>4、redis 和 memcached 的区别</h1><ol>
+<h1 id="15、redis-和-memcached-的区别"><a href="#15、redis-和-memcached-的区别" class="headerlink" title="15、redis 和 memcached 的区别"></a>15、redis 和 memcached 的区别</h1><ol>
 <li><strong>redis支持更丰富的数据类型（支持更复杂的应用场景）</strong>：Redis不仅仅支持简单的k/v类型的数据，同时还提供list，set，zset，hash等数据结构的存储。memcache支持简单的数据类型，String。</li>
 <li><strong>Redis支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用,而Memecache把数据全部存在内存之中。</strong></li>
 <li><strong>集群模式</strong>：memcached没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据；但是 redis 目前是原生支持 cluster 模式的.</li>
@@ -2390,7 +2368,7 @@
 <li>事务管理：Spring 提供一个持续的事务管理接口，可以扩展到上至本地事务下至全局事务（JTA）。</li>
 <li>异常处理：Spring 提供方便的API把具体技术相关的异常（比如由JDBC，Hibernate or JDO抛出的）转化为一致的unchecked 异常。</li>
 </ul>
-<h1 id="3、Spring-IOC-amp-AOP"><a href="#3、Spring-IOC-amp-AOP" class="headerlink" title="3、Spring IOC &amp; AOP"></a>3、Spring IOC &amp; AOP</h1><h2 id="IoC"><a href="#IoC" class="headerlink" title="IoC"></a>IoC</h2><p>IoC（Inverse of Control:控制反转）是一种<strong>设计思想</strong>，就是 <strong>将原本在程序中手动创建对象的控制权，交由Spring框架来管理。</strong> IoC 在其他语言中也有应用，并非 Spring 特有。 <strong>IoC 容器是 Spring 用来实现 IoC 的载体， IoC 容器实际上就是个Map（key，value）,Map 中存放的是各种对象。</strong></p>
+<h1 id="3、Spring-IOC-amp-AOP"><a href="#3、Spring-IOC-amp-AOP" class="headerlink" title="3、Spring IOC &amp; AOP"></a>3、Spring IOC &amp; AOP</h1><h2 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h2><p>IoC（Inverse of Control:控制反转）是一种<strong>设计思想</strong>，就是 <strong>将原本在程序中手动创建对象的控制权，交由Spring框架来管理。</strong> IoC 在其他语言中也有应用，并非 Spring 特有。 <strong>IoC 容器是 Spring 用来实现 IoC 的载体， IoC 容器实际上就是个Map（key，value）,Map 中存放的是各种对象。</strong></p>
 <p>将对象之间的相互依赖关系交给 IoC 容器来管理，并由 IoC 容器完成对象的注入。这样可以很大程度上简化应用的开发，把应用从复杂的依赖关系中解放出来。 <strong>IoC 容器就像是一个工厂一样，当需要创建一个对象的时候，只需要配置好配置文件/注解即可，完全不用考虑对象是如何被创建出来的。</strong> 在实际项目中一个 Service 类可能有几百甚至上千个类作为它的底层，假如需要实例化这个 Service，可能要每次都要搞清这个 Service 所有底层类的构造函数。如果利用 IoC 的话，只需要配置好，然后在需要的地方引用就行了，这大大增加了项目的可维护性且降低了开发难度。</p>
 <p><strong>Spring IoC的初始化过程：</strong></p>
 <p><strong><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201015160750.png" alt="image.png"></strong></p>
@@ -2582,12 +2560,12 @@
   <entry>
     <title>设计模式</title>
     <url>/2020/08/24/0000.%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h2 id="0-设计模式"><a href="#0-设计模式" class="headerlink" title="0 设计模式"></a>0 设计模式</h2><pre><code>一套用来提高代码可复用性、可维护性、可读性、稳健性以及安全性的解决方案
+    <content><![CDATA[<h1 id="0-设计模式"><a href="#0-设计模式" class="headerlink" title="0 设计模式"></a>0 设计模式</h1><pre><code>一套用来提高代码可复用性、可维护性、可读性、稳健性以及安全性的解决方案
 
 本质是面向对象设计原则的实际应用</code></pre>
 <a id="more"></a>
 
-<h3 id="0-1-分类"><a href="#0-1-分类" class="headerlink" title="0.1 分类"></a>0.1 分类</h3><p><strong>创建型模式：</strong></p>
+<h2 id="0-1-分类"><a href="#0-1-分类" class="headerlink" title="0.1 分类"></a>0.1 分类</h2><p><strong>创建型模式：</strong></p>
 <ul>
 <li>单例模式<ul>
 <li>工厂模式</li>
@@ -2621,8 +2599,8 @@
 <li>职责链模式</li>
 <li>访问者模式</li>
 </ul>
-<h3 id="0-2-OOP七大原则"><a href="#0-2-OOP七大原则" class="headerlink" title="0.2 OOP七大原则"></a>0.2 OOP七大原则</h3><p><strong>开闭原则：</strong> 对扩展开放，对修改关闭；<br><strong>里氏替换原则：</strong> 继承必须确保超类拥有的性质在子类中仍然成立；<br><strong>依赖倒置原则：</strong> 面向接口编程，而不是面向实现编程；<br><strong>单一职责原则：</strong> 控制类的粒度大小，将对象解耦，提高内聚性；<br><strong>接口隔离原则：</strong> 为类建立需要的专用接口；<br><strong>迪米特法则：</strong> 只与直接朋友交谈；<br><strong>合成复用原则：</strong> 优先使用组合、聚合等关联关系，其次才考虑使用继承实现。</p>
-<h3 id="0-3-UML类图"><a href="#0-3-UML类图" class="headerlink" title="0.3 UML类图"></a>0.3 UML类图</h3><pre><code>UML（unified modeling language） 统一建模语言</code></pre>
+<h2 id="0-2-OOP七大原则"><a href="#0-2-OOP七大原则" class="headerlink" title="0.2 OOP七大原则"></a>0.2 OOP七大原则</h2><p><strong>开闭原则：</strong> 对扩展开放，对修改关闭；<br><strong>里氏替换原则：</strong> 继承必须确保超类拥有的性质在子类中仍然成立；<br><strong>依赖倒置原则：</strong> 面向接口编程，而不是面向实现编程；<br><strong>单一职责原则：</strong> 控制类的粒度大小，将对象解耦，提高内聚性；<br><strong>接口隔离原则：</strong> 为类建立需要的专用接口；<br><strong>迪米特法则：</strong> 只与直接朋友交谈；<br><strong>合成复用原则：</strong> 优先使用组合、聚合等关联关系，其次才考虑使用继承实现。</p>
+<h2 id="0-3-UML类图"><a href="#0-3-UML类图" class="headerlink" title="0.3 UML类图"></a>0.3 UML类图</h2><pre><code>UML（unified modeling language） 统一建模语言</code></pre>
 <ul>
 <li>note 注释</li>
 <li>class 类</li>
@@ -2637,7 +2615,7 @@
 <figure class="highlight fix"><table><tr><td class="code"><pre><span class="line"><span class="attr">泛化 </span>=<span class="string"> 实现 &gt; 组合 &gt; 聚合 &gt; 关联 &gt; 依赖</span></span><br></pre></td></tr></table></figure>
 
 <h1 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h1><h2 id="为什么用工厂模式"><a href="#为什么用工厂模式" class="headerlink" title="为什么用工厂模式"></a>为什么用工厂模式</h2><ul>
-<li><p><strong>工厂模式都需要依赖接口**</strong>，主体对象通过接口规定的方法获取对象**，具体的实现逻辑由实现类完成，当实现逻辑变化时只需要修改实现类即可，达到了解耦的目的</p>
+<li><p><strong>工厂模式都需要依赖接口</strong>，主体对象通过接口规定的方法获取对象，具体的实现逻辑由实现类完成，当实现逻辑变化时只需要修改实现类即可，达到了解耦的目的</p>
 </li>
 <li><p>降低重复代码，把创建过程统一管理方便维护</p>
 </li>
@@ -3726,7 +3704,7 @@
 <li>使用阶段包括主动引用和被动引用</li>
 <li>卸载，类所有的实例都已经被回收，加载该类的ClassLoader已经被回收，该类对应的java.lang.Class对象没有任何地方被引用，无法在任何地方通过反射访问该类的方法，jvm就会在方法区垃圾回收的时候对类进行卸载</li>
 </ul>
-<h4 id="说一下类加载器有哪些？"><a href="#说一下类加载器有哪些？" class="headerlink" title="说一下类加载器有哪些？"></a>说一下类加载器有哪些？</h4><p><img src="http://ww1.sinaimg.cn/large/0068QeGHgy1g7am11fbowj30hv072dg0.jpg" alt="双亲委派模型.png"></p>
+<h4 id="说一下类加载器有哪些？"><a href="#说一下类加载器有哪些？" class="headerlink" title="说一下类加载器有哪些？"></a>说一下类加载器有哪些？</h4><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201105184829.jpeg" alt="双亲委派模型.png"></p>
 <ul>
 <li>启动类加载器：负责加载JRE的核心类库，如jre目标下的rt.jar,charsets.jar等.</li>
 <li>扩展类加载器：负责加载JRE扩展目录ext中JAR类包</li>
@@ -4457,10 +4435,6 @@
 <p>多路复用IO</p>
 <p>信号量</p>
 <p>AIO</p>
-<p>Linux中的</p>
-<h2 id="LInux-中CPU占用率过高该用什么指令进行查看"><a href="#LInux-中CPU占用率过高该用什么指令进行查看" class="headerlink" title="LInux 中CPU占用率过高该用什么指令进行查看"></a>LInux 中CPU占用率过高该用什么指令进行查看</h2><p>top</p>
-<h2 id="如何杀死进程"><a href="#如何杀死进程" class="headerlink" title="如何杀死进程"></a>如何杀死进程</h2><p>kill</p>
-<p>killall</p>
 <h1 id="一、概述"><a href="#一、概述" class="headerlink" title="一、概述"></a>一、概述</h1><h2 id="基本特征"><a href="#基本特征" class="headerlink" title="基本特征"></a>基本特征</h2><ol>
 <li>并发</li>
 </ol>
@@ -5823,8 +5797,6 @@
 <li><img src="https://camo.githubusercontent.com/8187903788bbfb90978169f20fa4fd41e094bf22/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f32373163653038662d633132342d343735662d623439302d6265343466656463366432652e706e67" alt="image"></li>
 </ul>
 </li>
-<li><p><a href="#LbxNj">一</a></p>
-</li>
 </ul>
 ]]></content>
       <categories>
@@ -6709,8 +6681,7 @@
   <entry>
     <title>数据库</title>
     <url>/2020/10/13/0000.%E6%95%B0%E6%8D%AE%E5%BA%93/</url>
-    <content><![CDATA[<h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><p>（本笔记不能代替《高性能MySQL》，笔记中缺少了大量辅助理解的话和例子，缺少了很多信息量）</p>
-<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590509208-c55e311d-4d15-4bd8-8b43-5bec5a1c2193.png" alt="image"></p>
+    <content><![CDATA[<h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590509208-c55e311d-4d15-4bd8-8b43-5bec5a1c2193.png" alt="image"></p>
 <h2 id="一、MySQL架构"><a href="#一、MySQL架构" class="headerlink" title="一、MySQL架构"></a>一、MySQL架构</h2><p>和其它数据库相比，MySQL有点与众不同，它的架构可以在多种不同场景中应用并发挥良好作用。主要体现在存储引擎的架构上，<strong>插件式的存储引擎架构将查询处理和其它的系统任务以及数据的存储提取相分离</strong>。这种架构可以根据业务的需求和实际需要选择合适的存储引擎。</p>
 <p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/1590590539775-66b802ba-2c1c-4c50-9cd0-a41eb54578e5.png" alt="image"></p>
 <ul>
@@ -8549,7 +8520,7 @@
 <figure class="highlight pgsql"><table><tr><td class="code"><pre><span class="line">Mysql&gt; <span class="keyword">show</span> status ——显示状态信息（扩展<span class="keyword">show</span> status <span class="keyword">like</span> ‘XXX’）</span><br><span class="line">Mysql&gt; <span class="keyword">show</span> variables ——显示系统变量（扩展<span class="keyword">show</span> variables <span class="keyword">like</span> ‘XXX’）</span><br><span class="line">Mysql&gt; <span class="keyword">show</span> innodb status ——显示InnoDB存储引擎的状态</span><br><span class="line">Mysql&gt; <span class="keyword">show</span> processlist ——查看当前<span class="keyword">SQL</span>执行，包括执行状态、是否锁表等</span><br><span class="line">Shell&gt; mysqladmin variables -u username -p <span class="keyword">password</span>——显示系统变量</span><br><span class="line">Shell&gt; mysqladmin extended-status -u username -p <span class="keyword">password</span>——显示状态信息</span><br></pre></td></tr></table></figure>
 
 <h5 id="Explain-执行计划"><a href="#Explain-执行计划" class="headerlink" title="Explain(执行计划)"></a>Explain(执行计划)</h5><p>是什么：使用 <strong>Explain</strong> 关键字可以模拟优化器执行SQL查询语句，从而知道 MySQL 是如何处理你的 SQL 语句的。分析你的查询语句或是表结构的性能瓶颈</p>
-<p>能干吗：</p>
+<p>能干什么：</p>
 <ul>
 <li>表的读取顺序</li>
 <li>数据读取操作的操作类型</li>
@@ -13209,8 +13180,8 @@
 <figure class="highlight angelscript"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> 初始化和生命周期有关的后置处理器；LifecycleProcessor，如果容器中没有指定处理就创建一个DefaultLifecycleProcessor加入到容器。</span><br><span class="line"><span class="number">2.</span> 获取容器中所有的LifecycleProcessor回调onRefresh()方法。</span><br><span class="line"><span class="number">3.</span> 发布容器刷新完成事件ContextRefreshedEvent。</span><br></pre></td></tr></table></figure>
 
 <h3 id="ConfigurationClassPostProcessor处理-Configuration的过程："><a href="#ConfigurationClassPostProcessor处理-Configuration的过程：" class="headerlink" title="ConfigurationClassPostProcessor处理@Configuration的过程："></a>ConfigurationClassPostProcessor处理@Configuration的过程：</h3><ol>
-<li>先从主从中心取出所有的BeanDefinition。依次判断，若一个BeanDefinition是被@Configuration标注的，spring将其标记为FullMode，否则若一个BeanDefinition没有被@Configuration标注，但有被@Bean标注的方法，spring将其标记为LightMode。筛选出所有候选配置BeanDefinition（FullMode和LightMode）</li>
-<li>创建一个ConfigurationClassParser，调用parse方法解析每一个配置类。<ol>
+<li>先从主从中心取出所有的 BeanDefinition。依次判断，若一个 BeanDefinition 是被 @Configuration 标注的，spring 将其标记为 FullMode，否则若一个 BeanDefinition 没有被 @Configuration 标注，但有被 @Bean 标注的方法，spring 将其标记为 LightMode。筛选出所有候选配置BeanDefinition（FullMode和LightMode）</li>
+<li>创建一个 ConfigurationClassParser，调用 parse 方法解析每一个配置类。<ol>
 <li>解析@PropertySources,将解析结果设置到Environment</li>
 <li>利用ComponentScanAnnotationParser，将@ComponentScans标签解析成BeanDefinitionHolder。再迭代解析BeanDefinitionHolder</li>
 <li>解析@Import，@ImportResource</li>
@@ -14538,7 +14509,10 @@
 
 <p>文中的formula被实现为一个匿名类的实例，该代码非常容易理解，6行代码实现了计算 sqrt(a * 100)。在下一节中，我们将会看到实现单方法接口的更简单的做法。</p>
 <p>译者注： 在Java中只有单继承，如果要让一个类赋予新的特性，通常是使用接口来实现，在C++中支持多继承，允许一个子类同时具有多个父类的接口与功能，在其他语言中，让一个类同时具有其他的可复用代码的方法叫做mixin。新的Java 8 的这个特新在编译器实现的角度上来说更加接近Scala的trait。 在C#中也有名为扩展方法的概念，允许给已存在的类型扩展方法，和Java 8的这个在语义上有差别。</p>
-<h1 id="二、Lambda-表达式"><a href="#二、Lambda-表达式" class="headerlink" title="二、Lambda 表达式"></a>二、Lambda 表达式</h1><p>首先看看在老版本的Java中是如何排列字符串的：</p>
+<h1 id="二、Lambda-表达式"><a href="#二、Lambda-表达式" class="headerlink" title="二、Lambda 表达式"></a>二、Lambda 表达式</h1><ul>
+<li>Spring的三级缓存</li>
+</ul>
+<p>首先看看在老版本的Java中是如何排列字符串的：</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; names = Arrays.asList(<span class="string">&quot;peter&quot;</span>, <span class="string">&quot;anna&quot;</span>, <span class="string">&quot;mike&quot;</span>, <span class="string">&quot;xenia&quot;</span>);</span><br><span class="line"></span><br><span class="line">Collections.sort(names, <span class="keyword">new</span> Comparator&lt;String&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compare</span><span class="params">(String a, String b)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> b.compareTo(a);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
 
 <p>只需要给静态方法 Collections.sort 传入一个List对象以及一个比较器来按指定顺序排列。通常做法都是创建一个匿名的比较器对象然后将其传递给sort方法。</p>
@@ -14552,7 +14526,10 @@
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Collections.sort(names, (a, b) -&gt; b.compareTo(a));</span><br></pre></td></tr></table></figure>
 
 <p>Java编译器可以自动推导出参数类型，所以你可以不用再写一次类型。接下来我们看看lambda表达式还能作出什么更方便的东西来</p>
-<h1 id="三、函数式接口"><a href="#三、函数式接口" class="headerlink" title="三、函数式接口"></a>三、函数式接口</h1><p>Lambda表达式是如何在java的类型系统中表示的呢？每一个lambda表达式都对应一个类型，通常是接口类型。而“函数式接口”是指仅仅只包含一个抽象方法的接口，每一个该类型的lambda表达式都会被匹配到这个抽象方法。因为 默认方法 不算抽象方法，所以你也可以给你的函数式接口添加默认方法。</p>
+<h1 id="三、函数式接口"><a href="#三、函数式接口" class="headerlink" title="三、函数式接口"></a>三、函数式接口</h1><ul>
+<li>Spring的ObjectFactory</li>
+</ul>
+<p>Lambda表达式是如何在java的类型系统中表示的呢？每一个lambda表达式都对应一个类型，通常是接口类型。而“函数式接口”是指仅仅只包含一个抽象方法的接口，每一个该类型的lambda表达式都会被匹配到这个抽象方法。因为 默认方法 不算抽象方法，所以你也可以给你的函数式接口添加默认方法。</p>
 <p>我们可以将lambda表达式当作任意只包含一个抽象方法的接口类型，确保你的接口一定达到这个要求，你只需要给你的接口添加 @FunctionalInterface 注解，编译器如果发现你标注了这个注解的接口有多于一个抽象方法的时候会报错的。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@FunctionalInterface</span></span><br><span class="line"><span class="class"><span class="keyword">interface</span> <span class="title">Converter</span>&lt;<span class="title">F</span>, <span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function">T <span class="title">convert</span><span class="params">(F from)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line">Converter&lt;String, Integer&gt; converter = (from) -&gt; Integer.valueOf(from);</span><br><span class="line">Integer converted = converter.convert(<span class="string">&quot;123&quot;</span>);</span><br><span class="line">System.out.println(converted);    <span class="comment">// 123</span></span><br></pre></td></tr></table></figure>
 
@@ -14801,5 +14778,575 @@
         <tag>Java</tag>
         <tag>Spring</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>0496. 下一个更大元素 I</title>
+    <url>/2020/11/10/0496.%20%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%9B%B4%E5%A4%A7%E5%85%83%E7%B4%A0%20I/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/next-greater-element-i/">https://leetcode-cn.com/problems/next-greater-element-i/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] nextGreaterElement(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2) &#123;</span><br><span class="line">        Stack&lt;Integer&gt; stack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[nums1.length];</span><br><span class="line">        HashMap&lt;Integer, Integer&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums2.length; i++)&#123;</span><br><span class="line">            <span class="keyword">while</span>(!stack.isEmpty() &amp;&amp; nums2[i] &gt; stack.peek())&#123;</span><br><span class="line">                map.put(stack.pop(), nums2[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            stack.push(nums2[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">while</span>(!stack.isEmpty())&#123;</span><br><span class="line">            map.put(stack.pop(), -<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums1.length; i++)&#123;</span><br><span class="line">            res[i] = map.get(nums1[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(M+N)，其中 M 和 N 分别是数组 nums1 和 nums2 的长度。</li>
+<li>空间复杂度：O(N)。我们在遍历 nums2 时，需要使用栈，以及哈希映射用来临时存储答案。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>ArrayList</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指Offer49.丑数</title>
+    <url>/2020/11/10/%E5%89%91%E6%8C%87Offer49.%E4%B8%91%E6%95%B0/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/chou-shu-lcof">https://leetcode-cn.com/problems/chou-shu-lcof</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">nthUglyNumber</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> a = <span class="number">0</span>, b = <span class="number">0</span>, c = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span>[] dp = <span class="keyword">new</span> <span class="keyword">int</span>[n];</span><br><span class="line">        dp[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> tmpa = dp[a] * <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">int</span> tmpb = dp[b] * <span class="number">3</span>;</span><br><span class="line">            <span class="keyword">int</span> tmpc = dp[c] * <span class="number">5</span>;</span><br><span class="line">            dp[i] = Math.min(tmpa, Math.min(tmpb, tmpc));</span><br><span class="line">            <span class="keyword">if</span>(dp[i] == tmpa)   a++;</span><br><span class="line">            <span class="keyword">if</span>(dp[i] == tmpb)   b++;</span><br><span class="line">            <span class="keyword">if</span>(dp[i] == tmpc)   c++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> dp[n - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>时间复杂度 O(N) ： 其中 N=n ，动态规划需遍历计算 dp 列表。</p>
+</li>
+<li><p>空间复杂度 O(N) ： 长度为 N 的 dp 列表使用 O(N) 的额外空间。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指Offer50.第一个只出现一次的字符</title>
+    <url>/2020/11/10/%E5%89%91%E6%8C%87Offer50.%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%8F%AA%E5%87%BA%E7%8E%B0%E4%B8%80%E6%AC%A1%E7%9A%84%E5%AD%97%E7%AC%A6/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/di-yi-ge-zhi-chu-xian-yi-ci-de-zi-fu-lcof/">https://leetcode-cn.com/problems/di-yi-ge-zhi-chu-xian-yi-ci-de-zi-fu-lcof/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">char</span> <span class="title">firstUniqChar</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">        HashMap&lt;Character, Boolean&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">char</span>[] c = s.toCharArray();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">char</span> ch : c)&#123;</span><br><span class="line">            map.put(ch, !map.containsKey(ch));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">char</span> ch : c)&#123;</span><br><span class="line">            <span class="keyword">if</span>(map.get(ch))&#123;</span><br><span class="line">                <span class="keyword">return</span> ch;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&#x27; &#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>时间复杂度 O(N) ： NN 为字符串 s 的长度；需遍历 s 两轮，使用 O(N) ；HashMap 查找操作的复杂度为 O(1) ；</p>
+</li>
+<li><p>空间复杂度 O(1) ： 由于题目指出 s 只包含小写字母，因此最多有 26 个不同字符，HashMap 存储需占用 O(26)=O(1) 的额外空间。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>HashMap</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指 Offer 53 - I. 在排序数组中查找数字 I</title>
+    <url>/2020/11/10/%E5%89%91%E6%8C%87Offer53-1.%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E6%95%B0%E5%AD%97/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/zai-pai-xu-shu-zu-zhong-cha-zhao-shu-zi-lcof/">https://leetcode-cn.com/problems/zai-pai-xu-shu-zu-zhong-cha-zhao-shu-zi-lcof/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> helper(nums, target) - helper(nums, target - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">helper</span><span class="params">(<span class="keyword">int</span>[] nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> r = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">            <span class="keyword">int</span> m = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span>(nums[m] &lt;= target)&#123;</span><br><span class="line">                l = m + <span class="number">1</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                r = m - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度 O(log N) ：二分法为对数级别复杂度。</li>
+<li>空间复杂度 O(1) ： 几个变量使用常数大小的额外空间。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指 Offer 53 - II. 0～n-1中缺失的数字</title>
+    <url>/2020/11/10/%E5%89%91%E6%8C%87Offer53-2.%E5%9C%A8%E6%8E%92%E5%BA%8F%E6%95%B0%E7%BB%84%E4%B8%AD%E6%9F%A5%E6%89%BE%E6%95%B0%E5%AD%97/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/que-shi-de-shu-zi-lcof/">https://leetcode-cn.com/problems/que-shi-de-shu-zi-lcof/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">missingNumber</span><span class="params">(<span class="keyword">int</span>[] nums)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> l = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> r = nums.length - <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">            <span class="keyword">int</span> m = l + (r - l) / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">if</span>(nums[m] == m)&#123;</span><br><span class="line">                l = m + <span class="number">1</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">                r = m - <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> l;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度 O(log N) ：二分法为对数级别复杂度。</li>
+<li>空间复杂度 O(1) ： 几个变量使用常数大小的额外空间。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>剑指Offer52.两个链表的第一个公共节点.md</title>
+    <url>/2020/11/10/%E5%89%91%E6%8C%87Offer52.%E4%B8%A4%E4%B8%AA%E9%93%BE%E8%A1%A8%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AA%E5%85%AC%E5%85%B1%E8%8A%82%E7%82%B9/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/">https://leetcode-cn.com/problems/liang-ge-lian-biao-de-di-yi-ge-gong-gong-jie-dian-lcof/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ListNode <span class="title">getIntersectionNode</span><span class="params">(ListNode headA, ListNode headB)</span> </span>&#123;</span><br><span class="line">        ListNode tempA = headA;</span><br><span class="line">        ListNode tempB = headB;</span><br><span class="line">        <span class="keyword">while</span>(tempA != tempB)&#123;</span><br><span class="line">            tempA = tempA == <span class="keyword">null</span> ? headB : tempA.next;</span><br><span class="line">            tempB = tempB == <span class="keyword">null</span> ? headA : tempB.next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> tempA;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：<em>O</em>(<em>M</em>+<em>N</em>)。</li>
+<li>空间复杂度：O(1)。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>ListNode</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2020/11/05/JAVA/</url>
+    <content><![CDATA[<h1 id="Java语法"><a href="#Java语法" class="headerlink" title="Java语法"></a>Java语法</h1><h2 id="Java特点"><a href="#Java特点" class="headerlink" title="Java特点"></a>Java特点</h2><ul>
+<li><strong>面向对象：</strong><ul>
+<li>类：类是现实世界在计算机中的反映，它将数据和对这些数据的操作封装在一起。</li>
+<li>对象：类的实例。</li>
+<li>抽象：在定义一个类的时候，实际上就是把一类事物的公有的属性和行为提取出来，形成一个物理模型，这种研究问题的方法称为抽象。</li>
+<li>封装：把对象的属性和行为（数据）结合为一个独立的整体，并尽可能隐藏对象的内部实现细节。<ul>
+<li>1、通过隐藏对象的属性来保护对象的内部状态</li>
+<li>2、提高代码的可用性和可维护性</li>
+<li>3、禁止对象之间的不良交互来提高模块化</li>
+</ul>
+</li>
+<li>继承：继承是从已有的类中派生出新的类称为子类，子类继承父类的数据属性和行为，并能根据自己的需求扩展出新的行为，提高了代码的复用性。</li>
+<li>多态：指允许不同的对象对同一消息做出相应。即同一消息可以根据发送对象的不同而采用多种不同的行为方式（发送消息就是函数调用）。<ul>
+<li>多态存在的三个必要条件<ul>
+<li>继承</li>
+<li>重写</li>
+<li>父类引用指向子类对象</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>健壮性：</strong>吸收C/C++语言的优点，去掉了其影响程序健壮性的部分（如指针、内存的申请与释放等），提供了一个相对安全的内存管理和访问机制。</li>
+<li><strong>跨平台性：</strong>通过Java语言编写的应用程序在不同的系统平台上都可以运行【JVM】</li>
+</ul>
+<h2 id="JDK，-JRE和JVM的区别"><a href="#JDK，-JRE和JVM的区别" class="headerlink" title="JDK， JRE和JVM的区别"></a>JDK， JRE和JVM的区别</h2><ul>
+<li>JDK（Java Development Kid，Java 开发开源工具包），是针对 Java 开发人员的产品，是整个 Java 的核心，包括了 Java 运行环境 JRE、Java 工具和 Java 基础类库。</li>
+<li>JRE（Java Runtime Environment，Java 运行环境）是运行 JAVA 程序所必须的环境的集合，包含 JVM 标准实现及 Java 核心类库。</li>
+<li>JVM（Java Virtual Machine，Java 虚拟机）是整个 Java 实现跨平台的最核心的部分，能够运行以 Java 语言写作的软件程序。</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018090519.png"></p>
+<h2 id="Java基本数据类型"><a href="#Java基本数据类型" class="headerlink" title="Java基本数据类型"></a>Java基本数据类型</h2><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018095519.png" alt="image-20201018095515731"></p>
+<h2 id="包装类"><a href="#包装类" class="headerlink" title="包装类"></a>包装类</h2><ul>
+<li><p>让基本类型也具有对象的特征</p>
+</li>
+<li><p><strong>装箱</strong>：由基本数据类型构造出一个包装类的对象。</p>
+</li>
+<li><p><strong>拆箱</strong>：由一个包装类对象转换到相应的基本数据类型。</p>
+</li>
+</ul>
+<h3 id="基本类型和包装类的区别"><a href="#基本类型和包装类的区别" class="headerlink" title="基本类型和包装类的区别"></a>基本类型和包装类的区别</h3><ol>
+<li>声明方式不同：基本类型不使用new关键字，而包装类型需要使用new关键字来在<strong>堆中分配存储空间</strong>；</li>
+<li>存储方式及位置不同：基本类型是直接将变量值存储在栈中，而包装类型是将对象放在堆中，然后通过引用来使用；</li>
+<li>初始值不同：基本类型的初始值如int为0，boolean为false，而包装类型的初始值为null；</li>
+<li>使用方式不同：基本类型直接赋值直接使用就好，而包装类型在集合如Collection、Map时会使用到。</li>
+</ol>
+<h2 id="“-”-和-equals-的区别"><a href="#“-”-和-equals-的区别" class="headerlink" title="“==” 和 equals() 的区别"></a>“==” 和 equals() 的区别</h2><ul>
+<li>对于基本数据类型的变量，只能使用 == 判断值是否相等，不能使用equals();</li>
+<li>对于引用数据类型，<ul>
+<li>如果没有对 equals() 进行重写，== 和equals() 比较的都是引用类型的变量所指向的对象的地址；</li>
+<li>诸如String、Date等类对equals方法进行了重写的话，equals() 比较的是所指向的对象的内容。</li>
+</ul>
+</li>
+</ul>
+<h2 id="equals-与-hashcode-的区别"><a href="#equals-与-hashcode-的区别" class="headerlink" title="equals() 与 hashcode() 的区别"></a>equals() 与 hashcode() 的区别</h2><ul>
+<li>equals()相等的两个对象他们的hashCode()肯定相等。</li>
+<li>hashCode()相等的两个对象他们的equals()不一定相等。</li>
+</ul>
+<h2 id="String、StringBuilder、StringBuffer的区别"><a href="#String、StringBuilder、StringBuffer的区别" class="headerlink" title="String、StringBuilder、StringBuffer的区别"></a>String、StringBuilder、StringBuffer的区别</h2><table>
+<thead>
+<tr>
+<th>String</th>
+<th>StringBuffer</th>
+<th>StringBuilder</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>String的值是不可变的，这就导致每次对String的操作都会生成新的String对象，不仅效率低下，而且浪费大量优先的内存空间</td>
+<td>StringBuffer是可变类，和线程安全的字符串操作类，任何对它指向的字符串的操作都不会产生新的对象。每个StringBuffer对象都有一定的缓冲区容量，当字符串大小没有超过容量时，不会分配新的容量，当字符串大小超过容量时，会自动增加容量</td>
+<td>可变类，速度更快</td>
+</tr>
+<tr>
+<td>不可变</td>
+<td>可变</td>
+<td>可变</td>
+</tr>
+<tr>
+<td></td>
+<td>线程安全</td>
+<td>线程不安全</td>
+</tr>
+</tbody></table>
+<h2 id="String-s-“hello”和String-s-new-String-“hello”-区别"><a href="#String-s-“hello”和String-s-new-String-“hello”-区别" class="headerlink" title="String s = “hello”和String s = new String(“hello”);区别"></a>String s = “hello”和String s = new String(“hello”);区别</h2><ul>
+<li><p><code>String s = &quot;hello&quot;</code>，JVM会直接检查字符串常量池是否已有”hello”字符串对象，如没有，就分配一个内存存放”hello”，如果有，则直接将字符串常量池中的地址返回给栈。(没有new，没有堆的操作)</p>
+</li>
+<li><p><code>String s = new String(&quot;hello&quot;);</code>可能创建两个对象也可能创建一个对象。如果常量池中有<code>hello</code>字符串常量的话，则仅仅在堆中创建一个对象。如果常量池中没有<code>hello</code>对象，则堆上和常量池都需要创建。</p>
+</li>
+</ul>
+<h2 id="static和final区别"><a href="#static和final区别" class="headerlink" title="static和final区别"></a>static和final区别</h2><table>
+<thead>
+<tr>
+<th align="left">关键词</th>
+<th align="left">修饰物</th>
+<th align="left">影响</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">final</td>
+<td align="left">变量</td>
+<td align="left">分配到常量池中，程序不可改变其值（引用变量不能变，引用对象可以变）</td>
+</tr>
+<tr>
+<td align="left">final</td>
+<td align="left">方法</td>
+<td align="left">子类中将不能被重写</td>
+</tr>
+<tr>
+<td align="left">final</td>
+<td align="left">类</td>
+<td align="left">不能被继承</td>
+</tr>
+<tr>
+<td align="left">static</td>
+<td align="left">变量</td>
+<td align="left">分配在内存堆上，引用都会指向这一个地址而不会重新分配内存</td>
+</tr>
+<tr>
+<td align="left">static</td>
+<td align="left">方法块</td>
+<td align="left">虚拟机优先加载</td>
+</tr>
+<tr>
+<td align="left">static</td>
+<td align="left">类</td>
+<td align="left">可以直接通过类来调用而不需要new</td>
+</tr>
+</tbody></table>
+<h2 id="引用类型是占用几个字节？"><a href="#引用类型是占用几个字节？" class="headerlink" title="引用类型是占用几个字节？"></a>引用类型是占用几个字节？</h2><p>hotspot在64位平台上，占8个字节，在32位平台上占4个字节。</p>
+<h3 id="java中的-switch-e-选择结构可以使用数据类型的数据-JDK1-8"><a href="#java中的-switch-e-选择结构可以使用数据类型的数据-JDK1-8" class="headerlink" title="java中的 switch(e) 选择结构可以使用数据类型的数据(JDK1.8)"></a>java中的 switch(e) 选择结构可以使用数据类型的数据(JDK1.8)</h3><ul>
+<li><p>在switch（e）中，e只能是一个整数表达式或者枚举常量（更大字体），整数表达式可以是int基本类型或Integer包装类型，由于byte,short,char都可以隐含转换为int，所以，这些类型以及这些类型的包装类型也是可以的。显然，boolean、double和long类型都不符合switch的语法规定，并且不能被隐式转换成int类型，所以，它们不能作用于swtich语句中。</p>
+</li>
+<li><p>1.7后支持String。</p>
+</li>
+<li><p>基本类型中，没有<code>boolean</code>和<code>浮点类型</code>+<code>长类型long</code>及其相应的包装类型。外加<code>String</code>和<code>enum</code>。</p>
+</li>
+</ul>
+<h2 id="标识符的构成规则"><a href="#标识符的构成规则" class="headerlink" title="标识符的构成规则"></a>标识符的构成规则</h2><ul>
+<li>标识符由数字（0<del>9）和字母（A</del>Z 和 a~z）、美元符号（$）和下划线（_）组合构成。</li>
+<li>标识符不能使用数字作为第一个字符。</li>
+<li>标识符不能是java的关键字和保留字，但可以包含关键字和保留字，不能包含空格</li>
+<li>标识符不允许单独使用下划线作为分隔符。</li>
+</ul>
+<h2 id="amp-和-amp-amp-的区别"><a href="#amp-和-amp-amp-的区别" class="headerlink" title="&amp;和&amp;&amp;的区别"></a>&amp;和&amp;&amp;的区别</h2><ul>
+<li>逻辑与，用&amp;连接的两个条件的最后结果计算第一个表达式为false也会计算第二个表达式</li>
+<li>短路与，如果第一个表达式为false整个表达式直接为false跳过第二个判断表达式</li>
+</ul>
+<h2 id="重载和重写的区别"><a href="#重载和重写的区别" class="headerlink" title="重载和重写的区别"></a>重载和重写的区别</h2><ul>
+<li><p>重载 Overload：表示同一个类中可以有多个名称相同的方法，但这些方法的参数列表各不相同（即参数个数或类型不同）。</p>
+</li>
+<li><p>重写 Override：表示子类中的方法覆盖父类中的方法</p>
+</li>
+</ul>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018092249.png"></p>
+<h2 id="final、finally、finalize的区别"><a href="#final、finally、finalize的区别" class="headerlink" title="final、finally、finalize的区别"></a>final、finally、finalize的区别</h2><ul>
+<li>final用于声明属性、方法和类，分别表示属性不可变、方法不可覆盖、类不可被继承（不能再派生出新的子类）</li>
+<li>finally作为异常处理的一部分，它只能用在try/catch语句中，并且附带着一个语句块，表示这段语句最终一定被执行，经常被用在需要释放资源的情况下。</li>
+<li>finalize是Object类中的一个方法，一旦垃圾回收器准备好释放对象占用的空间，将首先调用其 finalize() 方法，并且在下一次垃圾回收动作发生时，才会真正回收对象占用的内存。</li>
+</ul>
+<h2 id="Java修饰符"><a href="#Java修饰符" class="headerlink" title="Java修饰符"></a>Java修饰符</h2><table>
+<thead>
+<tr>
+<th><strong>访问级别</strong></th>
+<th><strong>访问控制修饰符</strong></th>
+<th><strong>同类</strong></th>
+<th><strong>同包</strong></th>
+<th><strong>子类(不同包)</strong></th>
+<th><strong>不同包(其他类)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公共</td>
+<td>public</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>受保护</td>
+<td>protected</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>默认</td>
+<td>default</td>
+<td>✔</td>
+<td>✔</td>
+<td>✖</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>私有</td>
+<td>private</td>
+<td>✔</td>
+<td>✖</td>
+<td>✖</td>
+<td>✖</td>
+</tr>
+</tbody></table>
+<h2 id="抽象类和接口的区别"><a href="#抽象类和接口的区别" class="headerlink" title="抽象类和接口的区别"></a>抽象类和接口的区别</h2><ul>
+<li><p>抽象类中的方法可以有方法体，就是能实现方法的具体功能，但是接口中的方法不行。</p>
+</li>
+<li><p>抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是 public static final 类型的。</p>
+</li>
+<li><p>抽象类是可以有静态代码块和静态方法，接口中不能含有静态代码块以及静态方法(用 static 修饰的方法)。</p>
+</li>
+<li><p>一个类只能继承一个抽象类，而一个类却可以实现多个接口。</p>
+</li>
+</ul>
+<h2 id="泛型、反射和注解"><a href="#泛型、反射和注解" class="headerlink" title="泛型、反射和注解"></a>泛型、反射和注解</h2><ul>
+<li>泛型类型是通过类型参数化的泛型类或接口。数据类型是数据的参数化，而泛型就是数据类型的参数化，来解决程序的通用性设计和实现的若干问题。</li>
+<li>反射是在运行状态中，对于任意一个类，都能够知道这个类的所有属性和方法；对于任意一个对象，都能够调用它的任意方法和属性；这种动态获取信息以及动态调用对象方法的功能称为java语言的反射机制。</li>
+<li>注解的本质就是一个继承了 Annotation 接口的接口，注解是代码里的特殊标记，这些标记可以在编译，类加载，运行时被读取，并执行相应的处理。<ul>
+<li>元注解：注解的注解，分别有@Retention、 @Target、 @Document、 @Inherited和@Repeatable（JDK1.8加入）五种。</li>
+<li>JDK注解：<ul>
+<li>@Override 它是用来描述当前方法是一个重写的方法，在编译阶段对方法进行检查 jdk1.5中它只能描述继承中的重写，jdk1.6中它可以描述接口实现的重写,也能描述类的继承的重写  </li>
+<li>@Deprecated 它是用于描述当前方法是一个过时的方法 </li>
+<li>@SuppressWarnings 对程序中的警告去除。 </li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="异常"><a href="#异常" class="headerlink" title="异常"></a>异常</h2><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018101623.png"></p>
+<h3 id="Error和Exception的区别"><a href="#Error和Exception的区别" class="headerlink" title="Error和Exception的区别"></a>Error和Exception的区别</h3><ul>
+<li><p>Error，指程序中无法处理的错误，表示运行应用程序中出现了严重的错误。</p>
+</li>
+<li><p>Exception，程序本身可以捕获并且可以处理的异常。</p>
+<ul>
+<li><p>运行时异常</p>
+<ul>
+<li><p><strong>定义</strong>：RuntimeException 类及其子类，表示 JVM 在运行期间可能出现的异常。</p>
+</li>
+<li><p><strong>特点</strong>：Java 编译器不会检查它。也就是说，当程序中可能出现这类异常时，倘若既”没有通过throws声明抛出它”，也”没有用try-catch语句捕获它”，还是会编译通过。</p>
+</li>
+</ul>
+</li>
+<li><p>编译时异常</p>
+<ul>
+<li><p><strong>定义</strong>: Exception 中除 RuntimeException 及其子类之外的异常。</p>
+</li>
+<li><p><strong>特点</strong>: Java 编译器会检查它。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="受检异常与非受检异常"><a href="#受检异常与非受检异常" class="headerlink" title="受检异常与非受检异常"></a>受检异常与非受检异常</h3><ul>
+<li><p>受检异常</p>
+<ul>
+<li>编译器要求必须处理的异常。正确的程序在运行过程中，经常容易出现的、符合预期的异常情况。一旦发生此类异常，就必须采用某种方式进行处理。</li>
+<li><strong>除 RuntimeException 及其子类外，其他的 Exception 异常都属于受检异常</strong>。</li>
+</ul>
+</li>
+<li><p>非受检异常</p>
+<ul>
+<li>编译器不会进行检查并且不要求必须处理的异常。</li>
+<li><strong>该类异常包括运行时异常（RuntimeException极其子类）和错误（Error）。</strong></li>
+</ul>
+</li>
+</ul>
+<h2 id="IO"><a href="#IO" class="headerlink" title="IO"></a>IO</h2><p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018103150.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018103200.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018103228.png"></p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201018103300.png"></p>
+<h1 id="操作系统"><a href="#操作系统" class="headerlink" title="操作系统"></a>操作系统</h1><h2 id="进程和线程的区别"><a href="#进程和线程的区别" class="headerlink" title="进程和线程的区别"></a>进程和线程的区别</h2><ul>
+<li><p><strong>拥有资源</strong></p>
+<ul>
+<li>进程是资源分配的基本单位，但是线程不拥有资源（除了一点必不可少的资源），线程可以访问隶属进程的系统资源</li>
+<li>如果线程也拥有资源，则切换线程就需要较大的时空开销，线程的概念就没有意义了</li>
+</ul>
+</li>
+<li><p>调度</p>
+<ul>
+<li>传统操作系统中拥有资源和独立调度的基本单位都是进程</li>
+<li>引入线程后，线程是独立调度的基本单位，进程是拥有资源的基本单位</li>
+<li>在同一进程中，线程的切换不会引起进程切换，从一个进程中的线程切换到另一个进程中的线程时，会引起进程切换。</li>
+</ul>
+</li>
+<li><p><strong>系统开销</strong></p>
+<ul>
+<li>由于创建或撤销进程时，系统都要为之分配或回收资源，如内存空间、I/O 设备等，所付出的开销远大于创建或撤销线程时的开销。</li>
+<li>类似地，在进行<strong>进程切换时</strong>，涉及当前<strong>执行进程 CPU 环境的保存及新调度进程 CPU 环境的设置（即，Context）</strong>，而<strong>线程切换时</strong>只需<strong>保存和设置少量寄存器内容</strong>，开销很小</li>
+<li>同一个进程内的多个线程共享进程的地址空间，因此这些线程间同步与通信非常容易，甚至无须操作系统的干预</li>
+</ul>
+</li>
+<li><p>并发性：</p>
+<ul>
+<li>引入线程后，不仅进程间可以并发执行，而且多个线程之间也可以并发执行，提高了并发性和吞吐量</li>
+</ul>
+</li>
+</ul>
+<h2 id="进程状态的切换"><a href="#进程状态的切换" class="headerlink" title="进程状态的切换"></a>进程状态的切换</h2><p><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1599655539465-7c6412b9-cf1c-41eb-98c2-631439893c16.png" alt="image.png"></p>
+<ul>
+<li>就绪状态（ready）：进程获取了除处理器以外的一切所需资源，等待被调度，多个处于就绪状态的进程拍成就绪队列</li>
+<li>运行状态（running）：进程正在处理器上运行</li>
+<li>阻塞状态（waiting）：等待某资源为可用</li>
+<li>创建态（created）：进程正在被创建，尚未转到就绪态</li>
+<li>结束态（terminated）：进程正从系统消失，可能是进程正常结束或其他原因中断退出运行</li>
+</ul>
+<p>应该注意以下内容：</p>
+<ul>
+<li>只有就绪态和运行态可以相互转换，其它的都是单向转换。就绪状态的进程通过调度算法从而获得 CPU 时间，转为运行状态；而运行状态的进程，在分配给它的 CPU 时间片用完之后就会转为就绪状态，等待下一次调度。</li>
+<li>阻塞状态是缺少需要的资源从而由运行状态转换而来，但是该资源不包括 CPU 时间，缺少 CPU 时间会从运行态转换为就绪态。</li>
+</ul>
+<h2 id="进程调度算法"><a href="#进程调度算法" class="headerlink" title="进程调度算法"></a>进程调度算法</h2><h3 id="1-批处理系统"><a href="#1-批处理系统" class="headerlink" title="1. 批处理系统"></a>1. 批处理系统</h3><ul>
+<li>批处理系统在很老的计算机时使用，没有太多的用户操作，在该系统中，调度算法目标是保证吞吐量和周转时间（从提交到终止的时间）</li>
+</ul>
+<p><strong>1.1 先来先服务 first-come first-serverd（FCFS）</strong></p>
+<ul>
+<li>非抢占式的调度算法，按照请求的顺序进行调度</li>
+<li><strong>有利于长作业，但不利于短作业</strong>，因为短作业必须一直等待前面的长作业执行完毕才能执行，而长作业又需要执行很长时间，造成了短作业等待时间过长</li>
+</ul>
+<p><strong>1.2 短作业优先 shortest job first（SJF）</strong></p>
+<ul>
+<li>非抢占式的调度算法，按估计运行时间最短的顺序进行调度</li>
+<li><strong>长作业有可能会饿死</strong>，处于一直等待短作业执行完毕的状态。因为如果一直有短作业到来，那么长作业永远得不到调度</li>
+</ul>
+<p><strong>1.3 高响应比优先</strong> </p>
+<ul>
+<li>高响应比优先调度算法是FCFS和SJF的综合平衡，每次进行作业调度时，先计算后备作业队列中每个作业的响应比，从中选出响应比最高的作业投入运行</li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1599725265351-ac1b4730-41f4-45af-ab73-a8e3bf6ae880.png" alt="image.png"></li>
+<li>要求服务时间短，响应比高，有利于短作业</li>
+<li>等待时间长，响应比高，不会出现长作业饿死的情况</li>
+</ul>
+<h3 id="2-交互式系统"><a href="#2-交互式系统" class="headerlink" title="2. 交互式系统"></a>2. 交互式系统</h3><p><strong>2.1 时间片轮转</strong></p>
+<p><strong>2.2 优先级调度</strong></p>
+<p><strong>2.3 多级反馈队列</strong></p>
+<ul>
+<li>多级队列是为这种需要连续执行多个时间片的进程考虑，<strong>设置了多个队列，每个队列时间片大小都不同</strong>，例如 1,2,4,8,..。<strong>进程在第一个队列没执行完，就会被移到下一个队列</strong>。这种方式下，之前的进程只需要交换 7 次</li>
+<li><strong>每个队列优先权也不同，最上面的优先权最高。因此只有上一个队列没有进程在排队，才能调度当前队列中的进程</strong></li>
+<li>可以将这种调度算法看成是时间片轮转调度算法和优先级调度算法的结合</li>
+</ul>
+<h2 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h2><h3 id="死锁、饥饿、死循环的区别"><a href="#死锁、饥饿、死循环的区别" class="headerlink" title="死锁、饥饿、死循环的区别"></a>死锁、饥饿、死循环的区别</h3><ul>
+<li><p>死锁：各进程互相等待对方手里的资源，导致各进程都阻塞，无法向前推进的现象。至少有两个进程或以上同时发生死锁。</p>
+</li>
+<li><p>饥饿：由于长期得不到想要的资源，某进程无法向前推进的现象。</p>
+</li>
+<li><p>死循环：某进程执行过程中一直跳不出某个循环的现象。</p>
+</li>
+</ul>
+<h3 id="死锁产生的必要条件"><a href="#死锁产生的必要条件" class="headerlink" title="死锁产生的必要条件"></a>死锁产生的必要条件</h3><ul>
+<li>互斥条件：只有对必须互斥使用的资源的争抢才会导致死锁（如哲学家的筷子、打印机设备）。</li>
+<li>不剥夺条件：进程所获得的资源在未使用完之前，不能由其他进程强行夺走，只能主动释放。</li>
+<li>请求和保持条件：进程已经保持了至少一个资源，但又提出了新的资源请求，而该资源又被其他进程占有，此时请求进程被阻塞，但又对自己已有的资源保持不放。（有了一个，还想要另一个，但是自己原来那个不放手。）</li>
+<li>循环等待条件：存在一种进程资源的循环等待链，链中的每一个进程已获得的资源同时被下一个进程所请求。</li>
+</ul>
+<h3 id="银行家算法"><a href="#银行家算法" class="headerlink" title="银行家算法"></a>银行家算法</h3><p>用Available向量表示系统当前的可用资源数。</p>
+<p>试分配：</p>
+<p>在某一时刻，进程提出资源申请，系统首先检查申请的资源数是否超过进程的最大需求量。</p>
+<p>不超过，则检查是否超过当前可用的资源数。</p>
+<p>如果都不超过，则试着分配给该进程。</p>
+<p>然后用安全性算法检查此次分配是否会导致系统进入不安全状态。</p>
+<p>安全性算法简单理解：系统当前剩余的资源数超过了某个进程的Need向量，就把该进程加入安全序列，并将Allocation添加到Available，不断循环此过程，看最终能否让所有进程都加入安全序列，如果可以，此次分配时安全的，系统开始分配。</p>
+<p>注意：处于安全状态一定不会死锁，死锁一定处于不安全状态，处于不安全状态不一定会死锁。</p>
+<h2 id="分页与分段的比较"><a href="#分页与分段的比较" class="headerlink" title="分页与分段的比较"></a>分页与分段的比较</h2><ul>
+<li>对程序员的透明性：分页透明，但是分段需要程序员显式划分每个段</li>
+<li>地址空间的维度：分页是一维地址空间，分段是二维的</li>
+<li>大小是否可以改变：页的大小不可变，段的大小可以动态改变</li>
+<li>出现的原因：<strong>分页主要用于实现虚拟内存，从而获得更大的地址空间；分段主要是为了使程序和数据可以被划分为逻辑上独立的地址空间并且有助于共享和保护</strong></li>
+</ul>
+<h2 id="页面置换算法"><a href="#页面置换算法" class="headerlink" title="页面置换算法"></a>页面置换算法</h2><p><strong>页面置换算法的主要目标是使页面置换频率最低（也可以说缺页率最低）</strong></p>
+<ol>
+<li><strong>最佳（OPT, Optimal replacement algorithm）</strong></li>
+</ol>
+<ul>
+<li>所<strong>选择的被换出的页面在未来最长时间内不再被访问</strong>，通常可以保证获得最低的缺页率。</li>
+<li>是一种<strong>理论上的算法</strong>，因为无法知道一个页面多长时间不再被访问。</li>
+</ul>
+<ol start="2">
+<li><p><strong>最近最久未使用（LRU, Least Recently Used）</strong></p>
+</li>
+<li><p><strong>最近未使用（NRU, Not Recently Used）</strong></p>
+</li>
+</ol>
+<ul>
+<li><p>每个页面都有两个状态位：R 与 M，<strong>当页面被访问时设置页面的 R=1，当页面被修改时设置 M=1</strong>。其中 R 位会定时被清零。可以将页面分成以下四类：</p>
+</li>
+<li><ul>
+<li><p>R=0，M=0 </p>
+<pre><code>- R=0，M=1
+- R=1，M=0
+- R=1，M=1</code></pre>
+</li>
+</ul>
+</li>
+<li><p>当发生缺页中断时，NRU 算法随机地从类编号最小的非空类中挑选一个页面将它换出。</p>
+</li>
+<li><p><strong>NRU 优先换出已经被修改的脏页面（R=0，M=1），而不是被频繁使用的干净页面（R=1，M=0）</strong>。</p>
+</li>
+</ul>
+<ol start="4">
+<li><strong>先进先出（FIFO, First In First Out）</strong></li>
+</ol>
+<ul>
+<li>选择换出的页面是最先进入的页面。<ul>
+<li><strong>该算法会将那些经常被访问的页面换出，导致缺页率升高</strong>。</li>
+</ul>
+</li>
+</ul>
+<ol start="5">
+<li><strong>第二次机会算法</strong></li>
+</ol>
+<ul>
+<li><strong>FIFO 算法可能会把经常使用的页面置换出去，为了避免这一问题，对该算法做一个简单的修改：</strong><ul>
+<li><strong>当页面被访问 (读或写) 时设置该页面的 R 位为 1。需要替换的时候，检查最老页面的 R 位。如果 R 位是 0，那么这个页面既老又没有被使用，可以立刻置换掉；如果是 1，就将 R 位清 0，并把该页面放到链表的尾端，修改它的装入时间使它就像刚装入的一样，然后继续从链表的头部开始搜索。</strong></li>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1597061941454-03800959-859a-4877-abfd-27c39e401945.png?x-oss-process=image/watermark,type_d3F5LW1pY3JvaGVp,size_10,text_THVrYQ==,color_FFFFFF,shadow_50,t_80,g_se,x_10,y_10" alt="image.png"></li>
+</ul>
+</li>
+</ul>
+<ol start="6">
+<li><strong>时钟（Clock）</strong></li>
+</ol>
+<ul>
+<li>第二次机会算法需要在链表中移动页面，降低了效率。时钟算法使用环形链表将页面连接起来，再使用一个指针指向最老的页面。<ul>
+<li><img src="https://cdn.nlark.com/yuque/0/2020/png/1266758/1597062565754-826091ad-7dc4-4c83-943d-343b7bd7bdac.png" alt="image.png"></li>
+</ul>
+</li>
+</ul>
+<h2 id="磁盘调度算法"><a href="#磁盘调度算法" class="headerlink" title="磁盘调度算法"></a>磁盘调度算法</h2><ul>
+<li><p>读写一个磁盘块的时间的影响因素有：</p>
+</li>
+<li><ul>
+<li>旋转时间（主轴转动盘面，使得磁头移动到适当的扇区上）<pre><code>- 寻道时间（制动手臂移动，使得磁头移动到适当的磁道上）
+- 实际的数据传输时间</code></pre>
+</li>
+</ul>
+</li>
+<li><p>其中，寻道时间最长，因此磁盘调度的主要目标是使磁盘的平均寻道时间最短。</p>
+<ul>
+<li><p>先来先服务（FCFS, First Come First Served） </p>
+</li>
+<li><p>最短寻道时间优先（SSTF, Shortest Seek Time First）</p>
+</li>
+<li><p>电梯算法（SCAN） </p>
+<ul>
+<li>电梯总是保持一个方向运行，直到该方向没有请求为止，然后改变运行方向。</li>
+<li>电梯算法（扫描算法）和电梯的运行过程类似，总是按一个方向来进行磁盘调度，直到该方向上没有未完成的磁盘请求，然后改变方向。</li>
+<li>因为考虑了移动方向，因此所有的磁盘请求都会被满足，解决了 SSTF 的饥饿问题。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+]]></content>
   </entry>
 </search>
