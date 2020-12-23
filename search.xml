@@ -1243,25 +1243,6 @@
       </tags>
   </entry>
   <entry>
-    <title>0563.二叉树的坡度</title>
-    <url>/2020/11/02/0563.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9D%A1%E5%BA%A6/</url>
-    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/binary-tree-tilt/">https://leetcode-cn.com/problems/binary-tree-tilt/</a></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findTilt</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        traverse(root);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">traverse</span><span class="params">(TreeNode node)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(node == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> l = traverse(node.left);</span><br><span class="line">        <span class="keyword">int</span> r = traverse(node.right);</span><br><span class="line">        res += Math.abs(l - r);</span><br><span class="line">        <span class="keyword">return</span> l + r + node.val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>时间复杂度：O(n)，其中 n 是结点的数目。每个结点访问一次。</li>
-<li>空间复杂度：O(n)，在最糟糕的情形下，当树倾斜时，树的深度可以达到 n。平均情况下，树的深度为 logn。</li>
-</ul>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>TreeNode</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0617.合并二叉树</title>
     <url>/2020/09/23/0617.%E5%90%88%E5%B9%B6%E4%BA%8C%E5%8F%89%E6%A0%91/</url>
     <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/merge-two-binary-trees">https://leetcode-cn.com/problems/merge-two-binary-trees</a></p>
@@ -1279,6 +1260,25 @@
       <tags>
         <tag>leetcode</tag>
         <tag>Tree</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0563.二叉树的坡度</title>
+    <url>/2020/11/02/0563.%E4%BA%8C%E5%8F%89%E6%A0%91%E7%9A%84%E5%9D%A1%E5%BA%A6/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/binary-tree-tilt/">https://leetcode-cn.com/problems/binary-tree-tilt/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">findTilt</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        traverse(root);</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">traverse</span><span class="params">(TreeNode node)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(node == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> l = traverse(node.left);</span><br><span class="line">        <span class="keyword">int</span> r = traverse(node.right);</span><br><span class="line">        res += Math.abs(l - r);</span><br><span class="line">        <span class="keyword">return</span> l + r + node.val;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(n)，其中 n 是结点的数目。每个结点访问一次。</li>
+<li>空间复杂度：O(n)，在最糟糕的情形下，当树倾斜时，树的深度可以达到 n。平均情况下，树的深度为 logn。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>TreeNode</tag>
       </tags>
   </entry>
   <entry>
