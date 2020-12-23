@@ -1,227 +1,31 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-<meta http-equiv="X-UA-Compatible" content="ie=edge">
+extends includes/layout.pug
 
-    <meta name="author" content="X_ray">
+block content
+  #post
+    if top_img === false
+      include includes/header/post-info.pug
 
-
-    <meta name="subtitle" content="yesterday you said tomorrow">
-
-
-
-
-<title>度小满笔试2.昆虫走迷宫 | X_ray&#39;s blog</title>
-
-
-
-    <link rel="icon" href="/image/favicon.ico">
-
-
-
-
-    <!-- stylesheets list from _config.yml -->
-    
-    <link rel="stylesheet" href="/css/style.css">
-    
-
-
-
-    <!-- scripts list from _config.yml -->
-    
-    <script src="/js/script.js"></script>
-    
-    <script src="/js/tocbot.min.js"></script>
-    
-
-
-
-    
-    
+    article#article-container.post-content!=page.content
+    include includes/post/post-copyright.pug
+    .tag_share
+      if (theme.post_meta.post.tags)
+        .post-meta__tag-list
+          each item, index in page.tags.data
+            a(href=url_for(item.path)).post-meta__tags #[=item.name]
+      include includes/third-party/share/index.pug
         
-    
+    if theme.reward.enable
+      !=partial('includes/post/reward', {}, {cache:theme.fragment_cache})
 
+    //- ad
+    if theme.ad && theme.ad.post
+      .ads-wrap!=theme.ad.post
 
-<meta name="generator" content="Hexo 5.1.1"></head>
-<body>
-    <div class="wrapper">
-        <header>
-    <nav class="navbar">
-        <div class="container">
-            <div class="navbar-header header-logo"><a href="/">Xray&#39;s Blog</a></div>
-            <div class="menu navbar-right">
-                
-                    <a class="menu-item" href="/archives">Posts</a>
-                
-                    <a class="menu-item" href="/category">Categories</a>
-                
-                    <a class="menu-item" href="/tag">Tags</a>
-                
-                    <a class="menu-item" href="/about">About</a>
-                
-                <input id="switch_default" type="checkbox" class="switch_default">
-                <label for="switch_default" class="toggleBtn"></label>
-            </div>
-        </div>
-    </nav>
+    include includes/pagination.pug
+    if theme.related_post && theme.related_post.enable
+      != related_posts(page,site.posts)
 
-    
-    <nav class="navbar-mobile" id="nav-mobile">
-        <div class="container">
-            <div class="navbar-header">
-                <div>
-                    <a href="/">Xray&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
-                </div>
-                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
-            </div>
-            <div class="menu" id="mobile-menu">
-                
-                    <a class="menu-item" href="/archives">Posts</a>
-                
-                    <a class="menu-item" href="/category">Categories</a>
-                
-                    <a class="menu-item" href="/tag">Tags</a>
-                
-                    <a class="menu-item" href="/about">About</a>
-                
-            </div>
-        </div>
-    </nav>
-
-</header>
-<script>
-    var mobileBtn = function f() {
-        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
-        var mobileMenu = document.getElementById("mobile-menu");
-        if(toggleMenu.classList.contains("active")){
-           toggleMenu.classList.remove("active")
-            mobileMenu.classList.remove("active")
-        }else{
-            toggleMenu.classList.add("active")
-            mobileMenu.classList.add("active")
-        }
-    }
-</script>
-        <div class="main">
-            <div class="container">
-    
-    
-
-    
-    <article class="post-wrap">
-        <header class="post-header">
-            <h1 class="post-title">度小满笔试2.昆虫走迷宫</h1>
-            
-                <div class="post-meta">
-                    
-                        Author: <a itemprop="author" rel="author" href="/">X_ray</a>
-                    
-
-                    
-                        <span class="post-time">
-                        Date: <a href="#">九月 21, 2020&nbsp;&nbsp;9:09:23</a>
-                        </span>
-                    
-                    
-                        <span class="post-category">
-                    Category:
-                            
-                                <a href="/categories/%E7%AC%94%E8%AF%95/">笔试</a>
-                            
-                        </span>
-                    
-                </div>
-            
-        </header>
-
-        <div class="post-content">
-            <ul>
-<li><p>@代表昆虫位置，.代表可以通行，#代表不可越过的墙壁，*代表可以越过的墙壁，求昆虫走出迷宫最小破壁次数</p>
-<ul>
-<li><p>输入：</p>
-<p>3</p>
-<p>3 3</p>
-<p>###</p>
-<p>*@#</p>
-<p>.##</p>
-<p>3 3</p>
-<p>@##</p>
-<p>…</p>
-<p>#**</p>
-<p>3 3</p>
-<p>#.#</p>
-<p>*@#</p>
-<p>###</p>
-</li>
-<li><p>输出：</p>
-<p>1</p>
-<p>0</p>
-<p>1</p>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span>&#123;</span><br><span class="line">        Scanner sc = <span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">        <span class="keyword">int</span> nums = sc.nextInt();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nums; i++)&#123;</span><br><span class="line">            <span class="keyword">int</span> m = sc.nextInt();</span><br><span class="line">            <span class="keyword">int</span> n = sc.nextInt();</span><br><span class="line">            <span class="keyword">char</span>[][] input = <span class="keyword">char</span>[m][n];</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; m; j++)&#123;</span><br><span class="line">                String s = sc.next();</span><br><span class="line">                <span class="keyword">char</span>[] sctmp = s.toCharArray();</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; sctmp.length; k++)&#123;</span><br><span class="line">                    input[j][k] = sctmp[k];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">int</span>[][] res = <span class="keyword">new</span> <span class="keyword">int</span>[m][n];</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; b.length; j++)&#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>; k &lt; a[<span class="number">0</span>].length; k++)&#123;</span><br><span class="line">                    res[i][j] = Integer.MAX_VALUE;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">int</span>[][] visited = <span class="keyword">new</span> <span class="keyword">int</span>[m][n];</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; input.length; j++)&#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> k =<span class="number">0</span>; k &lt; input[<span class="number">0</span>].length; k++)&#123;</span><br><span class="line">                    <span class="keyword">if</span>(a[j][k] == <span class="string">&#x27;@&#x27;</span>)&#123;</span><br><span class="line">                        <span class="keyword">new</span> Main().dfs(input, res, visited, m, n, j, k, <span class="number">0</span>);</span><br><span class="line">                        System.out.println(b[j][k] == Integer.MAX_VALUE ? -<span class="number">1</span> : b[j][k]);</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;   </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">char</span>[][] input, <span class="keyword">int</span>[][] res, <span class="keyword">int</span>[][] visited, <span class="keyword">int</span> m, <span class="keyword">int</span> n, <span class="keyword">int</span> i, <span class="keyword">int</span> j, <span class="keyword">int</span> count)</span></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> countNew = count;</span><br><span class="line">        <span class="keyword">if</span>(i &lt; <span class="number">0</span> || j &lt; <span class="number">0</span> || i &gt; m || j &gt; m)&#123;</span><br><span class="line">            retrun <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(res[i][j] != Integer.MAX_VALUE &amp;&amp; res[i][j] &lt;= countNew)&#123;</span><br><span class="line">            <span class="keyword">return</span> res[i][j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(visited[i][j] == <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> Integer.MAX_VALUE;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(input[i][j] == <span class="string">&#x27;#&#x27;</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> Integer.MAX_VALUE;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(input[i][j] == <span class="string">&#x27;*&#x27;</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> countNew++;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        visited[i][j] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> a = dfs(input, res, visited, m, n, i + <span class="number">1</span>, j, countNew);</span><br><span class="line">        <span class="keyword">int</span> b = dfs(input, res, visited, m, n, i - <span class="number">1</span>, j, countNew);</span><br><span class="line">        <span class="keyword">int</span> c = dfs(input, res, visited, m, n, i, j + <span class="number">1</span>, countNew);</span><br><span class="line">        <span class="keyword">int</span> d = dfs(input, res, visited, m, n, i, j - <span class="number">1</span>, countNew);</span><br><span class="line">        visited[i][j] = <span class="number">0</span>;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">int</span> min = Math,min(res[i][j], Math.min(Math.min(a, b), Math.min(c, d)));</span><br><span class="line">        <span class="keyword">if</span>(input[i][j] == <span class="string">&#x27;*&#x27;</span>)&#123;</span><br><span class="line">            min++;</span><br><span class="line">        &#125;</span><br><span class="line">        res[i][j] = Math.min(min, res[i][j]);</span><br><span class="line">        <span class="keyword">return</span> res[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-        </div>
-
-        
-            <section class="post-copyright">
-                
-                
-                
-                
-                     <p class="copyright-item">
-                         <span>Slogan:</span>
-                         <span>年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及</span>
-                     </p>
-                
-
-            </section>
-        
-        <section class="post-tags">
-            <div>
-                <span>Tag(s):</span>
-                <span class="tag">
-                    
-                    
-                        <a href="/tags/%E7%AC%94%E8%AF%95/"># 笔试</a>
-                    
-                        <a href="/tags/dfs/"># dfs</a>
-                    
-                        
-                </span>
-            </div>
-            <div>
-                <a href="javascript:window.history.back();">back</a>
-                <span>· </span>
-                <a href="/">home</a>
-            </div>
-        </section>
-        <section class="post-nav">
-            
-                <a class="prev" rel="prev" href="/2020/09/21/0538.%20%E6%8A%8A%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E8%BD%AC%E6%8D%A2%E4%B8%BA%E7%B4%AF%E5%8A%A0%E6%A0%91/">0538. 把二叉搜索树转换为累加树</a>
-            
-            
-            <a class="next" rel="next" href="/2020/09/21/%E5%BA%A6%E5%B0%8F%E6%BB%A1%E7%AC%94%E8%AF%951.%E6%B6%82%E8%89%B2/">度小满笔试1.涂色</a>
-            
-        </section>
-
-
-    </article>
-</div>
-
-        </div>
-        <footer id="footer" class="footer">
-    <div class="copyright">
-        <span>© X_ray | Powered by <a href="https://xray1025.top" target="_blank">Xray</a></span>
-    </div>
-</footer>
-
-    </div>
-</body>
-</html>
+    if page.comments !== false && theme.comments && theme.comments.use
+      - var commentsJsLoad = true
+      !=partial('includes/third-party/comments/index', {}, {cache:theme.fragment_cache})
+      
