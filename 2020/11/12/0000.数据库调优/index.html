@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="X_ray">
+
+
+    <meta name="subtitle" content="yesterday you said tomorrow">
+
+
+
+
+<title>数据库调优 | X_ray&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xray&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xray&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">数据库调优</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">X_ray</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十一月 12, 2020&nbsp;&nbsp;9:51:41</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="数据库调优"><a href="#数据库调优" class="headerlink" title="数据库调优"></a>数据库调优</h1><h2 id="基本优化法则"><a href="#基本优化法则" class="headerlink" title="基本优化法则"></a>基本优化法则</h2><p>​        根据当前计算机硬件的基本性能指标及其在数据库中主要操作内容，可以整理出如下图所示的性能基本优化法则：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/20201112095612.png" alt="1535812222155443"></p>
+<p>这个优化法则归纳为5个层次：</p>
+<p><strong>1、 减少数据访问（减少磁盘访问）</strong></p>
+<p><strong>2、 返回更少数据（减少网络传输或磁盘访问）</strong></p>
+<p><strong>3、 减少交互次数（减少网络传输）</strong></p>
+<p><strong>4、 减少服务器CPU开销（减少CPU及内存开销）</strong></p>
+<p><strong>5、 利用更多资源（增加资源）</strong></p>
+<pre><code>    由于每一层优化法则都是解决其对应硬件的性能问题，所以带来的性能提升比例也不一样。传统数据库系统设计是也是尽可能对低速设备提供优化方法，因此针对低速设备问题的可优化手段也更多，优化成本也更低。我们任何一个SQL的性能优化都应该按这个规则由上到下来诊断问题并提出解决方案，而不应该首先想到的是增加资源解决问题。</code></pre>
+<p>​    以下是每个优化法则层级对应优化效果及成本经验参考：</p>
+<table>
+<thead>
+<tr>
+<th><strong>优化法则</strong></th>
+<th><strong>性能提升效果</strong></th>
+<th><strong>优化成本</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>减少数据访问</td>
+<td>1~1000</td>
+<td>低</td>
+</tr>
+<tr>
+<td>返回更少数据</td>
+<td>1~100</td>
+<td>低</td>
+</tr>
+<tr>
+<td>减少交互次数</td>
+<td>1~20</td>
+<td>低</td>
+</tr>
+<tr>
+<td>减少服务器CPU开销</td>
+<td>1~5</td>
+<td>低</td>
+</tr>
+<tr>
+<td>利用更多资源</td>
+<td>@~10</td>
+<td>高</td>
+</tr>
+</tbody></table>
+<h2 id="常用的优化手段"><a href="#常用的优化手段" class="headerlink" title="常用的优化手段"></a>常用的优化手段</h2><p><strong>a: 表的设计合理化(符合3NF)</strong></p>
+<p><strong>b: 优化SQL语句（索引）</strong></p>
+<p><strong>c: 分表技术(水平分割、垂直分割)、分区技术</strong></p>
+<p><strong>d: 读写[写: update/delete/add]分离</strong></p>
+<p><strong>e: 存储过程 [模块化编程，可以提高速度]</strong></p>
+<p><strong>f: 对mysql配置优化 [配置最大并发数, 调整缓存大小 ]</strong></p>
+<p><strong>g: mysql服务器硬件升级</strong></p>
+<p><strong>h: 定时的去清除不需要的数据,定时进行碎片整理</strong></p>
+<h3 id="1、表的设计合理化-符合3NF"><a href="#1、表的设计合理化-符合3NF" class="headerlink" title="1、表的设计合理化(符合3NF)"></a><strong>1、表的设计合理化(符合3NF)</strong></h3><ul>
+<li><p>1NF（第一范式）</p>
+<ul>
+<li>数据库表中的所有字段值都是不可分解的原子值</li>
+</ul>
+</li>
+<li><p>2NF（第二范式）</p>
+<ul>
+<li>所有的非键值字段均完全依赖于关键字段</li>
+</ul>
+</li>
+<li><p>3NF（第三范式）</p>
+<ul>
+<li>一个非键值字段不能依赖于另一个非键值字段</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>反3NF ：没有冗余的数据库未必是最好的数据库，有时为了提高运行效率，就必须降低范式标准，适当保留冗余数据</p>
+</blockquote>
+<h3 id="2、优化SQL语句"><a href="#2、优化SQL语句" class="headerlink" title="2、优化SQL语句"></a><strong>2、优化SQL语句</strong></h3><h4 id="（1）迅速的定位执行速度慢的语句"><a href="#（1）迅速的定位执行速度慢的语句" class="headerlink" title="（1）迅速的定位执行速度慢的语句"></a><strong>（1）迅速的定位执行速度慢的语句</strong></h4><ul>
+<li><p>开启慢查询</p>
+</li>
+<li><p>设置慢查询时间</p>
+</li>
+<li><p>启用慢查询日志</p>
+</li>
+<li><p>通过mysqldumoslow工具对慢日志进行分类汇总</p>
+</li>
+</ul>
+<h4 id="（2）分析SQL语句"><a href="#（2）分析SQL语句" class="headerlink" title="（2）分析SQL语句"></a><strong>（2）分析SQL语句</strong></h4><ul>
+<li><p>通过explain分析查询 </p>
+</li>
+<li><p>通profiling可以得到更详细的信息</p>
+</li>
+</ul>
+<h4 id="（3）SQL语句优化"><a href="#（3）SQL语句优化" class="headerlink" title="（3）SQL语句优化"></a>（3）SQL语句优化</h4><ul>
+<li><p>创建索引(主键索引/唯一索引/全文索引/普通索引)</p>
+</li>
+<li><p>避免Select * (不查询多余的列与行)</p>
+</li>
+<li><p>Where中少用NOT、!=、&lt;&gt;、!&lt;、!&gt;、NOT EXISTS、NOT IN、NOT LIKE、OR，它们会忽略索引，引起全表扫描</p>
+</li>
+<li><p>用Where子句替代having子句,having只会在检索出所有记录之后才对结果集进行过滤</p>
+</li>
+<li><p>使用视图（经常被查询的列数据，并且这些数据不被经常的修改，删除）</p>
+</li>
+</ul>
+<h3 id="3、分表技术、分区技术"><a href="#3、分表技术、分区技术" class="headerlink" title="3、分表技术、分区技术"></a><strong>3、分表技术、分区技术</strong></h3><h4 id="为什么要分表和分区？"><a href="#为什么要分表和分区？" class="headerlink" title="为什么要分表和分区？"></a>为什么要分表和分区？</h4><p>  如果遇到大表的情况下，SQL语句优化已经无法继续优化了，我们可以考虑分表和分区，目的就是减少数据库的负担，提高数据库的效率，通常点来讲就是提高表的增删改查效率。</p>
+<p>什么是分表？</p>
+<p>   分表是将一个大表按照一定的规则分解成多张具有独立存储空间的实体表，我们可以称为子表，每个表都对应三个文件，MYD数据文件，.MYI索引文件，.frm表结构文件。这些子表可以分布在同一块磁盘上，也可以在不同的机器上。app读写的时候根据事先定义好的规则得到对应的子表名，然后去操作它。</p>
+<p>什么是分区？</p>
+<p>​    分区和分表相似，都是按照规则分解表。不同在于分表将大表分解为若干个独立的实体表，而分区是将数据分段划分在多个位置存放，可以是同一块磁盘也可以在不同的机器。分区后，表面上还是一张表，但数据散列到多个位置了。app读写的时候操作的还是大表名字，db自动去组织分区的数据。</p>
+<p>mysql分表和分区有什么联系呢？</p>
+<p>（1）都能提高mysql的性能，在高并发状态下都有一个良好的表现。</p>
+<p>（2）分表和分区不矛盾，可以相互配合的，对于那些大访问量，并且表数据比较多的表，我们可以采取分表和分区结合的方式，访问量不大，但是表数据很多的表，我们可以采取分区的方式等。</p>
+<p>（3）分表技术是比较麻烦的，需要手动去创建子表，app服务端读写时候需要计算子表名。采用merge好一些，但也要创建子表和配置子表间的union关系。</p>
+<p>（4）表分区相对于分表，操作方便，不需要创建子表。</p>
+<p><strong>4、读写[写: update/delete/add]分离</strong></p>
+<p>​    大型网站为了缓解大量的并发访问，除了在网站实现分布式负载均衡，远远不够。如果还是传统的数据结构，或者只是单单靠一台服务器扛，如此多的数据库连接操作，数据库必然会崩溃，数据丢失的话，后果更是不堪设想。这时候，我们会考虑如何减少数据库的联接，一方面采用优秀的代码框架，进行代码的优化，采用优秀的数据缓存技术如：memcached,如果资金丰厚的话，必然会想到架设服务器群，来分担主数据库的压力</p>
+<p>​    因此，一般来说都是通过主从复制（Master-Slave）的方式来同步数据，再通过读写分离（MySQL-Proxy，是MySQL官方提供的MySQL中间件服务）来提升数据库的并发负载能力 这样的方案来进行部署与实施的</p>
+<p>实现方式</p>
+<p><strong>第一种：</strong>php程序上自己做逻辑判断，写php代码的时候，自己在程序上做逻辑判读写匹配。select，insert、update、delete做正则匹配，根据结果选择写服务器（主服务器）。如果是select操作则选择读服务器（从服务器器） mysql_connect(‘读写的区分’)</p>
+<p><strong>第二种：</strong>MySQL中间件，基本的原理是让主数据库处理写操作（insert、update、delete），而从数据库处理查询操作（select）。而数据库的一致性则通过主从复制来实现。所以说主从复制是读写分离的基础。</p>
+<p>   下面是一些常用的MySQL中间件的背景介绍</p>
+<p><strong>5、**</strong>存储过程** </p>
+<p>（1）为什么需要存储过程</p>
+<p>   a 数据不安全，网络传送SQL代码，容易被未授权者截获</p>
+<p>   b 每次提交SQL代码都要经过语法编译后在执行，影响应用程序的运行性能</p>
+<p>   c 网络流量大，对于反复执行的SQL代码，在网络上多次传送，影响网络传输量</p>
+<p>（2）什么是存储过程</p>
+<p>​    存储过程是SQL语句和控制语句的预编译集合，保存在数据库中，可有应用程序调用执行，而且允许用户声明变量、逻辑控制语句及其他强大的编程功能。包含逻辑控制语句和数据操作语句，可以接收参数、输出参数、返回单个或多个结果值及返回值</p>
+<p>（3）使用存储过程的优点</p>
+<p>   a 模块化程序设计，只需创建一次，以后即可调用该存储过程任意次</p>
+<p>   b 执行速度快，效率高</p>
+<p>   c 减少网络流量</p>
+<p>   d 具有良好的安全性</p>
+<p><strong>6、对mysql配置优化</strong>  </p>
+<p>  <strong>下面是一些配置的优化，具体参数的解释就不写了，请自行查找资料</strong></p>
+<p><img src="https://s1.51cto.com/images/20180901/1535811137329241.png?x-oss-process=image/watermark,size_16,text_QDUxQ1RP5Y2a5a6i,color_FFFFFF,t_100,g_se,x_10,y_10,shadow_90,type_ZmFuZ3poZW5naGVpdGk=" alt="image.png"></p>
+<p><strong>7、mysql服务器硬件升级</strong></p>
+<p>（1）磁盘 </p>
+<p>MySQL每秒钟都在进行大量、复杂的查询操作，对磁盘的读写量可想而知。所以，通常认为磁盘I/O是制约MySQL性能的最大因素之一</p>
+<p>解决方案： 使用RAID-10 、磁盘阵列设备SAN </p>
+<p>（2）CPU 对于MySQL应用，推荐使用S.M.P.架构的多路对称CPU</p>
+<p>（3）内存 越大越好</p>
+<p>（4）网卡 至少两个网卡，均为1GBE。通常我会将这两个nics绑定在一起以提供冗余</p>
+<p><strong>8、定时的去清除不需要的数据,定时进行碎片整理</strong></p>
+<p>什么是磁盘碎片？</p>
+<p>​    简单的说,删除数据必然会在数据文件中造成不连续的空白空间,而当插入数据时,这些空白空间则会被利用起来.于是造成了数据的存储位置不连续,以及物理存储顺序与理论上的排序顺序不同,这种是数据碎片.实际上数据碎片分为两种,一种是单行数据碎片,另一种是多行数据碎片.前者的意思就是一行数据,被分成N个片段,存储在N个位置.后者的就是多行数据并未按照逻辑上的顺序排列.</p>
+<p>​    当有大量的删除和插入操作时,必然会产生很多未使用的空白空间,这些空间就是多出来的额外空间.索引也是文件数据,所以也会产生索引碎片,理由同上,大概就是顺序紊乱的问题.Engine 不同,OPTIMIZE 的操作也不一样的,MyISAM 因为索引和数据是分开的,所以 OPTIMIZE 可以整理数据文件,并重排索引。这样不但会浪费空间，并且查询速度也更慢。</p>
+<p>解决方案：</p>
+<p>（1）查看表碎片的方法</p>
+<p>select ROW_FORMAT,TABLE_ROWS,DATA_LENGTH,INDEX_LENGTH,MAX_DATA_LENGTH,DATA_FREE,ENGINE from TABLES where TABLE_SCHEMA=’test_db’ and TABLE_NAME=’table_name’ limit 1;</p>
+<p>（2）Innodb存储引擎清理碎片方法</p>
+<p>ALTER TABLE tablename ENGINE=InnoDB</p>
+<p>（3）Myisam存储引擎清理碎片方法</p>
+<p>OPTIMIZE TABLE table_name</p>
+<p>切记，一定要在夜里执行，表越大，越耗资源时间，不要频繁修复，可以几个月甚至一年修复一次，如果表频繁被更改，可以做个计划任务，按周/月来整理。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/MySQL/"># MySQL</a>
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/11/12/0000.SpringBoot%E9%9D%A2%E8%AF%95%E9%A2%98/">SpringBoot面试题</a>
+            
+            
+            <a class="next" rel="next" href="/2020/11/11/0503.%20%E4%B8%8B%E4%B8%80%E4%B8%AA%E6%9B%B4%E5%A4%A7%E5%85%83%E7%B4%A0%20II/">0503. 下一个更大元素 II</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© X_ray | Powered by <a href="https://xray1025.top" target="_blank">Xray</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
