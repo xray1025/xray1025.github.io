@@ -1,31 +1,714 @@
-extends includes/layout.pug
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-block content
-  #post
-    if top_img === false
-      include includes/header/post-info.pug
+    <meta name="author" content="X_ray">
 
-    article#article-container.post-content!=page.content
-    include includes/post/post-copyright.pug
-    .tag_share
-      if (theme.post_meta.post.tags)
-        .post-meta__tag-list
-          each item, index in page.tags.data
-            a(href=url_for(item.path)).post-meta__tags #[=item.name]
-      include includes/third-party/share/index.pug
+
+    <meta name="subtitle" content="yesterday you said tomorrow">
+
+
+
+
+<title>Redis | X_ray&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
         
-    if theme.reward.enable
-      !=partial('includes/post/reward', {}, {cache:theme.fragment_cache})
+    
 
-    //- ad
-    if theme.ad && theme.ad.post
-      .ads-wrap!=theme.ad.post
 
-    include includes/pagination.pug
-    if theme.related_post && theme.related_post.enable
-      != related_posts(page,site.posts)
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xray&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
 
-    if page.comments !== false && theme.comments && theme.comments.use
-      - var commentsJsLoad = true
-      !=partial('includes/third-party/comments/index', {}, {cache:theme.fragment_cache})
-      
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xray&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Redis</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">X_ray</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十月 15, 2020&nbsp;&nbsp;15:26:56</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="Redis面试题"><a href="#Redis面试题" class="headerlink" title="Redis面试题"></a>Redis面试题</h1><h1 id="1、Redis支持的数据类型？"><a href="#1、Redis支持的数据类型？" class="headerlink" title="1、Redis支持的数据类型？"></a>1、Redis支持的数据类型？</h1><h2 id="String（字符串）"><a href="#String（字符串）" class="headerlink" title="String（字符串）"></a>String（字符串）</h2><p>格式: <code>set key value</code></p>
+<p>string类型是二进制安全的。意思是redis的string可以包含任何数据。比如jpg图片或者序列化的对象 。</p>
+<p>string类型是Redis最基本的数据类型，一个键最大能存储512MB。</p>
+<h2 id="Hash（哈希）"><a href="#Hash（哈希）" class="headerlink" title="Hash（哈希）"></a>Hash（哈希）</h2><p>格式: <code>hmset name key1 value1 key2 value2</code></p>
+<p>Redis hash 是一个键值(key=&gt;value)对集合。</p>
+<p>Redis hash是一个string类型的field和value的映射表，hash特别适合用于存储对象。</p>
+<h2 id="List（列表）"><a href="#List（列表）" class="headerlink" title="List（列表）"></a>List（列表）</h2><p>Redis 列表是简单的字符串列表，按照插入顺序排序。可以添加一个元素到列表的头部（左边）或者尾部（右边）</p>
+<p>格式: <code>lpush name value</code></p>
+<p>在 key 对应 list 的头部添加字符串元素</p>
+<p>格式: <code>rpush name value</code></p>
+<p>在 key 对应 list 的尾部添加字符串元素</p>
+<p>格式: <code>lrem name index</code></p>
+<p>key 对应 list 中删除 count 个和 value 相同的元素</p>
+<p>格式: <code>llen name</code></p>
+<p>返回 key 对应 list 的长度</p>
+<h2 id="Set（集合）"><a href="#Set（集合）" class="headerlink" title="Set（集合）"></a>Set（集合）</h2><p>格式: <code>sadd name value</code></p>
+<p>Redis的Set是string类型的无序集合。</p>
+<p>集合是通过哈希表实现的，所以添加，删除，查找的复杂度都是O(1)。</p>
+<h2 id="zset-sorted-set：有序集合"><a href="#zset-sorted-set：有序集合" class="headerlink" title="zset(sorted set：有序集合)"></a>zset(sorted set：有序集合)</h2><p>格式: <code>zadd name score value</code></p>
+<p>Redis zset 和 set 一样也是string类型元素的集合,且不允许重复的成员。</p>
+<p>不同的是每个元素都会关联一个double类型的分数。redis正是通过分数来为集合中的成员进行从小到大的排序。</p>
+<p>zset的成员是唯一的,但分数(score)却可以重复。</p>
+<h2 id="Redis-优点"><a href="#Redis-优点" class="headerlink" title="Redis 优点"></a>Redis 优点</h2><ol>
+<li><p>速度快：数据存在内存中，不像MySQL那样需要从外存中进行IO操作</p>
+</li>
+<li><p>支持的数据类型很多，单个value 的最大限制为 1 GB</p>
+</li>
+<li><p>持久化的存储：RDB 和 AOF</p>
+</li>
+<li><p>支持高可用：</p>
+</li>
+<li><ol>
+<li>①Redis Sentinel，提供高可用方案，实现主从故障的自动转移；<ol start="2">
+<li>②Redis Cluster，提供集群方案，实现基于槽的分片方案，支持更大的 Redis 规模</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>丰富的特性：</p>
+</li>
+<li><ol>
+<li>①订阅发布功能 pub/sub<ol start="2">
+<li>②Key的过期策略</li>
+<li>③事务</li>
+<li>④支持多个 DB</li>
+<li>⑤计数</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h2 id="Redis-缺点"><a href="#Redis-缺点" class="headerlink" title="Redis 缺点"></a>Redis 缺点</h2><ol>
+<li>Redis 是内存数据库，存储的数据量容易收到机器内存大小的限制</li>
+<li>如果进行完整重同步，由于需要生成 RDB 文件并传输，会占用主机的 CPU。Redis 2.8中，已经有了部分重同步功能，但还是有可能出现完整重同步的（新上线的备机）</li>
+<li>修改配置文件，进行重启，将硬盘中的数据加载进内存，时间比较久。在这个过程中，Redis 不能提供服务</li>
+</ol>
+<h2 id="（X）跳表的实现"><a href="#（X）跳表的实现" class="headerlink" title="（X）跳表的实现"></a>（X）跳表的实现</h2><blockquote>
+<p>在<strong>有序双向链表（从小到大排列）</strong>的基础上，增加了多层索引链表。在查找时，就可以在不同索引链表间跳跃，达到快速查询的目的。</p>
+</blockquote>
+<ul>
+<li>查询</li>
+</ul>
+<p>从最高层（设定的Max_level）第一个元素开始向右遍历</p>
+<p>找到最后一个小于目标节点值的节点，向下层移动</p>
+<p>重复这个步骤，直到找到相应的节点为止。 （途中经过的一系列节点称之为搜索路径）</p>
+<ul>
+<li>随机层数</li>
+</ul>
+<p>跳跃表会记录当前的最高层数maxLevel，遍历时从maxLevel开始遍历，性能会高很多</p>
+<ul>
+<li>插入<ul>
+<li>在搜索插入点的过程中，将搜索路径找出来，然后创建一个新节点（分配一个层数）</li>
+<li>将搜索路径上的节点和新节点通过前向后向指针连接起来。</li>
+<li>如果新节点的高度h高于maxLevel，就更新maxLevel</li>
+</ul>
+</li>
+<li>删除<ul>
+<li>先找到搜索路径，删除节点</li>
+<li>对于每层的相关节点，重排一下前向后向的指针</li>
+<li>更新maxLevel</li>
+</ul>
+</li>
+<li>更新<ul>
+<li>先删除节点</li>
+<li>再插入节点</li>
+<li>不判断位置是否需要调整</li>
+</ul>
+</li>
+<li>若Score一样，怎么办</li>
+<li>比较value</li>
+<li>元素排名的计算<ul>
+<li>每个forward指针有一个跨度属性：表示前一个节点通过forward指针跳到当前节点，中间经过多少节点。</li>
+<li>计算元素排名时，将 搜索路径 所有节点的跨度相加，就可以得出最终的rank值</li>
+</ul>
+</li>
+</ul>
+<h2 id="为什么用跳表而不是平衡树"><a href="#为什么用跳表而不是平衡树" class="headerlink" title="为什么用跳表而不是平衡树"></a>为什么用跳表而不是平衡树</h2><ul>
+<li><p>范围查找时，平衡树比跳表复杂。</p>
+<ul>
+<li>在平衡树上，我们找到指定范围的小值之后，还需要以中序遍历的顺序继续寻找其它不超过大值的节点。如果不对平衡树进行一定的改造，这里的中序遍历并不容易实现。</li>
+<li>而在skiplist上进行范围查找就非常简单，只需要在找到小值之后，对第1层链表进行若干步的遍历就可以实现。</li>
+</ul>
+</li>
+<li><p>插入调整问题：</p>
+<ul>
+<li>平衡树的插入和删除操作可能引发子树的调整，逻辑复杂</li>
+<li>而skiplist的插入和删除只需要修改相邻节点的指针，操作简单又快速。</li>
+</ul>
+</li>
+</ul>
+<h1 id="2、什么是Redis持久化？Redis有哪几种持久化方式？优缺点是什么？"><a href="#2、什么是Redis持久化？Redis有哪几种持久化方式？优缺点是什么？" class="headerlink" title="2、什么是Redis持久化？Redis有哪几种持久化方式？优缺点是什么？"></a>2、什么是Redis持久化？Redis有哪几种持久化方式？优缺点是什么？</h1><h2 id="Redis-的持久化方式"><a href="#Redis-的持久化方式" class="headerlink" title="Redis 的持久化方式"></a>Redis 的持久化方式</h2><ul>
+<li><p>【全量】RDB 持久化：在指定的时间间隔内将内存中的数据集快照写入磁盘。</p>
+<ul>
+<li>实际操作过程：fork 一个子进程，先将数据集写入临时文件，写入成功后，再替换之前的文件，用二进制压缩存储</li>
+</ul>
+</li>
+<li><p>【增量】AOF 持久化：以日志的形式记录每一个 写、删、改操作（不记录查询操作）。以文本的形式记录，可以打开文件看到详细的操作记录</p>
+</li>
+</ul>
+<h2 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h2><p>【优点】</p>
+<ul>
+<li>备份的频率、周期可以灵活的设置</li>
+<li>非常适合冷备份，可以将一个单独的文件压缩后转移到其它存储介质上</li>
+<li>性能最大话：开始持久化时，Redis 服务进程只需 fork 出子进程，之后再由子进程完成这些持久化的工作，这样避免了服务器进程执行 IO 操作</li>
+<li>恢复速度快：相对于 AOF 机制，RDB 的恢复速度更快，更适合恢复数据，特别时数据集非常大的情况下</li>
+</ul>
+<p>【缺点】</p>
+<ul>
+<li>若系统未在持久化之前出现宕机，从宕机到上一次备份后的数据全部丢失</li>
+<li>RDB 通过fork 子进程来协助完成数据持久化的操作，因此，数据集较大时，可能会导致服务器停止服务几百毫秒（建议在业务低估，即半夜时执行）</li>
+</ul>
+<h2 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h2><p>【优点】</p>
+<ol>
+<li>相比于 RDB ，有更高的数据安全性。提供了3中同步策略，每秒同步，每修改(执行一个命令)同步、不同步</li>
+</ol>
+<ul>
+<li>每秒同步：每秒进行一次同步，是异步完成的，效率很高，系统一旦出现宕机，一秒内的数据就会将会丢失</li>
+<li>每修改同步：可以视为同步持久化，每次发生数据变化都会被立即记录到磁盘中，效率最低</li>
+<li>不同步：</li>
+</ul>
+<ol>
+<li>该机制对日志文件的写入操作是append模式，因此在写入过程中即使发生宕机，也不会破坏日志文件已经存在的内容</li>
+</ol>
+<ul>
+<li>使用 append-only 模式写入，没有任何磁盘寻址开销，写入性能高</li>
+<li>如果写入一半数据系统崩溃，在 Redis 下一次启动前，可以通过 redis-check-aof 工具来帮助我们解决数据一致性问题</li>
+</ul>
+<ol>
+<li>如果 AOF 文件过大，可以使用 rewrite 机制，</li>
+<li>AOF 日志文件记录了所有的修改操作。可以修改这个文件完成数据的重建</li>
+</ol>
+<p>【缺点】</p>
+<ol>
+<li>相同数量的数据集，AOF 文件比 RDB 文件大；恢复时速度比 RDB 慢</li>
+<li>AOF 在运行效率上往往会慢于 RDB。总之，每秒的同步策略比较高，同步禁用策略的效率和 RDB 一样高</li>
+</ol>
+<h2 id="持久化方式如何选择"><a href="#持久化方式如何选择" class="headerlink" title="持久化方式如何选择"></a>持久化方式如何选择</h2><ul>
+<li>仅使用 RDB：万一服务器宕机，会丢失很多数据</li>
+<li>仅使用 AOF：恢复速度很慢</li>
+<li>RDB-AOF混合方案：bgsave 做全量持久化，AOF 做增量持久化。Redis 实例重启时，会使用 bgsave 重新构建内存，再使用 AOF 读取最近使用的指令，使 Redis 恢复到重启之前的状态</li>
+</ul>
+<h2 id="突然掉电怎么办"><a href="#突然掉电怎么办" class="headerlink" title="突然掉电怎么办"></a>突然掉电怎么办</h2><p>取决于 AOF 的 sync 属性，如果每次写指令都同步，就不会丢失数据；如果每秒同步，最多就丢失1秒数据</p>
+<h1 id="3、Redis-有哪些架构模式？讲讲各自的特点"><a href="#3、Redis-有哪些架构模式？讲讲各自的特点" class="headerlink" title="3、Redis 有哪些架构模式？讲讲各自的特点"></a>3、Redis 有哪些架构模式？讲讲各自的特点</h1><h2 id="单机版"><a href="#单机版" class="headerlink" title="单机版"></a>单机版</h2><ul>
+<li><p>特点：</p>
+<ul>
+<li>简单</li>
+</ul>
+</li>
+<li><p>问题：</p>
+<ul>
+<li>内存容量有限</li>
+<li>处理能力有限</li>
+<li>无法高可用。</li>
+</ul>
+</li>
+</ul>
+<h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p>Redis 的复制（replication）功能允许用户根据一个 Redis 服务器来创建任意多个该服务器的复制品，其中被复制的服务器为主服务器（master），而通过复制创建出来的服务器复制品则为从服务器（slave）。</p>
+<p>只要主从服务器之间的网络连接正常，主从服务器两者会具有相同的数据，主服务器就会一直将发生在自己身上的数据更新同步 给从服务器，从而一直保证主从服务器的数据相同。</p>
+<p>特点：</p>
+<ul>
+<li>master/slave 角色</li>
+<li>master/slave 数据相同</li>
+<li>降低 master 读压力在转交从库</li>
+</ul>
+<p>问题：</p>
+<ul>
+<li>无法保证高可用</li>
+<li>没有解决 master 写的压力</li>
+</ul>
+<h2 id="哨兵"><a href="#哨兵" class="headerlink" title="哨兵"></a>哨兵</h2><p>Redis sentinel 是一个分布式系统中监控 redis 主从服务器，并在主服务器下线时自动进行故障转移。其中三个特性：</p>
+<ul>
+<li>监控（Monitoring）：Sentinel 会不断地检查主服务器和从服务器是否运作正常。</li>
+<li>提醒（Notification）：当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或者其他应用程序发送通知。</li>
+<li>自动故障迁移（Automatic failover）：当一个主服务器不能正常工作时， Sentinel 会开始一次自动故障迁移操作。</li>
+</ul>
+<p>特点：</p>
+<ul>
+<li>保证高可用</li>
+<li>监控各个节点</li>
+<li>自动故障迁移</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>主从模式，切换需要时间丢数据</li>
+<li>没有解决 master 写的压力</li>
+</ul>
+<h2 id="集群（proxy-型）"><a href="#集群（proxy-型）" class="headerlink" title="集群（proxy 型）"></a>集群（proxy 型）</h2><p>Twemproxy 是一个 Twitter 开源的一个 redis 和 memcache 快速/轻量级代理服务器；Twemproxy 是一个快速的单线程代理程序，支持 Memcached ASCII 协议和 redis 协议。</p>
+<p>特点：</p>
+<ul>
+<li>多种 hash 算法：MD5、CRC16、CRC32、CRC32a、hsieh、murmur、Jenkins</li>
+<li>支持失败节点自动删除</li>
+<li>后端 Sharding 分片逻辑对业务透明，业务方的读写方式和操作单个 Redis 一致</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>增加了新的 proxy，需要维护其高可用。</li>
+<li>failover 逻辑需要自己实现，其本身不能支持故障的自动转移可扩展性差，进行扩缩容都需要手动干预</li>
+</ul>
+<h2 id="集群（直连型）："><a href="#集群（直连型）：" class="headerlink" title="集群（直连型）："></a>集群（直连型）：</h2><p>从redis 3.0之后版本支持redis-cluster集群，Redis-Cluster采用无中心结构，每个节点保存数据和整个集群状态,每个节点都和其他所有节点连接。</p>
+<p>特点：</p>
+<ul>
+<li>无中心架构（不存在哪个节点影响性能瓶颈），少了 proxy 层。</li>
+<li>数据按照 slot 存储分布在多个节点，节点间数据共享，可动态调整数据分布。</li>
+<li>可扩展性，可线性扩展到 1000 个节点，节点可动态添加或删除。</li>
+<li>高可用性，部分节点不可用时，集群仍可用。通过增加 Slave 做备份数据副本<br>  -实现故障自动 failover，节点之间通过 gossip 协议交换状态信息，用投票机制完成 Slave到 Master 的角色提升。</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>资源隔离性较差，容易出现相互影响的情况。</li>
+<li>数据通过异步复制,不保证数据的强一致性</li>
+</ul>
+<h1 id="4、使用过Redis分布式锁么，它是怎么实现的？"><a href="#4、使用过Redis分布式锁么，它是怎么实现的？" class="headerlink" title="4、使用过Redis分布式锁么，它是怎么实现的？"></a>4、使用过Redis分布式锁么，它是怎么实现的？</h1><p>先拿setnx来争抢锁，抢到之后，再用expire给锁加一个过期时间防止锁忘记了释放。</p>
+<p>如果在setnx之后执行expire之前进程意外crash或者要重启维护了，那会怎么样？</p>
+<p>set指令有非常复杂的参数，这个应该是可以同时把setnx和expire合成一条指令来用的！</p>
+<h1 id="5、使用过Redis做异步队列么，怎么用的？有什么缺点？"><a href="#5、使用过Redis做异步队列么，怎么用的？有什么缺点？" class="headerlink" title="5、使用过Redis做异步队列么，怎么用的？有什么缺点？"></a>5、使用过Redis做异步队列么，怎么用的？有什么缺点？</h1><p>一般使用list结构作为队列，rpush生产消息，lpop消费消息。当lpop没有消息的时候，要适当sleep一会再重试。</p>
+<h3 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h3><ul>
+<li>在消费者下线的情况下，生产的消息会丢失，得使用专业的消息队列如rabbitmq等。</li>
+</ul>
+<p>能不能生产一次消费多次呢？</p>
+<p>使用pub/sub主题订阅者模式，可以实现1:N的消息队列。</p>
+<h1 id="6、什么是缓存穿透？如何避免？什么是缓存雪崩？何如避免？"><a href="#6、什么是缓存穿透？如何避免？什么是缓存雪崩？何如避免？" class="headerlink" title="6、什么是缓存穿透？如何避免？什么是缓存雪崩？何如避免？"></a>6、什么是缓存穿透？如何避免？什么是缓存雪崩？何如避免？</h1><ul>
+<li><h2 id="穿透、雪崩、击穿的思维导图"><a href="#穿透、雪崩、击穿的思维导图" class="headerlink" title="穿透、雪崩、击穿的思维导图"></a>穿透、雪崩、击穿的思维导图</h2><p>​    </p>
+<p>  <img src="https://cdn.nlark.com/yuque/0/2020/svg/1200640/1587200664360-7c300f02-d01c-4559-899a-9cb66430a32a.svg" alt="img"></p>
+</li>
+</ul>
+<pre><code>## 缓存“穿透”是什么
+
+穿透：指查询一个**不存在**的数据，由于缓存中没有，就会被动写，从数据库中查询数据，数据库中也不存在这个数据，就无法写入缓存。这导致每次查询这个不存在的数据时，都要去DB中去查询，缓存失去了它的意义。
+
+
+
+## 缓存“穿透”如何避免
+
+方案一：缓存空对象
+
+- 从数据库中查询到的数据为空时，将这个空结果进行缓存，具体的值要使用特殊的标识（能和真正的缓存数据区分开）
+- 对这个数据设置较短的过期时间（例如：5分钟）
+
+&gt; 为什么设置较短的过期时间？因为缓存久了没有意义，浪费缓存的内存
+
+
+
+方案二：BloomFilter 布隆过滤器
+
+构建布隆过滤器，在布隆过滤器中存储对应的 key 是否存在，若存在 ，说明 key 对应的值不为空（未必存在）
+
+- 根据 key 查询布隆过滤器。如果值不存在，直接返回；如果值存在，继续向下执行
+
+- 根据 key 查询缓存中的值。若存在，就返回；若不存在，继续向下执行
+
+- 查询 DB 对应的值，存在，就更新到缓存，并返回该值
+
+
+
+## 缓存“雪崩”是什么
+
+缓存雪崩：缓存由于某些原因无法提供服务（例如：缓存挂掉），所有请求打到 DB 中，导致 DB 负荷增大，最终挂掉的情况
+
+
+
+## 缓存“雪崩”如何避免
+
+一、缓存高可用：通过搭建缓存的高可用，避免缓存挂掉，导致无法提供服务的情况，降低缓存雪崩的情况
+
+二、本地缓存：即使 Redis 缓存挂了，也可以将 DB 查询到的结果缓存到本地，避免后序的请求全部到达 DB中。
+
+但是使用本地缓存也会出现相关的问题：
+
+1. 如何保证本地缓存的实时性？
+
+1. 1. 消息队列：数据更新时，发布数据更新的信息；会有相应的消费者消费消息，从而更新本地缓存
+    2. 过期时间：设置较短的过期时间，过期之后从 DB 重新查询数据
+    3. 手动过期：【如何避免缓存击穿——方案二】
+
+1. 每个进程可能会本地缓存相同的数据，导致数据浪费
+
+1. 1. 配置本地缓存的过期策略和缓存数量上限
+
+三、请求 DB 限流：通过限制 DB 的每秒请求数，避免把 DB 也打挂。
+
+这样有两个好处：
+
+1. 有一部分用户还是可以正常使用的
+2. 未来缓存服务恢复后，整个系统可以正常使用，不用处理 DB 也挂了的情况
+
+四、提前演练：在项目上线前，对缓存挂掉的情况进行演练，看看后端的负载情况以及可能出现的问题，在这个基础上进行一些预案设定
+
+
+
+## 缓存“击穿”是什么
+
+缓存击穿：指某个热度非常高的数据，在某个时间点过期，在这个时间点，恰好有对这个key的大量请求，这些请求发现缓存数据过期，会从 DB 中查询数据并写回缓存，但是这时候的请求量太大可能使DB挂掉
+
+- 对于一些设置了过期时间的 key，如果这些 key 可能会在某些时间点会被高并发的访问，是一种非常“热点”的数据，需要考虑这个问题。
+- 区别：
+
+  - 和缓存“穿透”的区别：这个 key 是真实存在对应值的
+  - 和缓存“雪崩”的区别：前者针对某一个 key，后者针对很多 key
+
+
+
+## 缓存“击穿”如何避免
+
+一、互斥锁：请求发现缓存中数据不存在时，去查 DB 前，使用分布式锁，保证有且只有一个线程去查询 DB，并更新到缓存。流程如下：
+
+1. 获取分布式锁：若超时，则抛出异常，返回；若成功，继续执行
+2. 查询缓存：若缓存中存在值，就直接返回；若不存在，就继续向下执行。（获取到锁的时候，可能已经被前面的线程查询过数据库，并将数据更新到缓存中了）
+3. 查询 DB，并更新到缓存中，返回值
+
+二、手动过期：在缓存上，不设置过期时间；在功能上，将过期时间存在 key 对应的 value 中。流程如下：
+
+1. 获取缓存：通过 value 的过期时间，判断是否过期，若没有过期，则直接返回；若过期，继续执行
+2. 通过后台的一个异步线程进行缓存的构建，也就是“手动过期”。通过后台的异步线程，保证有且只有一个线程查询 DB
+3. 返回数据：同时，虽然数据已经过期，但还是直接返回。通过这样的方式，保证服务的可用性，但是损失了一定的时效性
+
+两个方案的优缺点：
+
+|      | 互斥锁                             | 手动过期       |
+| ---- | ---------------------------------- | -------------- |
+| 优点 | 保证一致性                         | 用户无需等待   |
+| 缺点 | 1、代码复杂度增加2、存在死锁的风险 | 无法保证一致性 |
+
+## 缓存预热是什么？如何实现？
+
+缓存预热
+
+缓存系统刚启动时，没有任何数据，如果依靠用户请求的方式来重建缓存数据，对数据库的压力会非常大。
+
+此时最好是在启动时，把热点数据加载好。这样，用户在请求时，读取的是缓存的数据，无需读取 DB 来重建缓存数据。
+
+如何实现
+
+1. 数据量不大时，项目启动时，自动进行初始化
+2. 写一个脚本，手动执行它，加载热点数据
+3. 写一个管理界面，手动点击，将相应的热点数据写到缓存中</code></pre>
+<h1 id="7、Redis常用命令"><a href="#7、Redis常用命令" class="headerlink" title="7、Redis常用命令"></a>7、Redis常用命令</h1><p>管理命令</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># dbsize 返回当前数据库 key 的数量。</span></span><br><span class="line"><span class="meta"># info 返回当前 redis 服务器状态和一些统计信息。</span></span><br><span class="line"><span class="meta"># monitor 实时监听并返回redis服务器接收到的所有请求信息。</span></span><br><span class="line"><span class="meta"># shutdown 把数据同步保存到磁盘上，并关闭redis服务。</span></span><br><span class="line"><span class="meta"># config get parameter 获取一个 redis 配置参数信息。（个别参数可能无法获取）</span></span><br><span class="line"><span class="meta"># config set parameter value 设置一个 redis 配置参数信息。（个别参数可能无法获取）</span></span><br><span class="line"><span class="meta"># config resetstat 重置 info 命令的统计信息。（重置包括：keyspace 命中数、</span></span><br><span class="line"><span class="meta"># keyspace 错误数、 处理命令数，接收连接数、过期 key 数）</span></span><br><span class="line"><span class="meta"># debug object key 获取一个 key 的调试信息。</span></span><br><span class="line"><span class="meta"># debug segfault 制造一次服务器当机。</span></span><br><span class="line"><span class="meta"># flushdb 删除当前数据库中所有 key,此方法不会失败。小心慎用</span></span><br><span class="line"><span class="meta"># flushall 删除全部数据库中所有 key，此方法不会失败。小心慎用</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="工具命令"><a href="#工具命令" class="headerlink" title="工具命令"></a>工具命令</h2><figure class="highlight vala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#redis-server：Redis 服务器的 daemon 启动程序</span></span><br><span class="line"><span class="meta">#redis-cli：Redis 命令行操作工具。当然，你也可以用 telnet 根据其纯文本协议来操作</span></span><br><span class="line"><span class="meta">#redis-benchmark：Redis 性能测试工具，测试 Redis 在你的系统及你的配置下的读写性能</span></span><br><span class="line">$redis-benchmark -n <span class="number">100000</span> –c <span class="number">50</span></span><br><span class="line"><span class="meta">#模拟同时由 50 个客户端发送 100000 个 SETs/GETs 查询</span></span><br><span class="line"><span class="meta">#redis-check-aof：更新日志检查</span></span><br><span class="line"><span class="meta">#redis-check-dump：本地数据库检查</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="8、为什么Redis-单线程却能支撑高并发？"><a href="#8、为什么Redis-单线程却能支撑高并发？" class="headerlink" title="8、为什么Redis 单线程却能支撑高并发？"></a>8、为什么Redis 单线程却能支撑高并发？</h1><p>1.redis是基于内存的，内存的读写速度非常快（纯内存）。</p>
+<p>2.redis是单线程的，省去了很多上下文切换线程的时间（避免线程切换和竞态消耗）。</p>
+<p>3.Redis全程使用hash结构，读取速度快，还有一些特殊的数据结构，对数据存储进行了优化，如压缩表，对短数据进行压缩存储，再如，跳表，使用有序的数据结构加快读取的速度。</p>
+<p>4.redis使用多路复用技术，可以处理并发的连接（非阻塞IO）。</p>
+<p>多路I/O复用模型是利用select、poll、epoll可以同时监察多个流的IO事件的能力，在空闲的时候，会把当前线程阻塞掉，当有一个或者多个流的IO事件时，就从阻塞状态中唤醒，于是程序就会轮训一遍所有的流（epoll是只轮训发出了事件的流），并且只一次按顺序的处理就绪的流，这种做法就避免了大量的无用操作，这里的“多路”是指多个网络连接，“复用”是指复用同一个线程，采用多路IO复用技术可以让单个线程高效的处理多个连接请求</p>
+<h1 id="9、Redis常见性能问题和解决方案："><a href="#9、Redis常见性能问题和解决方案：" class="headerlink" title="9、Redis常见性能问题和解决方案："></a>9、Redis常见性能问题和解决方案：</h1><p>1).Master写内存快照，save命令调度rdbSave函数，会阻塞主线程的工作，当快照比较大时对性能影响是非常大的，会间断性暂停服务，所以Master最好不要写内存快照。</p>
+<p>2).Master AOF持久化，如果不重写AOF文件，这个持久化方式对性能的影响是最小的，但是AOF文件会不断增大，AOF文件过大会影响Master重启的恢复速度。Master最好不要做任何持久化工作，包括内存快照和AOF日志文件，特别是不要启用内存快照做持久化，如果数据比较关键，某个Slave开启AOF备份数据，策略为每秒同步一次。</p>
+<p>3).Master调用BGREWRITEAOF重写AOF文件，AOF在重写的时候会占大量的CPU和内存资源，导致服务load过高，出现短暂服务暂停现象。</p>
+<p>4).Redis主从复制的性能问题，为了主从复制的速度和连接的稳定性，Slave和Master最好在同一个局域网内</p>
+<h1 id="10、Redis的并发竞争问题如何解决"><a href="#10、Redis的并发竞争问题如何解决" class="headerlink" title="10、Redis的并发竞争问题如何解决?"></a>10、Redis的并发竞争问题如何解决?</h1><p>Redis为单进程单线程模式，采用队列模式将并发访问变为串行访问。Redis本身没有锁的概念，Redis对于多个客户端连接并不存在竞争，但是在Jedis客户端对Redis进行并发访问时会发生连接超时、数据转换错误、阻塞、客户端关闭连接等问题，这些问题均是由于客户端连接混乱造成。对此有2种解决方法：</p>
+<ul>
+<li>客户端角度，为保证每个客户端间正常有序与Redis进行通信，对连接进行池化，同时对客户端读写Redis操作采用内部锁synchronized。</li>
+<li>服务器角度，利用setnx实现锁。</li>
+</ul>
+<p>注：对于第一种，需要应用程序自己处理资源的同步，可以使用的方法比较通俗，可以使用synchronized也可以使用lock；第二种需要用到Redis的setnx命令，但是需要注意一些问题。</p>
+<h1 id="11、说说Redis的内存淘汰策略"><a href="#11、说说Redis的内存淘汰策略" class="headerlink" title="11、说说Redis的内存淘汰策略"></a>11、说说Redis的内存淘汰策略</h1><p><strong>redis 提供 6种数据淘汰策略：</strong></p>
+<ol>
+<li><strong>volatile-lru</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选最近最少使用的数据淘汰</li>
+<li><strong>volatile-ttl</strong>：从已设置过期时间的数据集（server.db[i].expires）中挑选将要过期的数据淘汰</li>
+<li><strong>volatile-random</strong>：从已设置过期时间的数据集（server.db[i].expires）中任意选择数据淘汰</li>
+<li><strong>allkeys-lru</strong>：当内存不足以容纳新写入数据时，在键空间中，移除最近最少使用的key（这个是最常用的）</li>
+<li><strong>allkeys-random</strong>：从数据集（server.db[i].dict）中任意选择数据淘汰</li>
+<li><strong>no-eviction</strong>：禁止驱逐数据，也就是说当内存不足以容纳新写入数据时，新写入操作会报错。</li>
+</ol>
+<p>4.0版本后增加以下两种：</p>
+<ol>
+<li><strong>volatile-lfu</strong>：从已设置过期时间的数据集(server.db[i].expires)中挑选最不经常使用的数据淘汰</li>
+<li><strong>allkeys-lfu</strong>：当内存不足以容纳新写入数据时，在键空间中，移除最不经常使用的key</li>
+</ol>
+<h1 id="12、为什么要用-redis-为什么要用缓存？"><a href="#12、为什么要用-redis-为什么要用缓存？" class="headerlink" title="12、为什么要用 redis/为什么要用缓存？"></a>12、为什么要用 redis/为什么要用缓存？</h1><p>主要从“高性能”和“高并发”这两点来看待这个问题</p>
+<p><strong>高性能：</strong></p>
+<p>假如用户第一次访问数据库中的某些数据。这个过程会比较慢，因为是从硬盘上读取的。将该用户访问的数据存在缓存中，这样下一次再访问这些数据的时候就可以直接从缓存中获取了。操作缓存就是直接操作内存，所以速度相当快。如果数据库中的对应数据改变的之后，同步改变缓存中相应的数据即可！</p>
+<p><strong>高并发：</strong></p>
+<p>直接操作缓存能够承受的请求是远远大于直接访问数据库的，可以考虑把数据库中的部分数据转移到缓存中去，这样用户的一部分请求会直接到缓存这里而不用经过数据库。</p>
+<h1 id="13、为什么要用-redis-而不用-map-guava-做缓存"><a href="#13、为什么要用-redis-而不用-map-guava-做缓存" class="headerlink" title="13、为什么要用 redis 而不用 map/guava 做缓存?"></a>13、为什么要用 redis 而不用 map/guava 做缓存?</h1><p>缓存分为本地缓存和分布式缓存。以 Java 为例，使用自带的 map 或者 guava 实现的是本地缓存，最主要的特点是轻量以及快速，生命周期随着 jvm 的销毁而结束，并且在多实例的情况下，每个实例都需要各自保存一份缓存，缓存不具有一致性。</p>
+<p>使用 redis 或 memcached 之类的称为分布式缓存，在多实例的情况下，各实例共用一份缓存数据，缓存具有一致性。缺点是需要保持 redis 或 memcached服务的高可用，整个程序架构上较为复杂。</p>
+<h1 id="14、redis-的线程模型"><a href="#14、redis-的线程模型" class="headerlink" title="14、redis 的线程模型"></a>14、redis 的线程模型</h1><p>redis 内部使用文件事件处理器 <code>file event handler</code>，这个文件事件处理器是单线程的，所以 redis 才叫做单线程的模型。它采用 IO 多路复用机制同时监听多个 socket，根据 socket 上的事件来选择对应的事件处理器进行处理。</p>
+<p>文件事件处理器的结构包含 4 个部分：</p>
+<ul>
+<li>多个 socket</li>
+<li>IO 多路复用程序</li>
+<li>文件事件分派器</li>
+<li>事件处理器（连接应答处理器、命令请求处理器、命令回复处理器）</li>
+</ul>
+<p>多个 socket 可能会并发产生不同的操作，每个操作对应不同的文件事件，但是 IO 多路复用程序会监听多个 socket，会将 socket 产生的事件放入队列中排队，事件分派器每次从队列中取出一个事件，把该事件交给对应的事件处理器进行处理。</p>
+<h1 id="15、redis-和-memcached-的区别"><a href="#15、redis-和-memcached-的区别" class="headerlink" title="15、redis 和 memcached 的区别"></a>15、redis 和 memcached 的区别</h1><ol>
+<li><strong>redis支持更丰富的数据类型（支持更复杂的应用场景）</strong>：Redis不仅仅支持简单的k/v类型的数据，同时还提供list，set，zset，hash等数据结构的存储。memcache支持简单的数据类型，String。</li>
+<li><strong>Redis支持数据的持久化，可以将内存中的数据保持在磁盘中，重启的时候可以再次加载进行使用,而Memecache把数据全部存在内存之中。</strong></li>
+<li><strong>集群模式</strong>：memcached没有原生的集群模式，需要依靠客户端来实现往集群中分片写入数据；但是 redis 目前是原生支持 cluster 模式的.</li>
+<li><strong>Memcached是多线程，非阻塞IO复用的网络模型；Redis使用单线程的多路 IO 复用模型。</strong></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th><strong>对比参数</strong></th>
+<th><strong>Redis</strong></th>
+<th><strong>Memcached</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>类型</td>
+<td>1、支持内存2、非关系型数据库</td>
+<td>1、支持内存2、key-value键值对形式3、缓存系统</td>
+</tr>
+<tr>
+<td>数据存储类型</td>
+<td>1、String2、List3、Set4、Hash5、Sort Set [俗称ZSet]</td>
+<td>1、文本型2、1进制类型[新版增加]</td>
+</tr>
+<tr>
+<td>查询[操作]类型</td>
+<td>1、批量操作2、事务支持[ 虽然是假的事务]3、每个类型不同的CRUD</td>
+<td>1、CRUD2、少量的其他命令</td>
+</tr>
+<tr>
+<td>附加功能</td>
+<td>1、发布/订阅模式2、主从分区3、序列化支持4、脚本支持[Lua脚本]</td>
+<td>1、多线程服务支持</td>
+</tr>
+<tr>
+<td>网络IO模型</td>
+<td>1、单进程模式</td>
+<td>2、多线程、非阻塞|O模式</td>
+</tr>
+<tr>
+<td>事件库</td>
+<td>自封装简易事件库AeEvent</td>
+<td>贵族血统的L ibEvent事件库</td>
+</tr>
+<tr>
+<td>|持久化支持</td>
+<td>1、RDB2、AOF</td>
+<td>不支持</td>
+</tr>
+</tbody></table>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Redis/"># Redis</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/10/18/JAVA%E9%9B%86%E5%90%88/">Java集合</a>
+            
+            
+            <a class="next" rel="next" href="/2020/10/15/0000.Mybatis%E9%9D%A2%E8%AF%95%E9%A2%98/">Mybatis面试题</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© X_ray | Powered by <a href="https://xray1025.top" target="_blank">Xray</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>

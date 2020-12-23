@@ -1,31 +1,1191 @@
-extends includes/layout.pug
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-block content
-  #post
-    if top_img === false
-      include includes/header/post-info.pug
+    <meta name="author" content="X_ray">
 
-    article#article-container.post-content!=page.content
-    include includes/post/post-copyright.pug
-    .tag_share
-      if (theme.post_meta.post.tags)
-        .post-meta__tag-list
-          each item, index in page.tags.data
-            a(href=url_for(item.path)).post-meta__tags #[=item.name]
-      include includes/third-party/share/index.pug
+
+    <meta name="subtitle" content="yesterday you said tomorrow">
+
+
+
+
+<title>Linux常用命令 | X_ray&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
         
-    if theme.reward.enable
-      !=partial('includes/post/reward', {}, {cache:theme.fragment_cache})
+    
 
-    //- ad
-    if theme.ad && theme.ad.post
-      .ads-wrap!=theme.ad.post
 
-    include includes/pagination.pug
-    if theme.related_post && theme.related_post.enable
-      != related_posts(page,site.posts)
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xray&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
 
-    if page.comments !== false && theme.comments && theme.comments.use
-      - var commentsJsLoad = true
-      !=partial('includes/third-party/comments/index', {}, {cache:theme.fragment_cache})
-      
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xray&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Linux常用命令</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">X_ray</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十月 26, 2020&nbsp;&nbsp;16:31:32</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/%E9%9D%A2%E8%AF%95/">面试</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="一、文件目录操作"><a href="#一、文件目录操作" class="headerlink" title="一、文件目录操作"></a>一、文件目录操作</h2><h3 id="1-ls-命令"><a href="#1-ls-命令" class="headerlink" title="1. ls 命令"></a>1. ls 命令</h3><p>ls 命令不仅可以查看 linux 文件夹包含的文件而且可以查看文件权限(包括目录、文件夹、文件权限)查看目录信息等等。</p>
+<h3 id="命令格式"><a href="#命令格式" class="headerlink" title="命令格式"></a>命令格式</h3><p>ls [选项][目录名]</p>
+<h3 id="常用参数"><a href="#常用参数" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-l ：列出长数据串，包含文件的属性与权限数据等</li>
+<li>-a ：列出全部的文件，连同隐藏文件（开头为.的文件）一起列出来（常用）</li>
+<li>-d ：仅列出目录本身，而不是列出目录的文件数据</li>
+<li>-h ：将文件容量以较易读的方式（GB，kB等）列出来</li>
+<li>-R ：连同子目录的内容一起列出（递归列出），等于该目录下的所有文件都会显示出来</li>
+</ul>
+<h3 id="使用实例"><a href="#使用实例" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.列出 home 目录下的所有文件和目录的详细资料。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ls</span> -a -l <span class="string">/home</span></span><br><span class="line"><span class="keyword">ls</span> -al <span class="string">/home</span></span><br></pre></td></tr></table></figure>
+
+<p>2.列出当前目录下所有以”d”开头的文件目录详情内容。</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ls</span> -l d*</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-cd命令"><a href="#2-cd命令" class="headerlink" title="2.cd命令"></a>2.cd命令</h3><p>最基本的命令语句，其他的命令语句要进行操作，都是建立在使用 cd 命令上的。用于切换当前目录至dirName。</p>
+<h3 id="命令格式-1"><a href="#命令格式-1" class="headerlink" title="命令格式"></a>命令格式</h3><p>cd [目录名]</p>
+<h3 id="操作案例"><a href="#操作案例" class="headerlink" title="操作案例"></a>操作案例</h3><p>1.从当前目录进入系统根目录。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /</span><br></pre></td></tr></table></figure>
+
+<p>2.跳转到 home/Code 目录。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd <span class="regexp">/home/</span>Code</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-pwd-命令"><a href="#3-pwd-命令" class="headerlink" title="3.pwd 命令"></a>3.pwd 命令</h3><p>查看”当前工作目录”的完整路径。</p>
+<h3 id="命令格式："><a href="#命令格式：" class="headerlink" title="命令格式："></a>命令格式：</h3><p>pwd [选项]</p>
+<h3 id="常用参数："><a href="#常用参数：" class="headerlink" title="常用参数："></a>常用参数：</h3><ul>
+<li>-P :显示实际物理路径，而非使用连接（link）路径</li>
+<li>-L :当目录为连接路径时，显示连接路径</li>
+</ul>
+<h3 id="操作案例-1"><a href="#操作案例-1" class="headerlink" title="操作案例"></a>操作案例</h3><p>1.显示当前所在路径。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">pwd</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-mkdir-命令"><a href="#4-mkdir-命令" class="headerlink" title="4.mkdir 命令"></a>4.mkdir 命令</h3><p>用来创建指定的名称的目录，要求创建目录的用户在当前目录中具有写权限，并且指定的目录名不能是当前目录中已有的目录。</p>
+<h3 id="命令格式-2"><a href="#命令格式-2" class="headerlink" title="命令格式"></a>命令格式</h3><p>mkdir [选项] 目录</p>
+<h3 id="常用参数-1"><a href="#常用参数-1" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-m, –mode=模式，设定权限&lt;模式&gt; (类似 chmod)，而不是 rwxrwxrwx 减 umask</li>
+<li>-p, –parents 可以是一个路径名称。此时若路径中的某些目录尚不存在,加上此选项后,系统将自动建立好那些尚不存在的目录,即一次可以建立多个目录;</li>
+<li>-v, –verbose 每次创建新目录都显示信息</li>
+<li>–help 显示此帮助信息并退出</li>
+<li>–version 输出版本信息并退出</li>
+</ul>
+<h3 id="使用实例-1"><a href="#使用实例-1" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.创建一个空目录。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mkdir</span> <span class="keyword">test</span></span><br></pre></td></tr></table></figure>
+
+<p>2.递归创建多个目录。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mkdir</span> <span class="keyword">test</span>/test1</span><br></pre></td></tr></table></figure>
+
+<p>3.创建权限为777的目录。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">mkdir</span> -m <span class="number">777</span> test<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>4.创建目录都显示信息。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">mkdir</span> -v test<span class="number">4</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-rm-命令"><a href="#5-rm-命令" class="headerlink" title="5.rm 命令"></a>5.rm 命令</h3><p>删除一个目录中的一个或多个文件或目录，如果没有使用- r选项，则rm不会删除目录。如果使用 rm 来删除文件，通常仍可以将该文件恢复原状。</p>
+<h3 id="命令格式-3"><a href="#命令格式-3" class="headerlink" title="命令格式"></a>命令格式</h3><p>rm [选项] 文件</p>
+<h3 id="常用参数-2"><a href="#常用参数-2" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-f, –force 忽略不存在的文件，从不给出提示。</li>
+<li>-i, –interactive 进行交互式删除</li>
+<li>-r, -R, –recursive 指示rm将参数中列出的全部目录和子目录均递归地删除。</li>
+<li>-v, –verbose 详细显示进行的步骤</li>
+<li>–help 显示此帮助信息并退出</li>
+<li>–version 输出版本信息并退出</li>
+</ul>
+<h3 id="使用实例-2"><a href="#使用实例-2" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.删除文件 test.txt,系统会提示是否删除。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">rm</span> <span class="keyword">test</span>.txt</span><br></pre></td></tr></table></figure>
+
+<p>2.强制删除 test.txt，系统不再提示。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> <span class="operator">-f</span> test.txt</span><br></pre></td></tr></table></figure>
+
+<p>3.将 test 子目录及目录中所有档案删除。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">rm</span> -r <span class="keyword">test</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="6-rmdir-命令"><a href="#6-rmdir-命令" class="headerlink" title="6.rmdir 命令"></a>6.rmdir 命令</h3><p>该命令从一个目录中删除一个或多个子目录项，删除某目录时也必须具有对父目录的写权限。</p>
+<h3 id="命令格式-4"><a href="#命令格式-4" class="headerlink" title="命令格式"></a>命令格式</h3><p>rmdir [选项] 目录</p>
+<h3 id="常用参数-3"><a href="#常用参数-3" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>p 递归删除目录dirname，当子目录删除后其父目录为空时，也一同被删除。如果整个路径被删除或者由于某种原因保留部分路径，则系统在标准输出上显示相应的信息。</li>
+<li>-v, –verbose 显示指令执行过程</li>
+</ul>
+<h3 id="使用实例-3"><a href="#使用实例-3" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.删除空目录 test1，非空目录无法删除。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">rmdir</span> test<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>2.当子目录被删除后使它也成为空目录的话，则顺便一并删除</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">rmdir</span> -p test<span class="number">2</span> # test 目录下仅有 test<span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-mv-命令"><a href="#7-mv-命令" class="headerlink" title="7. mv 命令"></a>7. mv 命令</h3><p>可以用来移动文件或者将文件改名（move (rename) files）。当第二个参数类型是文件时，mv命令完成文件重命名。当第二个参数是已存在的目录名称时，源文件或目录参数可以有多个，mv命令将各参数指定的源文件均移至目标目录中。</p>
+<h3 id="命令格式-5"><a href="#命令格式-5" class="headerlink" title="命令格式"></a>命令格式</h3><p>mv [选项] 源文件或目录 目标文件或目录</p>
+<h3 id="常用参数-4"><a href="#常用参数-4" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-b ：若需覆盖文件，则覆盖前先行备份</li>
+<li>-f ：force 强制的意思，如果目标文件已经存在，不会询问而直接覆盖</li>
+<li>-i ：若目标文件 (destination) 已经存在时，就会询问是否覆盖</li>
+<li>-u ：若目标文件已经存在，且 source 比较新，才会更新(update)</li>
+<li>-t ： –target-directory=DIRECTORY move all SOURCE arguments into DIRECTORY，即指定mv的目标目录，该选项适用于移动多个源文件到一个目录的情况，此时目标目录在前，源文件在后</li>
+</ul>
+<h3 id="使用实例-4"><a href="#使用实例-4" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.将 test1.txt 重命名为 test2.txt。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">mv</span> <span class="selector-tag">test1</span><span class="selector-class">.txt</span> <span class="selector-tag">test2</span><span class="selector-class">.txt</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.移动文件 test1.txt 到目录 test2</p>
+<figure class="highlight cos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">mv</span> test1.txt test2</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>3.将文件 test1.txt、test2.txt、test3.txt 移动到目录 test3。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">mv</span> <span class="selector-tag">test1</span><span class="selector-class">.txt</span> <span class="selector-tag">test2</span><span class="selector-class">.txt</span> <span class="selector-tag">test3</span><span class="selector-class">.txt</span> <span class="selector-tag">test3</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-cp-命令"><a href="#8-cp-命令" class="headerlink" title="8.cp 命令"></a>8.cp 命令</h3><p>将源文件复制至目标文件，或将多个源文件复制至目标目录。</p>
+<h3 id="命令格式-6"><a href="#命令格式-6" class="headerlink" title="命令格式"></a>命令格式</h3><p>cp [选项] 源文件 目录 或 cp [选项] -t 目录 源文件</p>
+<h3 id="常用参数-5"><a href="#常用参数-5" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-t –target-directory 指定目标目录</li>
+<li>-i –interactive 覆盖前询问（使前面的 -n 选项失效）</li>
+<li>-n –no-clobber 不要覆盖已存在的文件（使前面的 -i 选项失效）</li>
+<li>-f –force 强行复制文件或目录，不论目的文件或目录是否已经存在</li>
+<li>-u –update 使用这项参数之后，只会在源文件的修改时间较目的文件更新时，或是对应的目的文件并不存在，才复制文件</li>
+</ul>
+<h3 id="使用实例-5"><a href="#使用实例-5" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.复制文件 test1.txt 到 test1 目录</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cp</span> test1.txt test1 <span class="meta"># 若文件存在，会提示是否覆盖。若不存在直接完成复制</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>复制 test1 整个目录到 test2</li>
+</ol>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cp</span> -a test1 test2</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-touch-命令"><a href="#9-touch-命令" class="headerlink" title="9. touch 命令"></a>9. touch 命令</h3><p>touch命令参数可更改文档或目录的日期时间，包括存取时间和更改时间。</p>
+<h3 id="命令格式-7"><a href="#命令格式-7" class="headerlink" title="命令格式"></a>命令格式</h3><p>touch [选项] 文件</p>
+<h3 id="常用参数-6"><a href="#常用参数-6" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-a 或–time=atime或–time=access或–time=use  只更改存取时间</li>
+<li>-c 或–no-create  不建立任何文档</li>
+<li>-d  使用指定的日期时间，而非现在的时间</li>
+<li>-f  此参数将忽略不予处理，仅负责解决BSD版本touch指令的兼容性问题</li>
+<li>-m 或–time=mtime或–time=modify  只更改变动时间</li>
+<li>-r  把指定文档或目录的日期时间，统统设成和参考文档或目录的日期时间相同 -t  使用指定的日期时间，而非现在的时间</li>
+</ul>
+<h3 id="使用实例-6"><a href="#使用实例-6" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.创建不存在的文件test.txt</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch <span class="keyword">test</span>.txt</span><br></pre></td></tr></table></figure>
+
+<p>2.更新 test.txt 的实践和 test1.txt 时间戳相同</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">touch</span> <span class="selector-tag">-r</span> <span class="selector-tag">test</span><span class="selector-class">.txt</span> <span class="selector-tag">test1</span><span class="selector-class">.txt</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="10-cat-命令"><a href="#10-cat-命令" class="headerlink" title="10.cat 命令"></a>10.cat 命令</h3><p>用来显示文件内容，或者将几个文件连接起来显示，或者从标准输入读取内容并显示，它常与重定向符号配合使用。</p>
+<h3 id="命令格式-8"><a href="#命令格式-8" class="headerlink" title="命令格式"></a>命令格式</h3><p>cat [选项] [文件]</p>
+<h3 id="常用参数-7"><a href="#常用参数-7" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-A, –show-all 等价于 -vET</li>
+<li>-b, –number-nonblank 对非空输出行编号</li>
+<li>-e 等价于 -vE</li>
+<li>-E, –show-ends 在每行结束处显示 $</li>
+<li>-n, –number 对输出的所有行编号,由1开始对所有输出的行数编号</li>
+<li>-s, –squeeze-blank 有连续两行以上的空白行，就代换为一行的空白行</li>
+<li>-t 与 -vT 等价</li>
+<li>-T, –show-tabs 将跳格字符显示为 ^I</li>
+<li>-u (被忽略)</li>
+<li>-v, –show-nonprinting 使用 ^ 和 M- 引用，除了 LFD 和 TAB 之外</li>
+</ul>
+<h3 id="使用实例-7"><a href="#使用实例-7" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.把 test.log 的文件内容加上行号后输入 test1.log 这个文件里。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cat</span> -<span class="keyword">n</span> <span class="keyword">test</span>.<span class="keyword">log</span>  test1.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>将 test.log 的文件内容反向显示。</li>
+</ol>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tac  <span class="keyword">test</span>.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="11-nl-命令"><a href="#11-nl-命令" class="headerlink" title="11. nl 命令"></a>11. nl 命令</h3><p>输出的文件内容自动的加上行号！其默认的结果与 cat -n 有点不太一样， nl 可以将行号做比较多的显示设计，包括位数与是否自动补齐 0 等等的功能。</p>
+<h3 id="命令格式-9"><a href="#命令格式-9" class="headerlink" title="命令格式"></a>命令格式</h3><p>nl [选项] [文件]</p>
+<h3 id="常用参数-8"><a href="#常用参数-8" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-b ：指定行号指定的方式，主要有两种：</li>
+<li>-b a ：表示不论是否为空行，也同样列出行号(类似 cat -n)</li>
+<li>-b t ：如果有空行，空的那一行不要列出行号(默认值)</li>
+<li>-n ：列出行号表示的方法，主要有三种：</li>
+<li>-n ln ：行号在萤幕的最左方显示</li>
+<li>-n rn ：行号在自己栏位的最右方显示，且不加 0</li>
+<li>-n rz ：行号在自己栏位的最右方显示，且加 0</li>
+<li>-w ：行号栏位的占用的位数</li>
+</ul>
+<h3 id="使用实例-8"><a href="#使用实例-8" class="headerlink" title="使用实例"></a>使用实例</h3><ol>
+<li>用 nl 列出 test.log 的内容。</li>
+</ol>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">nl</span> <span class="keyword">test</span>.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>用 nl 列出 test.log 的内容，空本行也加上行号。</li>
+</ol>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">nl</span> -b a <span class="keyword">test</span>.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-more-命令"><a href="#12-more-命令" class="headerlink" title="12.more 命令"></a>12.more 命令</h3><p>more 命令和 cat 的功能一样都是查看文件里的内容，但有所不同的是more可以按页来查看文件的内容，还支持直接跳转行等功能。</p>
+<h3 id="命令格式-10"><a href="#命令格式-10" class="headerlink" title="命令格式"></a>命令格式</h3><p>more [-dlfpcsu ] [-num ] [+/ pattern] [+ linenum] [file … ]</p>
+<h3 id="常用参数-9"><a href="#常用参数-9" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>+n 从笫n行开始显示</li>
+<li>-n 定义屏幕大小为n行</li>
+<li>+/pattern 在每个档案显示前搜寻该字串（pattern），然后从该字串前两行之后开始显示</li>
+<li>-c 从顶部清屏，然后显示</li>
+<li>-d 提示“Press space to continue，’q’ to quit（按空格键继续，按q键退出）”，禁用响铃功能</li>
+<li>-l 忽略Ctrl+l（换页）字符</li>
+<li>-p 通过清除窗口而不是滚屏来对文件进行换页，与-c选项相似</li>
+<li>-s 把连续的多个空行显示为一行</li>
+<li>-u 把文件内容中的下画线去掉</li>
+</ul>
+<h3 id="操作指令"><a href="#操作指令" class="headerlink" title="操作指令"></a>操作指令</h3><ul>
+<li>Enter：向下n行，需要定义。默认为1行</li>
+<li>Ctrl+F：向下滚动一屏</li>
+<li>空格键：向下滚动一屏</li>
+<li>Ctrl+B：返回上一屏</li>
+<li>= ：输出当前行的行号</li>
+<li>：f ：输出文件名和当前行的行号</li>
+<li>V ：调用vi编辑器</li>
+<li>!命令 ：调用Shell，并执行命令</li>
+<li>q ：退出more</li>
+</ul>
+<h3 id="使用实例-9"><a href="#使用实例-9" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示文件 test.log 第3行起内容。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">more</span> +3 <span class="keyword">test</span>.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.从文件 test.log 查找第一个出现“day3”字符串的行，并从该处前2行开始显示输出。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">more</span> +/day3 <span class="keyword">test</span>.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>设置每屏显示行数</li>
+</ol>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">more</span> -5 <span class="keyword">test</span>.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="13-less-命令"><a href="#13-less-命令" class="headerlink" title="13. less 命令"></a>13. less 命令</h3><p>less 与 more 类似，但使用 less 可以随意浏览文件，而 more 仅能向前移动，却不能向后移动，而且 less 在查看之前不会加载整个文件。</p>
+<h3 id="命令格式-11"><a href="#命令格式-11" class="headerlink" title="命令格式"></a>命令格式</h3><p>less [参数] 文件</p>
+<h3 id="常用参数-10"><a href="#常用参数-10" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-b &lt;缓冲区大小&gt; 设置缓冲区的大小</li>
+<li>-e 当文件显示结束后，自动离开</li>
+<li>-f 强迫打开特殊文件，例如外围设备代号、目录和二进制文件</li>
+<li>-g 只标志最后搜索的关键词</li>
+<li>-i 忽略搜索时的大小写</li>
+<li>-m 显示类似more命令的百分比</li>
+<li>-N 显示每行的行号</li>
+<li>-o &lt;文件名&gt; 将less 输出的内容在指定文件中保存起来</li>
+<li>-Q 不使用警告音</li>
+<li>-s 显示连续空行为一行</li>
+<li>-S 行过长时间将超出部分舍弃</li>
+<li>-x &lt;数字&gt; 将“tab”键显示为规定的数字空格</li>
+</ul>
+<h3 id="操作命令"><a href="#操作命令" class="headerlink" title="操作命令"></a>操作命令</h3><ul>
+<li>/字符串：向下搜索“字符串”的功能</li>
+<li>?字符串：向上搜索“字符串”的功能</li>
+<li>n：重复前一个搜索（与 / 或 ? 有关）</li>
+<li>N：反向重复前一个搜索（与 / 或 ? 有关）</li>
+<li>b 向后翻一页</li>
+<li>d 向后翻半页</li>
+<li>h 显示帮助界面</li>
+<li>Q 退出less 命令</li>
+<li>u 向前滚动半页</li>
+<li>y 向前滚动一行</li>
+<li>空格键 滚动一行</li>
+<li>回车键 滚动一页</li>
+<li>[pagedown]： 向下翻动一页</li>
+<li>[pageup]： 向上翻动一页</li>
+</ul>
+<h3 id="使用实例-10"><a href="#使用实例-10" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.查看文件 test.log。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">less</span> <span class="keyword">test</span>.log</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="14-head-命令"><a href="#14-head-命令" class="headerlink" title="14. head 命令"></a>14. head 命令</h3><p>head 用来显示档案的开头至标准输出中，默认 head 命令打印其相应文件的开头 10 行。</p>
+<h3 id="命令格式-12"><a href="#命令格式-12" class="headerlink" title="命令格式"></a>命令格式</h3><p>head [参数] [文件]</p>
+<h3 id="常用参数-11"><a href="#常用参数-11" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-q 隐藏文件名</li>
+<li>-v 显示文件名</li>
+<li>-c&lt;字节&gt; 显示字节数</li>
+<li>-n&lt;行数&gt; 显示的行数</li>
+</ul>
+<h3 id="使用实例-11"><a href="#使用实例-11" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示文件 test.log 的前 5 行</p>
+<figure class="highlight stan"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">head</span> -n <span class="number">5</span> test.<span class="built_in">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.显示文件 test.log 前 20 个字节</p>
+<figure class="highlight stan"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">head</span> -c <span class="number">20</span> test.<span class="built_in">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="15-tail-命令"><a href="#15-tail-命令" class="headerlink" title="15.tail 命令"></a>15.tail 命令</h3><p>显示指定文件末尾内容，不指定文件时，作为输入信息进行处理。常用查看日志文件。</p>
+<h3 id="命令格式-13"><a href="#命令格式-13" class="headerlink" title="命令格式"></a>命令格式</h3><p>tail [必要参数] [选择参数] [文件]</p>
+<h3 id="常用参数-12"><a href="#常用参数-12" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-f 循环读取</li>
+<li>-q 不显示处理信息</li>
+<li>-v 显示详细的处理信息</li>
+<li>-c&lt;数目&gt; 显示的字节数</li>
+<li>-n&lt;行数&gt; 显示行数</li>
+<li>–pid=PID 与-f合用,表示在进程ID,PID死掉之后结束.</li>
+<li>-q, –quiet, –silent 从不输出给出文件名的首部</li>
+<li>-s, –sleep-interval=S 与-f合用,表示在每次反复的间隔休眠S秒</li>
+</ul>
+<h3 id="使用实例-12"><a href="#使用实例-12" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示文件 test.log 最后 5 行内容。</p>
+<figure class="highlight stan"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">tail</span> -n <span class="number">5</span> test.<span class="built_in">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.循环查看文件内容</p>
+<figure class="highlight stan"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">tail</span> -f test.<span class="built_in">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="二、文件查找"><a href="#二、文件查找" class="headerlink" title="二、文件查找"></a>二、文件查找</h2><h3 id="16-which-命令"><a href="#16-which-命令" class="headerlink" title="16.which 命令"></a>16.which 命令</h3><p>which指令会在PATH变量指定的路径中，搜索某个系统命令的位置，并且返回第一个搜索结果。</p>
+<h3 id="命令格式-14"><a href="#命令格式-14" class="headerlink" title="命令格式"></a>命令格式</h3><p>which 可执行文件名称</p>
+<h3 id="常用参数-13"><a href="#常用参数-13" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-n  指定文件名长度，指定的长度必须大于或等于所有文件中最长的文件名</li>
+<li>-p  与-n参数相同，但此处的包括了文件的路径</li>
+<li>-w  指定输出时栏位的宽度</li>
+<li>-V  显示版本信息</li>
+</ul>
+<h3 id="使用实例-13"><a href="#使用实例-13" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.查找文件、显示命令路径。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">which</span> <span class="built_in">pwd</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>用 which 去找出 which</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">which</span> <span class="built_in">which</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="17-whereis-命令"><a href="#17-whereis-命令" class="headerlink" title="17.whereis 命令"></a>17.whereis 命令</h3><p>whereis命令是定位可执行文件、源代码文件、帮助文件在文件系统中的位置。</p>
+<h3 id="命令格式-15"><a href="#命令格式-15" class="headerlink" title="命令格式"></a>命令格式</h3><p>whereis [-bmsu] [BMS 目录名 -f ] 文件名</p>
+<h3 id="常用参数-14"><a href="#常用参数-14" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-b 定位可执行文件</li>
+<li>-m 定位帮助文件</li>
+<li>-s 定位源代码文件</li>
+<li>-u 搜索默认路径下除可执行文件、源代码文件、帮助文件以外的其它文件</li>
+<li>-B 指定搜索可执行文件的路径</li>
+<li>-M 指定搜索帮助文件的路径</li>
+<li>-S 指定搜索源代码文件的路径</li>
+</ul>
+<h3 id="使用实例-14"><a href="#使用实例-14" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.将和 svn 文件相关的文件都查找出来。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">whereis</span> svn</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.只将二进制文件查找出来。</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="symbol">whereis</span> -<span class="keyword">b</span> svn</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="18-locate-命令"><a href="#18-locate-命令" class="headerlink" title="18.locate 命令"></a>18.locate 命令</h3><p>可以很快速的搜寻档案系统内是否有指定的档案。</p>
+<h3 id="命令格式-16"><a href="#命令格式-16" class="headerlink" title="命令格式"></a>命令格式</h3><p>Locate [选择参数] [样式]</p>
+<h3 id="常用参数-15"><a href="#常用参数-15" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-e 将排除在寻找的范围之外。</li>
+<li>-1 如果 是 1．则启动安全模式。在安全模式下，使用者不会看到权限无法看到 的档案。这会始速度减慢，因为 locate 必须至实际的档案系统中取得档案的 权限资料。</li>
+<li>-f 将特定的档案系统排除在外，例如我们没有到理要把 proc 档案系统中的档案 放在资料库中。</li>
+<li>-q 安静模式，不会显示任何错误讯息。</li>
+<li>-n 至多显示 n个输出。</li>
+<li>-r 使用正规运算式 做寻找的条件。</li>
+<li>-o 指定资料库存的名称。</li>
+<li>-d 指定资料库的路径</li>
+</ul>
+<h3 id="使用实例-15"><a href="#使用实例-15" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.查找和 pwd 相关的所有文件。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">locate <span class="built_in">pwd</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>搜索etc 目录下，所有以 m 开头的文件。</li>
+</ol>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">locate <span class="regexp">/etc/m</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="19-find-命令"><a href="#19-find-命令" class="headerlink" title="19. find 命令"></a>19. find 命令</h3><p>主要作用是沿着文件层次结构向下遍历，匹配符合条件的文件，并执行相应的操作。</p>
+<h3 id="命令格式-17"><a href="#命令格式-17" class="headerlink" title="命令格式"></a>命令格式</h3><p>find [选项] [搜索路径] [表达式]</p>
+<h3 id="常用参数-16"><a href="#常用参数-16" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-print find 命令将匹配的文件输出到标准输出</li>
+<li>-exec find 命令对匹配的文件执行该参数所给出的</li>
+<li>shell 命令</li>
+<li>-name 按照文件名查找文件</li>
+<li>-type 查找某一类型的文件</li>
+</ul>
+<h3 id="使用实例-16"><a href="#使用实例-16" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.打印当前目录文件目录列表。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">find</span> . -print</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.打印当前目录下所有不以.txt 结尾的文件名。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="builtin-name">find</span> . ! -name <span class="string">&quot;*.txt&quot;</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>3.打印当前目录下所有权限为 777 的 php 文件。</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">find</span> . -<span class="built_in">type</span> f -<span class="built_in">name</span> <span class="string">&quot;*.php&quot;</span> -perm <span class="number">777</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>4.找到当前目录下所有 php 文件，并显示其详细信息。</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">find</span> . -<span class="built_in">name</span> <span class="string">&quot;*.php&quot;</span> -<span class="built_in">exec</span> ls -l &#123;&#125; \;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>5.查找当前目录下所有 c 代码文件，统计总行数。</p>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">find</span> . -<span class="built_in">type</span> f -<span class="built_in">name</span> <span class="string">&quot;*.c&quot;</span> | xargs wc -l</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>xargs 命令可以从标准输入接收输入，并把输入转换为一个特定的参数列表。 命令格式: command | xargs [选项] [command] xargs 命令应该紧跟在管道操作符之后，因为它以标准输入作为主要的源数据流。 常用参数</p>
+<ul>
+<li>-n 指定每行最大的参数数量</li>
+<li>-d 指定分隔符</li>
+</ul>
+</blockquote>
+<h2 id="三、文件打包上传和下载"><a href="#三、文件打包上传和下载" class="headerlink" title="三、文件打包上传和下载"></a>三、文件打包上传和下载</h2><h3 id="20-tar-命令"><a href="#20-tar-命令" class="headerlink" title="20.tar 命令"></a>20.tar 命令</h3><p>用来压缩和解压文件。tar本身不具有压缩功能。他是调用压缩功能实现的。</p>
+<h3 id="命令格式-18"><a href="#命令格式-18" class="headerlink" title="命令格式"></a>命令格式</h3><p>tar [必要参数] [选择参数] [文件]</p>
+<h3 id="常用参数-17"><a href="#常用参数-17" class="headerlink" title="常用参数"></a>常用参数</h3><p>必要参数：</p>
+<ul>
+<li>-A 新增压缩文件到已存在的压缩</li>
+<li>-B 设置区块大小</li>
+<li>-c 建立新的压缩文件</li>
+<li>-d 记录文件的差别</li>
+<li>-r 添加文件到已经压缩的文件</li>
+<li>-u 添加改变了和现有的文件到已经存在的压缩文件</li>
+<li>-x 从压缩的文件中提取文件</li>
+<li>-t 显示压缩文件的内容</li>
+<li>-z 支持gzip解压文件</li>
+<li>-j 支持bzip2解压文件</li>
+<li>-Z 支持compress解压文件</li>
+<li>-v 显示操作过程</li>
+<li>-l 文件系统边界设置</li>
+<li>-k 保留原有文件不覆盖</li>
+<li>-m 保留文件不被覆盖</li>
+<li>-W 确认压缩文件的正确性</li>
+</ul>
+<p>可选参数：</p>
+<ul>
+<li>-b 设置区块数目</li>
+<li>-C 切换到指定目录</li>
+<li>-f 指定压缩文件</li>
+<li>–help 显示帮助信息</li>
+<li>–version 显示版本信息</li>
+</ul>
+<h3 id="使用实例-17"><a href="#使用实例-17" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.将文件打全部打包成tar包。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tar -cvf <span class="keyword">test</span>.tar <span class="keyword">test</span>.log    <span class="comment"># 仅打包，不压缩！ </span></span><br><span class="line"></span><br><span class="line">tar -zcvf <span class="keyword">test</span>.tar.gz <span class="keyword">test</span>.log  <span class="comment"># 打包后，以 gzip 压缩 </span></span><br><span class="line"></span><br><span class="line">tar -zcvf <span class="keyword">test</span>.tar.bz2 <span class="keyword">test</span>.log <span class="comment"># 打包后，以 bzip2 压缩</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.将 tar 包解压缩</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">tar</span> <span class="selector-tag">-zxvf</span> <span class="selector-tag">test</span><span class="selector-class">.tar</span><span class="selector-class">.gz</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="21-gzip-命令"><a href="#21-gzip-命令" class="headerlink" title="21.gzip 命令"></a>21.gzip 命令</h3><p>使用广泛的压缩程序，文件经它压缩过后，其名称后面会多出”.gz”的扩展名。</p>
+<h3 id="命令格式-19"><a href="#命令格式-19" class="headerlink" title="命令格式"></a>命令格式</h3><p>gzip [参数] [文件或者目录]</p>
+<h3 id="常用参数-18"><a href="#常用参数-18" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-a或–ascii  使用ASCII文字模式。</li>
+<li>-c或–stdout或–to-stdout  把压缩后的文件输出到标准输出设备，不去更动原始文件。</li>
+<li>-d或–decompress或—-uncompress  解开压缩文件。</li>
+<li>-f或–force  强行压缩文件。不理会文件名称或硬连接是否存在以及该文件是否为符号连接。</li>
+<li>-h或–help  在线帮助。</li>
+</ul>
+<h3 id="使用实例-18"><a href="#使用实例-18" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.把 test1 目录下的每个文件压缩成.gz 文件。</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">test6 <span class="variable">$ </span>gzip *</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、文件权限设置"><a href="#四、文件权限设置" class="headerlink" title="四、文件权限设置"></a>四、文件权限设置</h2><h3 id="22-chmod-命令"><a href="#22-chmod-命令" class="headerlink" title="22.chmod 命令"></a>22.chmod 命令</h3><p>用于改变linux系统文件或目录的访问权限。</p>
+<h3 id="命令格式-20"><a href="#命令格式-20" class="headerlink" title="命令格式"></a>命令格式</h3><p>chmod [-cfvR] [–help] [–version] mode file</p>
+<h3 id="常用参数-19"><a href="#常用参数-19" class="headerlink" title="常用参数"></a>常用参数</h3><p>必要参数：</p>
+<ul>
+<li>-c 当发生改变时，报告处理信息</li>
+<li>-f 错误信息不输出</li>
+<li>-R 处理指定目录以及其子目录下的所有文件</li>
+<li>-v 运行时显示详细处理信息</li>
+<li>选择参数：</li>
+<li>–reference=&lt;目录或者文件&gt; 设置成具有指定目录或者文件具有相同的权限</li>
+<li>–version 显示版本信息</li>
+<li>&lt;权限范围&gt;+&lt;权限设置&gt; 使权限范围内的目录或者文件具有指定的权限</li>
+<li>&lt;权限范围&gt;-&lt;权限设置&gt; 删除权限范围的目录或者文件的指定权限</li>
+<li>&lt;权限范围&gt;=&lt;权限设置&gt; 设置权限范围内的目录或者文件的权限为指定的值</li>
+</ul>
+<p>权限范围：</p>
+<ul>
+<li>u ：目录或者文件的当前的用户</li>
+<li>g ：目录或者文件的当前的群组</li>
+<li>o ：除了目录或者文件的当前用户或群组之外的用户或者群组</li>
+<li>a ：所有的用户及群组</li>
+</ul>
+<p>权限代号：</p>
+<ul>
+<li>r：读权限，用数字4表示</li>
+<li>w：写权限，用数字2表示</li>
+<li>x：执行权限，用数字1表示</li>
+<li>-：删除权限，用数字0表示</li>
+</ul>
+<h3 id="使用实例-19"><a href="#使用实例-19" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.增加文件所有用户组可执行权限</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod <span class="keyword">a</span>+x test.<span class="built_in">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>删除所有用户的可执行权限</li>
+</ol>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod <span class="keyword">a</span>-x test.<span class="built_in">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="23-chgrp-命令"><a href="#23-chgrp-命令" class="headerlink" title="23.chgrp 命令"></a>23.chgrp 命令</h3><p>可采用群组名称或群组识别码的方式改变文件或目录的所属群组。</p>
+<h3 id="命令格式-21"><a href="#命令格式-21" class="headerlink" title="命令格式"></a>命令格式</h3><p>chgrp [选项] [组] [文件]</p>
+<h3 id="常用参数-20"><a href="#常用参数-20" class="headerlink" title="常用参数"></a>常用参数</h3><p>必要参数:</p>
+<ul>
+<li>-c 当发生改变时输出调试信息</li>
+<li>-f 不显示错误信息</li>
+<li>-R 处理指定目录以及其子目录下的所有文件</li>
+<li>-v 运行时显示详细的处理信息</li>
+<li>–dereference 作用于符号链接的指向，而不是符号链接本身</li>
+<li>–no-dereference 作用于符号链接本身</li>
+</ul>
+<p>选择参数:</p>
+<ul>
+<li>–reference=&lt;文件或者目录&gt;</li>
+<li>–help 显示帮助信息</li>
+<li>–version 显示版本信息</li>
+</ul>
+<h3 id="使用实例-20"><a href="#使用实例-20" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.改变文件的群组属性</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chgrp -v bin <span class="keyword">test</span>.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.改变文件test1.log 的群组属性，使得文件test1.log的群组属性和参考文件test.log的群组属性相同</p>
+<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chgrp --<span class="keyword">reference</span>=test.<span class="keyword">log</span> test1.<span class="keyword">log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="24-chown-命令"><a href="#24-chown-命令" class="headerlink" title="24.chown 命令"></a>24.chown 命令</h3><p>通过chown改变文件的拥有者和群组。</p>
+<h3 id="命令格式-22"><a href="#命令格式-22" class="headerlink" title="命令格式"></a>命令格式</h3><p>chown [选项] [所有者] [:[组]] 文件</p>
+<h3 id="常用参数-21"><a href="#常用参数-21" class="headerlink" title="常用参数"></a>常用参数</h3><p>必要参数:</p>
+<ul>
+<li>-c 显示更改的部分的信息</li>
+<li>-f 忽略错误信息</li>
+<li>-h 修复符号链接</li>
+<li>-R 处理指定目录以及其子目录下的所有文件</li>
+<li>-v 显示详细的处理信息</li>
+<li>-deference 作用于符号链接的指向，而不是链接文件本身</li>
+</ul>
+<p>选择参数:</p>
+<ul>
+<li>–reference=&lt;目录或文件&gt; 把指定的目录/文件作为参考，把操作的文件/目录设置成参考文件/目录相同拥有者和群组</li>
+<li>–from=&lt;当前用户：当前群组&gt; 只有当前用户和群组跟指定的用户和群组相同时才进行改变</li>
+<li>–help 显示帮助信息</li>
+<li>–version 显示版本信息</li>
+</ul>
+<h3 id="使用实例-21"><a href="#使用实例-21" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.改变拥有者和群组</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">chown</span> <span class="selector-tag">mail</span><span class="selector-pseudo">:mail</span> <span class="selector-tag">test</span><span class="selector-class">.log</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="五、磁盘存储"><a href="#五、磁盘存储" class="headerlink" title="五、磁盘存储"></a>五、磁盘存储</h2><h3 id="25-df-命令"><a href="#25-df-命令" class="headerlink" title="25. df 命令"></a>25. df 命令</h3><p>显示指定磁盘文件的可用空间。</p>
+<h3 id="命令格式-23"><a href="#命令格式-23" class="headerlink" title="命令格式"></a>命令格式</h3><p>df [选项] [文件]</p>
+<h3 id="常用参数-22"><a href="#常用参数-22" class="headerlink" title="常用参数"></a>常用参数</h3><p>必要参数：</p>
+<ul>
+<li>-a 全部文件系统列表</li>
+<li>-h 方便阅读方式显示</li>
+<li>-H 等于“-h”，但是计算式，1K=1000，而不是1K=1024</li>
+<li>-i 显示inode信息</li>
+<li>-k 区块为1024字节</li>
+<li>-l 只显示本地文件系统</li>
+<li>-m 区块为1048576字节</li>
+<li>–no-sync 忽略 sync 命令</li>
+<li>-P 输出格式为POSIX</li>
+<li>–sync 在取得磁盘信息前，先执行sync命令</li>
+<li>-T 文件系统类型</li>
+</ul>
+<p>选择参数：</p>
+<ul>
+<li>–block-size=&lt;区块大小&gt; 指定区块大小</li>
+<li>-t&lt;文件系统类型&gt; 只显示选定文件系统的磁盘信息</li>
+<li>-x&lt;文件系统类型&gt; 不显示选定文件系统的磁盘信息</li>
+<li>–help 显示帮助信息</li>
+<li>–version 显示版本信息</li>
+</ul>
+<h3 id="使用实例-22"><a href="#使用实例-22" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示指定磁盘使用情况</p>
+<figure class="highlight excel"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">df -<span class="built_in">t</span> ext3</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="26-du-命令"><a href="#26-du-命令" class="headerlink" title="26. du 命令"></a>26. du 命令</h3><p>显示每个文件和目录的磁盘使用空间。</p>
+<h3 id="命令格式-24"><a href="#命令格式-24" class="headerlink" title="命令格式"></a>命令格式</h3><p>du [选项] [文件]</p>
+<h3 id="常用参数-23"><a href="#常用参数-23" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-a或-all 显示目录中个别文件的大小。</li>
+<li>-b或-bytes 显示目录或文件大小时，以byte为单位。 – -c或–total 除了显示个别目录或文件的大小外，同时也显示所有目录或文件的总和。</li>
+<li>-k或–kilobytes 以KB(1024bytes)为单位输出。</li>
+<li>-m或–megabytes 以MB为单位输出。</li>
+<li>-s或–summarize 仅显示总计，只列出最后加总的值。</li>
+<li>-h或–human-readable 以K，M，G为单位，提高信息的可读性。</li>
+<li>-x或–one-file-xystem 以一开始处理时的文件系统为准，若遇上其它不同的文件系统目录则略过。</li>
+<li>-L&lt;符号链接&gt;或–dereference&lt;符号链接&gt; 显示选项中所指定符号链接的源文件大小。</li>
+<li>-S或–separate-dirs 显示个别目录的大小时，并不含其子目录的大小。</li>
+<li>-X&lt;文件&gt;或–exclude-from=&lt;文件&gt; 在&lt;文件&gt;指定目录或文件。</li>
+<li>–exclude=&lt;目录或文件&gt; 略过指定的目录或文件。</li>
+<li>-D或–dereference-args 显示指定符号链接的源文件大小。</li>
+<li>-H或–si 与-h参数相同，但是K，M，G是以1000为换算单位。</li>
+<li>-l或–count-links 重复计算硬件链接的文件。</li>
+</ul>
+<h3 id="使用实例-23"><a href="#使用实例-23" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示指定目录或文件所占空间</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">du <span class="keyword">test</span> <span class="comment"># 目录</span></span><br><span class="line">du <span class="keyword">test</span>.log <span class="comment"># 文件</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="六、性能监控和优化命令"><a href="#六、性能监控和优化命令" class="headerlink" title="六、性能监控和优化命令"></a>六、性能监控和优化命令</h2><h3 id="27-top-命令"><a href="#27-top-命令" class="headerlink" title="27.top 命令"></a>27.top 命令</h3><p>显示当前系统正在执行的进程的相关信息，包括进程ID、内存占用率、CPU占用率等。</p>
+<h3 id="命令格式-25"><a href="#命令格式-25" class="headerlink" title="命令格式"></a>命令格式</h3><p>top [参数]</p>
+<h3 id="常见参数"><a href="#常见参数" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-b 批处理</li>
+<li>-c 显示完整的治命令</li>
+<li>-I 忽略失效过程</li>
+<li>-s 保密模式</li>
+<li>-S 累积模式</li>
+<li>-i&lt;时间&gt; 设置间隔时间</li>
+<li>-u&lt;用户名&gt; 指定用户名</li>
+<li>-p&lt;进程号&gt; 指定进程</li>
+<li>-n&lt;次数&gt; 循环显示的次数</li>
+</ul>
+<h3 id="使用实例-24"><a href="#使用实例-24" class="headerlink" title="使用实例"></a>使用实例</h3><ol>
+<li>显示进程信息。</li>
+</ol>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">top</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="28-free-命令"><a href="#28-free-命令" class="headerlink" title="28.free 命令"></a>28.free 命令</h3><p>显示系统使用和空闲的内存情况，包括物理内存、交互区内存(swap)和内核缓冲区内存。</p>
+<h3 id="命令格式-26"><a href="#命令格式-26" class="headerlink" title="命令格式"></a>命令格式</h3><p>free [参数]</p>
+<h3 id="常见参数-1"><a href="#常见参数-1" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-b  以Byte为单位显示内存使用情况</li>
+<li>-k  以KB为单位显示内存使用情况</li>
+<li>-m  以MB为单位显示内存使用情况</li>
+<li>-g 以GB为单位显示内存使用情况</li>
+<li>-o  不显示缓冲区调节列</li>
+<li>-s&lt;间隔秒数&gt;  持续观察内存使用状况</li>
+<li>-t  显示内存总和列。</li>
+<li>-V  显示版本信息。</li>
+</ul>
+<h3 id="使用实例-25"><a href="#使用实例-25" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示内存情况。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">free</span></span><br><span class="line"><span class="built_in">free</span> -g #以GB为单位</span><br><span class="line"><span class="built_in">free</span> -m #以MB为单位</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="29-vmstat"><a href="#29-vmstat" class="headerlink" title="29. vmstat"></a>29. vmstat</h3><p>用来显示虚拟内存的信息。</p>
+<h3 id="命令格式-27"><a href="#命令格式-27" class="headerlink" title="命令格式"></a>命令格式</h3><ul>
+<li>vmstat [-a] [-n] [-S unit] [delay [ count]]</li>
+<li>vmstat [-s] [-n] [-S unit]</li>
+<li>vmstat [-m] [-n] [delay [ count]]</li>
+<li>vmstat [-d] [-n] [delay [ count]]</li>
+<li>vmstat [-p disk partition] [-n] [delay [ count]]</li>
+<li>vmstat [-f]</li>
+<li>vmstat [-V]</li>
+</ul>
+<h3 id="常见参数-2"><a href="#常见参数-2" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-a：显示活跃和非活跃内存</li>
+<li>-f：显示从系统启动至今的fork数量</li>
+<li>-m：显示slabinfo</li>
+<li>-n：只在开始时显示一次各字段名称</li>
+<li>-s：显示内存相关统计信息及多种系统活动数量</li>
+<li>delay：刷新时间间隔。如果不指定，只显示一条结果</li>
+<li>count：刷新次数。如果不指定刷新次数，但指定了刷新时间间隔，这时刷新次数为无穷</li>
+<li>-d：显示磁盘相关统计信息</li>
+<li>-p：显示指定磁盘分区统计信息</li>
+<li>-S：使用指定单位显示。参数有 k 、K 、m 、M ，分别代表1000、1024、1000000、1048576字节（byte）。默认单位为K（1024 bytes）</li>
+</ul>
+<h3 id="使用实例-26"><a href="#使用实例-26" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示活跃和非活跃内存。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vmstat -a <span class="number">5</span> <span class="number">5</span> # <span class="number">5</span>秒时间内进行<span class="number">5</span>次采样</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="30-lostat-命令"><a href="#30-lostat-命令" class="headerlink" title="30.lostat 命令"></a>30.lostat 命令</h3><p>通过iostat方便查看CPU、网卡、tty设备、磁盘、CD-ROM 等等设备的活动情况, 负载信息。</p>
+<h3 id="命令格式-28"><a href="#命令格式-28" class="headerlink" title="命令格式"></a>命令格式</h3><p>iostat [参数] [时间] [次数]</p>
+<h3 id="常见参数-3"><a href="#常见参数-3" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-C 显示CPU使用情况</li>
+<li>-d 显示磁盘使用情况</li>
+<li>-k 以 KB 为单位显示</li>
+<li>-m 以 M 为单位显示</li>
+<li>-N 显示磁盘阵列(LVM) 信息</li>
+<li>-n 显示NFS 使用情况</li>
+<li>-p[磁盘] 显示磁盘和分区的情况</li>
+<li>-t 显示终端和CPU的信息</li>
+<li>-x 显示详细信息</li>
+</ul>
+<h3 id="使用实例-27"><a href="#使用实例-27" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.定时显示所有信息。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">iostat <span class="number">2</span> <span class="number">3</span> #每隔 <span class="number">2</span>秒刷新显示，且显示<span class="number">3</span>次</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="31-lsof-命令"><a href="#31-lsof-命令" class="headerlink" title="31. lsof 命令"></a>31. lsof 命令</h3><p>用于查看你进程开打的文件，打开文件的进程，进程打开的端口(TCP、UDP)。</p>
+<h3 id="命令格式-29"><a href="#命令格式-29" class="headerlink" title="命令格式"></a>命令格式</h3><p>lsof [参数] [文件]</p>
+<h3 id="常见参数-4"><a href="#常见参数-4" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-a 列出打开文件存在的进程</li>
+<li>-c&lt;进程名&gt; 列出指定进程所打开的文件</li>
+<li>-g 列出GID号进程详情</li>
+<li>-d&lt;文件号&gt; 列出占用该文件号的进程</li>
+<li>+d&lt;目录&gt; 列出目录下被打开的文件</li>
+<li>+D&lt;目录&gt; 递归列出目录下被打开的文件</li>
+<li>-n&lt;目录&gt; 列出使用NFS的文件</li>
+<li>-i&lt;条件&gt; 列出符合条件的进程。（4、6、协议、:端口、 @ip ）</li>
+<li>-p&lt;进程号&gt; 列出指定进程号所打开的文件</li>
+<li>-u 列出UID号进程详情</li>
+</ul>
+<h3 id="使用实例-28"><a href="#使用实例-28" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.查看谁正在使用bash文件，也就是说查找某个文件相关的进程。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lsof <span class="regexp">/bin/</span>bash</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="七、网络命令"><a href="#七、网络命令" class="headerlink" title="七、网络命令"></a>七、网络命令</h2><h3 id="32-ipconfig-命令"><a href="#32-ipconfig-命令" class="headerlink" title="32.ipconfig 命令"></a>32.ipconfig 命令</h3><p>ifconfig 命令用来查看和配置网络设备。</p>
+<h3 id="命令格式-30"><a href="#命令格式-30" class="headerlink" title="命令格式"></a>命令格式</h3><p>ifconfig [网络设备] [参数]</p>
+<h3 id="常见参数-5"><a href="#常见参数-5" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>up 启动指定网络设备/网卡</li>
+<li>down 关闭指定网络设备/网卡。</li>
+<li>arp 设置指定网卡是否支持ARP协议</li>
+<li>-promisc 设置是否支持网卡的promiscuous模式，如果选择此参数，网卡将接收网络中发给它所有的数据包</li>
+<li>-allmulti 设置是否支持多播模式，如果选择此参数，网卡将接收网络中所有的多播数据包</li>
+<li>-a 显示全部接口信息</li>
+<li>-s 显示摘要信息（类似于 netstat -i）</li>
+<li>add 给指定网卡配置IPv6地址</li>
+<li>del 删除指定网卡的IPv6地址</li>
+</ul>
+<h3 id="使用实例-29"><a href="#使用实例-29" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.启动关闭指定网卡</p>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">ifconfig</span> <span class="string">eth0 up</span></span><br><span class="line"><span class="attr">ifconfig</span> <span class="string">eth0 down</span></span><br><span class="line"><span class="attr">复制代码</span></span><br></pre></td></tr></table></figure>
+
+<p>2.用ifconfig修改MAC地址</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">ifconfig</span> <span class="selector-tag">eth0</span> <span class="selector-tag">hw</span> <span class="selector-tag">ether</span> 00<span class="selector-pseudo">:AA</span><span class="selector-pseudo">:BB</span><span class="selector-pseudo">:CC</span><span class="selector-pseudo">:DD</span><span class="selector-pseudo">:EE</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="33-route-命令"><a href="#33-route-命令" class="headerlink" title="33. route 命令"></a>33. route 命令</h3><p>Route命令是用于操作基于内核ip路由表，它的主要作用是创建一个静态路由让指定一个主机或者一个网络通过一个网络接口，如eth0。</p>
+<h3 id="命令格式-31"><a href="#命令格式-31" class="headerlink" title="命令格式"></a>命令格式</h3><p>route [-f] [-p] [Command [Destination] [mask Netmask] [Gateway] [metric Metric]] [if Interface]]</p>
+<h3 id="常见参数-6"><a href="#常见参数-6" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-c 显示更多信息</li>
+<li>-n 不解析名字</li>
+<li>-v 显示详细的处理信息</li>
+<li>-F 显示发送信息</li>
+<li>-C 显示路由缓存</li>
+<li>-f 清除所有网关入口的路由表。</li>
+<li>-p 与 add 命令一起使用时使路由具有永久性。</li>
+<li>add:添加一条新路由。</li>
+<li>del:删除一条路由。</li>
+<li>-net:目标地址是一个网络。</li>
+<li>-host:目标地址是一个主机。</li>
+<li>netmask:当添加一个网络路由时，需要使用网络掩码。</li>
+<li>gw:路由数据包通过网关。注意，你指定的网关必须能够达到。</li>
+<li>metric：设置路由跳数。</li>
+<li>Command 指定您想运行的命令 (Add/Change/Delete/Print)。</li>
+<li>Destination 指定该路由的网络目标。</li>
+</ul>
+<h3 id="使用实例-30"><a href="#使用实例-30" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示当前路由</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">route </span><br><span class="line">route -n</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.添加网关/设置网关</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">route add -net <span class="number">224.0</span><span class="number">.0</span><span class="number">.0</span> netmask <span class="number">240.0</span><span class="number">.0</span><span class="number">.0</span> dev eth0</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="34-ping-命令"><a href="#34-ping-命令" class="headerlink" title="34. ping 命令"></a>34. ping 命令</h3><p>确定网络和各外部主机的状态；跟踪和隔离硬件和软件问题；测试、评估和管理网络。</p>
+<h3 id="命令格式-32"><a href="#命令格式-32" class="headerlink" title="命令格式"></a>命令格式</h3><p>ping [参数] [主机名或IP地址]</p>
+<h3 id="常见参数-7"><a href="#常见参数-7" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-d 使用Socket的SO_DEBUG功能</li>
+<li>-f 极限检测。大量且快速地送网络封包给一台机器，看它的回应</li>
+<li>-n 只输出数值</li>
+<li>-q 不显示任何传送封包的信息，只显示最后的结果</li>
+<li>-r 忽略普通的Routing Table，直接将数据包送到远端主机上。通常是查看本机的网络接口是否有问题</li>
+<li>-R 记录路由过程</li>
+<li>-v 详细显示指令的执行过程</li>
+<li>-c 数目：在发送指定数目的包后停止</li>
+<li>-i 秒数：设定间隔几秒送一个网络封包给一台机器，预设值是一秒送一次 -I 网络界面：使用指定的网络界面送出数据包 -l 前置载入：设置在送出要求信息之前，先行发出的数据包 -p 范本样式：设置填满数据包的范本样式 -s 字节数：指定发送的数据字节数，预设值是56，加上8字节的ICMP头，一共是64ICMP数据字节 -t 存活数值：设置存活数值TTL的大小</li>
+</ul>
+<h3 id="使用实例-31"><a href="#使用实例-31" class="headerlink" title="使用实例"></a>使用实例</h3><ol>
+<li>ping 网关</li>
+</ol>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ping -b <span class="number">192.168</span><span class="number">.120</span><span class="number">.1</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="35-traceroute-命令"><a href="#35-traceroute-命令" class="headerlink" title="35.traceroute 命令"></a>35.traceroute 命令</h3><p>让你追踪网络数据包的路由途径，预设数据包大小是40Bytes，用户可另行设置。</p>
+<h3 id="命令格式-33"><a href="#命令格式-33" class="headerlink" title="命令格式"></a>命令格式</h3><p>traceroute [参数] [主机]</p>
+<h3 id="常见参数-8"><a href="#常见参数-8" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-d 使用Socket层级的排错功能</li>
+<li>-f 设置第一个检测数据包的存活数值TTL的大小</li>
+<li>-F 设置勿离断位</li>
+<li>-g 设置来源路由网关，最多可设置8个</li>
+<li>-i 使用指定的网络界面送出数据包</li>
+<li>-I 使用ICMP回应取代UDP资料信息</li>
+<li>-m 设置检测数据包的最大存活数值TTL的大小</li>
+<li>-n 直接使用IP地址而非主机名称</li>
+<li>-p 设置UDP传输协议的通信端口</li>
+<li>-r 忽略普通的Routing Table，直接将数据包送到远端主机上</li>
+<li>-s 设置本地主机送出数据包的IP地址</li>
+<li>-t 设置检测数据包的TOS数值</li>
+<li>-v 详细显示指令的执行过程</li>
+<li>-w 设置等待远端主机回报的时间</li>
+<li>-x 开启或关闭数据包的正确性检验</li>
+</ul>
+<h3 id="使用实例-32"><a href="#使用实例-32" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.traceroute 用法简单、最常用的用法</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">traceroute</span> <span class="selector-tag">www</span><span class="selector-class">.baidu</span><span class="selector-class">.com</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>跳数设置</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">traceroute</span> <span class="selector-tag">-m</span> 10 <span class="selector-tag">www</span><span class="selector-class">.baidu</span><span class="selector-class">.com</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="36-netstat-命令"><a href="#36-netstat-命令" class="headerlink" title="36.netstat 命令"></a>36.netstat 命令</h3><p>用于显示与IP、TCP、UDP和ICMP协议相关的统计数据，一般用于检验本机各端口的网络连接情况。</p>
+<h3 id="命令格式-34"><a href="#命令格式-34" class="headerlink" title="命令格式"></a>命令格式</h3><p>netstat [-acCeFghilMnNoprstuvVwx] [-A&lt;网络类型&gt;] [–ip]</p>
+<h3 id="常见参数-9"><a href="#常见参数-9" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-a或–all 显示所有连线中的Socket</li>
+<li>-A&lt;网络类型&gt;或–&lt;网络类型&gt; 列出该网络类型连线中的相关地址</li>
+<li>-c或–continuous 持续列出网络状态</li>
+<li>-C或–cache 显示路由器配置的快取信息</li>
+<li>-e或–extend 显示网络其他相关信息</li>
+<li>-F或–fib 显示FIB</li>
+<li>-g或–groups 显示多重广播功能群组组员名单</li>
+<li>-h或–help 在线帮助</li>
+<li>-i或–interfaces 显示网络界面信息表单</li>
+<li>-l或–listening 显示监控中的服务器的Socket</li>
+<li>-M或–masquerade 显示伪装的网络连线</li>
+<li>-n或–numeric 直接使用IP地址，而不通过域名服务器</li>
+<li>-N或–netlink或–symbolic 显示网络硬件外围设备的符号连接名称</li>
+<li>-o或–timers 显示计时器</li>
+<li>-p或–programs 显示正在使用Socket的程序识别码和程序名称</li>
+<li>-r或–route 显示Routing Table</li>
+<li>-s或–statistice 显示网络工作信息统计表</li>
+<li>-t或–tcp 显示TCP传输协议的连线状况</li>
+<li>-u或–udp 显示UDP传输协议的连线状况</li>
+<li>-v或–verbose 显示指令执行过程</li>
+<li>-V或–version 显示版本信息</li>
+<li>-w或–raw 显示RAW传输协议的连线状况</li>
+<li>-x或–unix 此参数的效果和指定”-A unix”参数相同</li>
+<li>–ip或–inet 此参数的效果和指定”-A inet”参数相同</li>
+</ul>
+<h3 id="使用实例-33"><a href="#使用实例-33" class="headerlink" title="使用实例"></a>使用实例</h3><ol>
+<li>列出所有端口</li>
+</ol>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">netstat -<span class="keyword">a</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="37-telnet-命令"><a href="#37-telnet-命令" class="headerlink" title="37.telnet 命令"></a>37.telnet 命令</h3><p>执行telnet指令开启终端机阶段作业，并登入远端主机。</p>
+<h3 id="命令格式-35"><a href="#命令格式-35" class="headerlink" title="命令格式"></a>命令格式</h3><p>telnet [参数] [主机]</p>
+<h3 id="常见参数-10"><a href="#常见参数-10" class="headerlink" title="常见参数"></a>常见参数</h3><ul>
+<li>-8 允许使用8位字符资料，包括输入与输出</li>
+<li>-a 尝试自动登入远端系统</li>
+<li>-b&lt;主机别名&gt; 使用别名指定远端主机名称</li>
+<li>-c 不读取用户专属目录里的.telnetrc文件</li>
+<li>-d 启动排错模式</li>
+<li>-e&lt;脱离字符&gt; 设置脱离字符</li>
+<li>-E 滤除脱离字符</li>
+<li>-f 此参数的效果和指定”-F”参数相同</li>
+</ul>
+<h3 id="使用实例-34"><a href="#使用实例-34" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.远程服务器无法访问</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">telnet <span class="number">192.168</span><span class="number">.120</span><span class="number">.206</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h2 id="八、其他命令"><a href="#八、其他命令" class="headerlink" title="八、其他命令"></a>八、其他命令</h2><h3 id="38-ln-命令"><a href="#38-ln-命令" class="headerlink" title="38.ln 命令"></a>38.ln 命令</h3><p>为某一个文件在另外一个位置建立一个同步的链接.当我们需要在不同的目录，用到相同的文件时，我们不需要在每一个需要的目录下都放一个必须相同的文件，我们只要在某个固定的目录，放上该文件，然后在 其它的目录下用ln命令链接（link）它就可以，不必重复的占用磁盘空间。</p>
+<h3 id="命令格式-36"><a href="#命令格式-36" class="headerlink" title="命令格式"></a>命令格式</h3><p>ln [参数] [源文件或目录] [目标文件或目录]</p>
+<h3 id="常用参数-24"><a href="#常用参数-24" class="headerlink" title="常用参数"></a>常用参数</h3><p>必要参数:</p>
+<ul>
+<li>-b 删除，覆盖以前建立的链接</li>
+<li>-d 允许超级用户制作目录的硬链接</li>
+<li>-f 强制执行</li>
+<li>-i 交互模式，文件存在则提示用户是否覆盖</li>
+<li>-n 把符号链接视为一般目录</li>
+<li>-s 软链接(符号链接)</li>
+<li>-v 显示详细的处理过程</li>
+</ul>
+<p>选择参数:</p>
+<ul>
+<li>-S “-S&lt;字尾备份字符串&gt; ”或 “–suffix=&lt;字尾备份字符串&gt;”</li>
+<li>-V “-V&lt;备份方式&gt;”或“–version-control=&lt;备份方式&gt;”</li>
+</ul>
+<h3 id="使用实例-35"><a href="#使用实例-35" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.为 test.log文件创建软链接linktest。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ln -s <span class="keyword">test</span>.<span class="keyword">log</span> <span class="keyword">linktest</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.为 test.log创建硬链接lntest。</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">ln</span> test.<span class="built_in">log</span> lntest</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="39-diff-命令"><a href="#39-diff-命令" class="headerlink" title="39.diff 命令"></a>39.diff 命令</h3><p>比较单个文件或者目录内容。</p>
+<h3 id="命令格式-37"><a href="#命令格式-37" class="headerlink" title="命令格式"></a>命令格式</h3><p>diff [参数] [文件1或目录1] [文件2或目录2]</p>
+<h3 id="常用参数-25"><a href="#常用参数-25" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-c 上下文模式，显示全部内文，并标出不同之处</li>
+<li>-u 统一模式，以合并的方式来显示文件内容的不同</li>
+<li>-a 只会逐行比较文本文件</li>
+<li>-N 在比较目录时，若文件 A 仅出现在某个目录中，预设会显示：Only in 目录。若使用 -N 参数，则 diff 会将文件 A 与一个空白的文件比较</li>
+<li>-r 递归比较目录下的文件</li>
+</ul>
+<h3 id="使用实例-36"><a href="#使用实例-36" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示 test1.txt 和 test2.txt 两个文件差异。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">diff</span> <span class="selector-tag">test1</span><span class="selector-class">.txt</span> <span class="selector-tag">test2</span><span class="selector-class">.txt</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="40-grep-命令"><a href="#40-grep-命令" class="headerlink" title="40.grep 命令"></a>40.grep 命令</h3><p>一种强大的文本搜索工具，它能使用正则表达式搜索文本，并把匹 配的行打印出来。</p>
+<h3 id="命令格式-38"><a href="#命令格式-38" class="headerlink" title="命令格式"></a>命令格式</h3><p>grep [option] pattern file</p>
+<h3 id="常用参数-26"><a href="#常用参数-26" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-c 计算找到‘搜寻字符串’（即 pattern）的次数</li>
+<li>-i 忽略大小写的不同，所以大小写视为相同</li>
+<li>-n 输出行号</li>
+<li>-v 反向选择，打印不匹配的行</li>
+<li>-r 递归搜索</li>
+<li>–color=auto 将找到的关键词部分加上颜色显示</li>
+</ul>
+<h3 id="使用实例-37"><a href="#使用实例-37" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.将 /etc/passwd 文件中出现 root 的行取出来，关键词部分加上颜色显示。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grep</span> <span class="string">&quot;root&quot;</span> <span class="regexp">/etc/</span>passwd --color=auto</span><br><span class="line">cat <span class="regexp">/etc/</span>passwd | <span class="keyword">grep</span> <span class="string">&quot;root&quot;</span> --color=auto</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.将 /etc/passwd 文件中没有出现 root 和 nologin 的行取出来。</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grep</span> -v <span class="string">&quot;root&quot;</span> <span class="regexp">/etc/</span>passwd | <span class="keyword">grep</span> -v <span class="string">&quot;nologin&quot;</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="41-wc-命令"><a href="#41-wc-命令" class="headerlink" title="41.wc 命令"></a>41.wc 命令</h3><p>用来显示文件所包含的行、字和字节数。</p>
+<h3 id="命令格式-39"><a href="#命令格式-39" class="headerlink" title="命令格式"></a>命令格式</h3><p>wc [选项] [文件]</p>
+<h3 id="常用参数-27"><a href="#常用参数-27" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-c 统计字节数</li>
+<li>-l 统计行数</li>
+<li>-m 统计字符数，这个标志不能与 -c 标志一起使用</li>
+<li>-w 统计字数，一个字被定义为由空白、跳格或换行字符分隔的字符串</li>
+<li>-L 打印最长行的长度</li>
+</ul>
+<h3 id="使用实例-38"><a href="#使用实例-38" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.统计文件的字节数、行数和字符数。</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wc -c <span class="keyword">test</span>.txt</span><br><span class="line">wc -l <span class="keyword">test</span>.txt</span><br><span class="line">wc -m <span class="keyword">test</span>.txt</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.统计文件的字节数、行数和字符数，只打印数字，不打印文件名。</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">cat</span> <span class="keyword">test</span>.txt | wc -c</span><br><span class="line"><span class="keyword">cat</span> <span class="keyword">test</span>.txt | wc -<span class="keyword">l</span></span><br><span class="line"><span class="keyword">cat</span> <span class="keyword">test</span>.txt | wc -<span class="keyword">m</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="42-ps-命令"><a href="#42-ps-命令" class="headerlink" title="42.ps 命令"></a>42.ps 命令</h3><p>用来显示当前进程的状态。</p>
+<h3 id="命令格式-40"><a href="#命令格式-40" class="headerlink" title="命令格式"></a>命令格式</h3><p>ps[参数]</p>
+<h3 id="常用参数-28"><a href="#常用参数-28" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>a 显示所有进程</li>
+<li>-a 显示同一终端下的所有程序</li>
+<li>-A 显示所有进程</li>
+<li>c 显示进程的真实名称</li>
+<li>-N 反向选择</li>
+<li>-e 等于“-A”</li>
+<li>e 显示环境变量</li>
+<li>f 显示程序间的关系</li>
+<li>-H 显示树状结构</li>
+<li>r 显示当前终端的进程</li>
+<li>T 显示当前终端的所有程序</li>
+<li>u 指定用户的所有进程</li>
+<li>-au 显示较详细的资讯</li>
+<li>-aux 显示所有包含其他使用者的行程</li>
+<li>-C&lt;命令&gt; 列出指定命令的状况</li>
+<li>–lines&lt;行数&gt; 每页显示的行数</li>
+<li>–width&lt;字符数&gt; 每页显示的字符数</li>
+</ul>
+<h3 id="使用实例-39"><a href="#使用实例-39" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.显示所有进程信息。</p>
+<figure class="highlight dns"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps -<span class="keyword">A</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>显示指定用户信息。</li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ps</span> -u root</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>显示所有进程信息，连同命令行。</li>
+</ol>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">ps</span> -ef</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="43-watch-命令"><a href="#43-watch-命令" class="headerlink" title="43.watch 命令"></a>43.watch 命令</h3><p>可以将命令的输出结果输出到标准输出设备，多用于周期性执行命令/定时执行命令。</p>
+<h3 id="命令格式-41"><a href="#命令格式-41" class="headerlink" title="命令格式"></a>命令格式</h3><p>watch [参数] [命令]</p>
+<h3 id="常用参数-29"><a href="#常用参数-29" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-n或–interval watch缺省每2秒运行一下程序，可以用-n或-interval来指定间隔的时间。</li>
+<li>-d或–differences 用-d或–differences 选项watch 会高亮显示变化的区域。 而-d=cumulative选项会把变动过的地方(不管最近的那次有没有变动)都高亮显示出来。</li>
+<li>-t 或-no-title 会关闭watch命令在顶部的时间间隔,命令，当前时间的输出。</li>
+<li>-h, –help 查看帮助文档</li>
+</ul>
+<h3 id="使用实例-40"><a href="#使用实例-40" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.每隔一秒高亮显示网络链接数的变化情况</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">watch -n <span class="number">1</span> -d netstat -ant</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.每隔一秒高亮显示http链接数的变化情况</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">watch</span> -n <span class="number">1</span> -d <span class="string">&#x27;pstree|grep http&#x27;</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="44-at-命令"><a href="#44-at-命令" class="headerlink" title="44.  at 命令"></a>44.  at 命令</h3><p>在一个指定的时间执行一个指定任务，只能执行一次。（需开启atd进程）</p>
+<h3 id="命令格式-42"><a href="#命令格式-42" class="headerlink" title="命令格式"></a>命令格式</h3><p>at [参数] [时间]</p>
+<h3 id="常用参数-30"><a href="#常用参数-30" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-m 当指定的任务被完成之后，将给用户发送邮件，即使没有标准输出</li>
+<li>-I atq的别名</li>
+<li>-d atrm的别名</li>
+<li>-v 显示任务将被执行的时间</li>
+<li>-c 打印任务的内容到标准输出</li>
+<li>-V 显示版本信息</li>
+<li>-q&lt;列队&gt; 使用指定的列队</li>
+<li>-f&lt;文件&gt; 从指定文件读入任务而不是从标准输入读入</li>
+<li>-t&lt;时间参数&gt; 以时间参数的形式提交要运行的任务</li>
+</ul>
+<h3 id="使用实例-41"><a href="#使用实例-41" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.3天后的下午5点执行/bin/ls</p>
+<figure class="highlight xquery"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">at</span> <span class="number">5</span>pm+<span class="number">3</span> days </span><br><span class="line"><span class="keyword">at</span>&gt; /bin/ls</span><br><span class="line"><span class="keyword">at</span>&gt; <span class="xml"><span class="tag">&lt;<span class="name">EOT</span>&gt;</span></span></span><br><span class="line"><span class="xml">复制代码</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="45-crontab-命令"><a href="#45-crontab-命令" class="headerlink" title="45.crontab 命令"></a>45.crontab 命令</h3><p>在固定的间隔时间执行指定的系统指令或 shell script脚本。时间间隔的单位可以是分钟、小时、日、月、周及以上的任意组合。(需开启crond服务)</p>
+<h3 id="命令格式-43"><a href="#命令格式-43" class="headerlink" title="命令格式"></a>命令格式</h3><p>crontab [-u user] file 或</p>
+<p>crontab [-u user] [ -e | -l | -r ]</p>
+<h3 id="常用参数-31"><a href="#常用参数-31" class="headerlink" title="常用参数"></a>常用参数</h3><ul>
+<li>-u user：用来设定某个用户的crontab服务，例如，“-u ixdba”表示设定ixdba用户的crontab服务，此参数一般有root用户来运行。</li>
+<li>file：file是命令文件的名字,表示将file做为crontab的任务列表文件并载入crontab。如果在命令行中没有指定这个文件，crontab命令将接受标准输入（键盘）上键入的命令，并将它们载入crontab。</li>
+<li>-e：编辑某个用户的crontab文件内容。如果不指定用户，则表示编辑当前用户的crontab文件。</li>
+<li>-l：显示某个用户的crontab文件内容，如果不指定用户，则表示显示当前用户的crontab文件内容。</li>
+<li>-r：从/var/spool/cron目录中删除某个用户的crontab文件，如果不指定用户，则默认删除当前用户的crontab文件。</li>
+<li>-i：在删除用户的crontab文件时给确认提示。</li>
+</ul>
+<h3 id="使用实例-42"><a href="#使用实例-42" class="headerlink" title="使用实例"></a>使用实例</h3><p>1.列出 crontab 文件。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">crontab</span> -l</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.编辑crontab 文件。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">crontab</span> -e</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<h3 id="Crontab-任务实例"><a href="#Crontab-任务实例" class="headerlink" title="Crontab 任务实例"></a>Crontab 任务实例</h3><p>1.每1分钟执行一次command</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">*</span> <span class="emphasis">* *</span> <span class="emphasis">* *</span> command</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>2.每小时的第3和第15分钟执行</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>,<span class="number">15</span> * * * * command</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>3.在上午8点到11点的第3和第15分钟执行</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">3</span>,<span class="number">15</span> <span class="number">8</span><span class="number">-11</span> * * * command</span><br></pre></td></tr></table></figure>
+
+
+<p>作者：实验楼<br>链接：<a target="_blank" rel="noopener" href="https://juejin.im/post/6844903930166509581">https://juejin.im/post/6844903930166509581</a><br>来源：掘金<br>著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。间是与系统运行相关的。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        <a href="/tags/%E9%9D%A2%E8%AF%95/"># 面试</a>
+                    
+                        <a href="/tags/Linux/"># Linux</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/10/30/000001.SpringBoot%E9%9D%A2%E8%AF%95%E9%A2%98/">SpringBoot面试题</a>
+            
+            
+            <a class="next" rel="next" href="/2020/10/26/EXPLAIN%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92%E4%B8%AD%E8%A6%81%E9%87%8D%E7%82%B9%E5%85%B3%E6%B3%A8%E5%93%AA%E4%BA%9B%E8%A6%81%E7%B4%A0/">EXPLAIN执行计划中要重点关注哪些要素</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© X_ray | Powered by <a href="https://xray1025.top" target="_blank">Xray</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
