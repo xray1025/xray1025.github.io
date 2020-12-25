@@ -1041,27 +1041,6 @@
       </tags>
   </entry>
   <entry>
-    <title>0349.两个数组的交集</title>
-    <url>/2020/11/02/0349.%E4%B8%A4%E4%B8%AA%E6%95%B0%E7%BB%84%E7%9A%84%E4%BA%A4%E9%9B%86/</url>
-    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/intersection-of-two-arrays/">https://leetcode-cn.com/problems/intersection-of-two-arrays/</a></p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] intersection(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2) &#123;</span><br><span class="line">        HashSet&lt;Integer&gt; set1 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        HashSet&lt;Integer&gt; set2 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> num : nums1)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!set1.contains(num))</span><br><span class="line">                set1.add(num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> num : nums2)&#123;</span><br><span class="line">            <span class="keyword">if</span>(set1.contains(num) &amp;&amp; !set2.contains(num))&#123;</span><br><span class="line">                set2.add(num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[set2.size()];</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> s : set2)&#123;</span><br><span class="line">            res[i++] = s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p>时间复杂度：O(m+n)，其中 m 和 n 分别是两个数组的长度。使用两个集合分别存储两个数组中的元素需要 O(m+n) 的时间。</p>
-</li>
-<li><p>空间复杂度：O(m+n)，其中 m 和 n 分别是两个数组的长度。空间复杂度主要取决于两个集合。</p>
-</li>
-</ul>
-]]></content>
-      <categories>
-        <category>leetcode</category>
-      </categories>
-      <tags>
-        <tag>leetcode</tag>
-        <tag>HashSet</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>0404.左叶子之和</title>
     <url>/2020/09/19/0404.%E5%B7%A6%E5%8F%B6%E5%AD%90%E4%B9%8B%E5%92%8C/</url>
     <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/sum-of-left-leaves">https://leetcode-cn.com/problems/sum-of-left-leaves</a></p>
@@ -1105,6 +1084,27 @@
       <tags>
         <tag>leetcode</tag>
         <tag>Math</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0349.两个数组的交集</title>
+    <url>/2020/11/02/0349.%E4%B8%A4%E4%B8%AA%E6%95%B0%E7%BB%84%E7%9A%84%E4%BA%A4%E9%9B%86/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/intersection-of-two-arrays/">https://leetcode-cn.com/problems/intersection-of-two-arrays/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[] intersection(<span class="keyword">int</span>[] nums1, <span class="keyword">int</span>[] nums2) &#123;</span><br><span class="line">        HashSet&lt;Integer&gt; set1 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        HashSet&lt;Integer&gt; set2 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> num : nums1)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!set1.contains(num))</span><br><span class="line">                set1.add(num);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> num : nums2)&#123;</span><br><span class="line">            <span class="keyword">if</span>(set1.contains(num) &amp;&amp; !set2.contains(num))&#123;</span><br><span class="line">                set2.add(num);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span>[] res = <span class="keyword">new</span> <span class="keyword">int</span>[set2.size()];</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> s : set2)&#123;</span><br><span class="line">            res[i++] = s;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> res;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>时间复杂度：O(m+n)，其中 m 和 n 分别是两个数组的长度。使用两个集合分别存储两个数组中的元素需要 O(m+n) 的时间。</p>
+</li>
+<li><p>空间复杂度：O(m+n)，其中 m 和 n 分别是两个数组的长度。空间复杂度主要取决于两个集合。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>HashSet</tag>
       </tags>
   </entry>
   <entry>
