@@ -19312,4 +19312,62 @@
         <tag>LinkedList</tag>
       </tags>
   </entry>
+  <entry>
+    <title>0064.最小路径和</title>
+    <url>/2021/01/04/0064.%E6%9C%80%E5%B0%8F%E8%B7%AF%E5%BE%84%E5%92%8C/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/minimum-path-sum/">https://leetcode-cn.com/problems/minimum-path-sum/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">minPathSum</span><span class="params">(<span class="keyword">int</span>[][] grid)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> r = grid.length;</span><br><span class="line">        <span class="keyword">int</span> c = grid[<span class="number">0</span>].length;</span><br><span class="line">        <span class="keyword">if</span> (grid == <span class="keyword">null</span> || r == <span class="number">0</span> || c == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> dp[][] = <span class="keyword">new</span> <span class="keyword">int</span>[r][c];</span><br><span class="line">        dp[<span class="number">0</span>][<span class="number">0</span>] = grid[<span class="number">0</span>][<span class="number">0</span>];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; r; i++) &#123;</span><br><span class="line">            dp[i][<span class="number">0</span>] = dp[i - <span class="number">1</span>][<span class="number">0</span>] + grid[i][<span class="number">0</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; c; j++) &#123;</span><br><span class="line">            dp[<span class="number">0</span>][j] = dp[<span class="number">0</span>][j - <span class="number">1</span>] + grid[<span class="number">0</span>][j];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; r; i++)&#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; c; j++)&#123;</span><br><span class="line">                dp[i][j] = Math.min(dp[i - <span class="number">1</span>][j], dp[i][j - <span class="number">1</span>]) + grid[i][j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span>  dp[r - <span class="number">1</span>][c - <span class="number">1</span>];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(mn)，其中 m 和nn 分别是网格的行数和列数。需要对整个网格遍历一次，计算 dp 的每个元素的值。</li>
+<li>空间复杂度：O(mn)，其中 m 和 n 分别是网格的行数和列数。创建一个二维数组 dp，和网格大小相同。空间复杂度可以优化，例如每次只存储上一行的 dp 值，则可以将空间复杂度优化到 O(n)。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>dp</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0114.二叉树展开为链表</title>
+    <url>/2021/01/04/0114.%E4%BA%8C%E5%8F%89%E6%A0%91%E5%B1%95%E5%BC%80%E4%B8%BA%E9%93%BE%E8%A1%A8/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/">https://leetcode-cn.com/problems/flatten-binary-tree-to-linked-list/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">flatten</span><span class="params">(TreeNode root)</span> </span>&#123;</span><br><span class="line">        TreeNode cur = root;</span><br><span class="line">        <span class="keyword">while</span> (cur != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (cur.left != <span class="keyword">null</span>)&#123;</span><br><span class="line">                TreeNode next = cur.left;</span><br><span class="line">                TreeNode pre = cur.left;</span><br><span class="line">                <span class="keyword">while</span> (pre.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    pre = pre.right;</span><br><span class="line">                &#125;</span><br><span class="line">                pre.right = cur.right;</span><br><span class="line">                cur.left = <span class="keyword">null</span>;</span><br><span class="line">                cur.right = next;</span><br><span class="line">            &#125;</span><br><span class="line">            cur = cur.right;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>时间复杂度：O(n)，其中 n 是二叉树的节点数。展开为单链表的过程中，需要对每个节点访问一次，在寻找前驱节点的过程中，每个节点最多被额外访问一次。</p>
+<p>  空间复杂度：O(1)。</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>LinkedList</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>0509.斐波那契数</title>
+    <url>/2021/01/04/0509.%E6%96%90%E6%B3%A2%E9%82%A3%E5%A5%91%E6%95%B0/</url>
+    <content><![CDATA[<p><a href="https://leetcode-cn.com/problems/fibonacci-number/">https://leetcode-cn.com/problems/fibonacci-number/</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Solution</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">fib</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(n &lt; <span class="number">2</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> n;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">2</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> cur = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> prev1 = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">int</span> prev2 = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>; i &lt;= n; i++)&#123;</span><br><span class="line">            cur = prev1 + prev2;</span><br><span class="line">            prev1 = prev2;</span><br><span class="line">            prev2 = cur;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> cur;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>时间复杂度：O(n)。</li>
+<li>空间复杂度：O(1)。</li>
+</ul>
+]]></content>
+      <categories>
+        <category>leetcode</category>
+      </categories>
+      <tags>
+        <tag>leetcode</tag>
+        <tag>dp</tag>
+      </tags>
+  </entry>
 </search>
