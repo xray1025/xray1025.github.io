@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="X_ray">
+
+
+    <meta name="subtitle" content="yesterday you said tomorrow">
+
+
+
+
+<title>Java集合 | X_ray&#39;s blog</title>
+
+
+
+    <link rel="icon" href="/image/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.1.1"></head>
+<body>
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Xray&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Xray&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+        <div class="main">
+            <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">Java集合</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">X_ray</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">十月 18, 2020&nbsp;&nbsp;14:54:55</a>
+                        </span>
+                    
+                    
+                        <span class="post-category">
+                    Category:
+                            
+                                <a href="/categories/Java/">Java</a>
+                            
+                        </span>
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h1 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h1><ul>
+<li>Collection：List（列表）、Queue（队列）、Set（集）</li>
+<li>Iterator（迭代器）</li>
+</ul>
+<a id="more"></a>
+
+<p><img src="https://cdn.jsdelivr.net/gh/xray1025/image01/JAVA-283.jpg"></p>
+<h2 id="1-ArrayList和LinkedList的区别？"><a href="#1-ArrayList和LinkedList的区别？" class="headerlink" title="1 ArrayList和LinkedList的区别？"></a>1 ArrayList和LinkedList的区别？</h2><ul>
+<li><strong>是否线程安全：</strong>ArrayList和LinkedList都不是线程安全的；</li>
+<li><strong>底层数据结构：</strong>ArrayList底层使用数组，LinkedList底层使用双向链表；</li>
+<li><strong>快速随机访问：</strong>ArrayList支持，LinkedList不支持；</li>
+<li><strong>随机位置插入删除的时间复杂度：</strong>ArrayList为O(n)，LinkedList为O(1);</li>
+<li><strong>内存占用：</strong>ArrayList会在列表结尾预留一定容量空间，LinkedList的每个元素都要额外存储直接前驱和直接后继。</li>
+</ul>
+<h2 id="2-ArrayList和Vector的区别？"><a href="#2-ArrayList和Vector的区别？" class="headerlink" title="2 ArrayList和Vector的区别？"></a>2 ArrayList和Vector的区别？</h2><ul>
+<li>ArrayList不是线程安全的；</li>
+<li>Vector是线程安全的，但是在同步操作上会耗费大量时间。</li>
+</ul>
+<h2 id="3-ArrayList的扩容机制？"><a href="#3-ArrayList的扩容机制？" class="headerlink" title="3 ArrayList的扩容机制？"></a>3 ArrayList的扩容机制？</h2><ul>
+<li><p>默认初始大小为10；</p>
+</li>
+<li><p>底层其实是调用Arrays.copyOf`方法来进行扩充数组容量。</p>
+</li>
+<li><p>默认情况下，新的容量会是原容量的1.5倍，这里用了位运算提高效率。一般情况下，如果扩容1.5倍后就大于期望容量，那就返回这个1.5倍旧容量的值。而如果小于期望容量，那就返回期望容量。</p>
+</li>
+<li><p>使用1.5倍这个数值而不是直接使用期望容量，是为了防止频繁扩容影响性能。试想如果每次add操作都要扩容一次，那性能将会非常低下。</p>
+</li>
+<li><p>可以手动扩容，没有缩容。</p>
+</li>
+</ul>
+<h2 id="4-HashMap和HashTable的区别？"><a href="#4-HashMap和HashTable的区别？" class="headerlink" title="4 HashMap和HashTable的区别？"></a>4 HashMap和HashTable的区别？</h2><ul>
+<li><strong>线程是否安全：</strong>HashMap是非线程安全的，HashTable使用synchronized修饰，是线程安全的；</li>
+<li><strong>效率：</strong>HashTable的效率低，已被淘汰；</li>
+<li><strong>Null值：</strong>HashMap的Key和Value可以为null，HashTab的Key如果为null，则会跑出NullPointerException。</li>
+<li><strong>初始容量和扩容：</strong>HashMap的初始大小为16，扩容因子为0.75，每次扩容变为2倍，HashTable的初始大小为11，每次扩容变为原来的2n+1;</li>
+<li><strong>底层实现不同。</strong></li>
+</ul>
+<h2 id="5-HashMap和HashSet的区别？"><a href="#5-HashMap和HashSet的区别？" class="headerlink" title="5 HashMap和HashSet的区别？"></a>5 HashMap和HashSet的区别？</h2><ul>
+<li>HashSet的底层是基于HashMap实现的；</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">HashMap</th>
+<th align="center">HashSet</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">实现Map接口</td>
+<td align="center">实现Set接口</td>
+</tr>
+<tr>
+<td align="center">存储键值对</td>
+<td align="center">仅存储值</td>
+</tr>
+<tr>
+<td align="center">使用put()添加元素</td>
+<td align="center">使用add()添加元素</td>
+</tr>
+<tr>
+<td align="center">使用key计算hashCode</td>
+<td align="center">使用value计算hashCode</td>
+</tr>
+</tbody></table>
+<h2 id="6-HashSet如何检查重复？"><a href="#6-HashSet如何检查重复？" class="headerlink" title="6 HashSet如何检查重复？"></a>6 HashSet如何检查重复？</h2><p>向HashSet添加元素时，HashSet会计算元素的hashCode判断元素加入的位置，同时与其他已添加的元素的hashCode作比较，如果没有hashCode相同的元素，则添加，否则会调用equals()方法检查hashCode相同的元素是否真的相同。</p>
+<h3 id="6-1-hashCode-和equals"><a href="#6-1-hashCode-和equals" class="headerlink" title="6.1 hashCode()和equals()"></a>6.1 hashCode()和equals()</h3><ul>
+<li>如果两个对象相等，则hashCode相等，equals()为true；</li>
+<li>两个对象即使hashCode相等，也不一定相等；</li>
+<li>覆盖equals()必须覆盖hashCode()；</li>
+<li>如果没有重写hashCode()，则两个对象绝对不相等。</li>
+</ul>
+<h3 id="6-2-和equals-的区别？"><a href="#6-2-和equals-的区别？" class="headerlink" title="6.2 ==和equals()的区别？"></a>6.2 ==和equals()的区别？</h3><ul>
+<li>对于基本类型的变量来说（如 <code>short</code>、 <code>int</code>、 <code>long</code>、 <code>float</code>、 <code>double</code>），只能使用 == ，因为这些基本类型的变量没有 equals 方法。对于基本类型变量的比较，使用 == 比较， <strong>一般比较的是它们的值</strong>。</li>
+<li>对于引用类型的变量来说（例如 String 类）才有 equals 方法。对于该类型对象的比较，默认情况下，也就是没有复写 Object 类的 equals 方法，使用 == 和 equals 比较是一样效果的，都是<strong>比较的是它们在内存中的存放地址</strong>。<strong>String 类存在 equals 方法被复写的情况，使用 equals 方法会比较它们的值</strong>；</li>
+</ul>
+<h2 id="7-HashMap的底层实现"><a href="#7-HashMap的底层实现" class="headerlink" title="7 HashMap的底层实现"></a>7 HashMap的底层实现</h2><ul>
+<li>JDK1.8以前，HashMap的底层是数组和链表组合在一起。HashMap计算key的hashCode经过扰动函数处理后得到hash值，然后通过 (n-1) &amp; hash判断当前元素存放的位置，如果当前位置存在元素，则判断该元素与要存入的元素的hash值和key是否相等，如果相等则覆盖，否则通过拉链法解决冲突。</li>
+</ul>
+<blockquote>
+<p>扰动函数：即hash方法</p>
+</blockquote>
+<ul>
+<li>JDK1.7的hash方法：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(<span class="keyword">int</span> h)</span></span>&#123;</span><br><span class="line">    h ^= (h &gt;&gt;&gt; <span class="number">20</span>) ^ (h &gt;&gt;&gt;<span class="number">12</span>);</span><br><span class="line">    <span class="keyword">return</span> h ^ (h &gt;&gt;&gt; <span class="number">7</span>) ^ (h &gt;&gt;&gt; <span class="number">4</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>JDK1.8以后，当数组长度大于64，链表长度大于8时，将链表转化为红黑树；链表长度小于7时，红黑树转化为链表。</p>
+</li>
+<li><p>JDK1.8的hash方法：</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(<span class="keyword">int</span> h)</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (key == <span class="keyword">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-HashMap的长度为什么是2的幂次方？"><a href="#8-HashMap的长度为什么是2的幂次方？" class="headerlink" title="8 HashMap的长度为什么是2的幂次方？"></a>8 HashMap的长度为什么是2的幂次方？</h2><p>hash % length == hash &amp; (length - 1)的前提是length == 2 的幂次方。</p>
+<h2 id="9-ConcurrentHashMap和HashTable的区别？"><a href="#9-ConcurrentHashMap和HashTable的区别？" class="headerlink" title="9 ConcurrentHashMap和HashTable的区别？"></a>9 ConcurrentHashMap和HashTable的区别？</h2><ul>
+<li>实现线程安全的方式不同：<ul>
+<li>JDK1.7的ConcurrentHashMap使用分段锁对整个数组进行分段加锁（Segment），多线程访问不同数据段的数据就不会发生锁竞争，提高并发效率；</li>
+<li>JDK1.8的ConcurrentHashMap使用synchronized和CAS进行并发控制；</li>
+<li>HashTable使用synchronized保证线程安全，效率低下。</li>
+</ul>
+</li>
+<li>底层数据结构不同。</li>
+</ul>
+<blockquote>
+<p>Segment：实现了ReentrantLock，是可重入锁。</p>
+</blockquote>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>年与时驰，意与日去，遂成枯落，多不接世，悲守穷庐，将复何及</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/Java/"># Java</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2020/10/18/00000000.Java%E5%90%8E%E7%AB%AF%E6%B1%87%E6%80%BB/">Java汇总</a>
+            
+            
+            <a class="next" rel="next" href="/2020/10/15/0000.Redis/">Redis</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+        </div>
+        <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© X_ray | Powered by <a href="https://xray1025.top" target="_blank">Xray</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+</html>
